@@ -134,9 +134,9 @@ PENDING → APPROVED → ON_LOAN → RETURNED
 
 ---
 
-### B.4 Aturan Bisnis Tambahan & Penanganan Kondisi Khusus (Edge Cases)
+**B.4 Aturan Bisnis Tambahan & Penanganan Kondisi Khusus (Edge Cases)***
 
-**1. Mekanisme Reservasi Stok (Mencegah Double Approval)**
+***1. Mekanisme Reservasi Stok (Mencegah Double Approval)***
 
 Permasalahan: jika pengurangan stok baru terjadi saat status berubah menjadi ON_LOAN, maka dua tiket berbeda untuk alat yang sama berpotensi sama-sama disetujui (APPROVED) melebihi stok fisik yang tersedia, karena pada tahap APPROVED sistem belum mengunci kuantitas tersebut.
 
@@ -151,7 +151,7 @@ Aturan yang ditetapkan:
 
 > Catatan: dengan aturan ini, pengurangan stok yang dijelaskan di FR-B-13 (transisi ke ON_LOAN) direvisi — pengurangan `available_stock` sudah terjadi sejak APPROVED, sedangkan transisi ke ON_LOAN hanya menandai bahwa alat **secara fisik sudah berpindah tangan**, tanpa mengubah angka stok lagi.
 
-**2. Penanganan Persetujuan Sebagian (Partial Approval)**
+***2. Penanganan Persetujuan Sebagian (Partial Approval)***
 
 Permasalahan: PRD awal mengasumsikan approval bersifat all-or-nothing, padahal mahasiswa bisa mengajukan beberapa alat/kuantitas dalam satu tiket, sementara admin mungkin hanya sanggup menyetujui sebagian.
 
@@ -163,7 +163,7 @@ Aturan yang ditetapkan:
 | FR-B-21 | Status Turunan Tiket | Status keseluruhan tiket mengikuti status item-item di dalamnya, dengan status tambahan **PARTIALLY_APPROVED** apabila sebagian item disetujui dan sebagian ditolak/diubah kuantitasnya. |
 | FR-B-22 | Transparansi ke Mahasiswa | Mahasiswa dapat melihat rincian per item pada riwayat pengajuannya, termasuk item mana yang disetujui penuh, disetujui sebagian (misalnya diajukan 3, disetujui 2), atau ditolak, lengkap dengan catatan alasan dari admin. |
 
-**3. Penanganan Alat Rusak atau Hilang saat Pengembalian**
+***3. Penanganan Alat Rusak atau Hilang saat Pengembalian***
 
 Permasalahan: PRD awal hanya mengasumsikan dua kemungkinan hasil pengembalian, yaitu RETURNED (stok kembali utuh) — padahal secara riil, alat yang kembali bisa dalam kondisi rusak atau bahkan tidak kembali sama sekali (hilang).
 
@@ -177,7 +177,7 @@ Aturan yang ditetapkan:
 | FR-B-26 | Efek terhadap Stok — Kondisi Hilang | Jika kondisi "Hilang", baik `available_stock` maupun `total_stock` **dikurangi permanen** sejumlah unit yang hilang, dan sistem mencatat riwayat kehilangan tersebut sebagai log terpisah untuk kebutuhan audit/pelaporan admin (tanpa mekanisme denda finansial, sesuai batasan masalah pada BAB 6). |
 | FR-B-27 | Status Tiket untuk Kasus Rusak/Hilang | Status tiket tetap berakhir di RETURNED (alat dianggap selesai diproses secara administratif), namun disertai flag/keterangan kondisi akhir (Baik/Rusak/Hilang) yang tercatat permanen pada riwayat transaksi, agar dapat dibedakan dari pengembalian normal saat pelaporan. |
 
-**4. Penghapusan Data Master Alat yang Memiliki Riwayat Transaksi**
+***4. Penghapusan Data Master Alat yang Memiliki Riwayat Transaksi***
 
 Permasalahan: PRD awal belum mengatur apa yang terjadi bila admin mencoba menghapus data alat pada master data, padahal alat tersebut sudah memiliki riwayat transaksi peminjaman (integritas data historis berisiko rusak jika dihapus permanen).
 
