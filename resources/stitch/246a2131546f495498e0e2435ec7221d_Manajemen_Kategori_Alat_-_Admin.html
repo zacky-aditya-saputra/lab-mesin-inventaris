@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kategori Alat - LabCatalog Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#003ea8",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-tertiary": "#ffffff",
+                      "status-success-bg": "#D1FAE5",
+                      "on-secondary": "#ffffff",
+                      "status-approved-text": "#075985",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "on-surface": "#191b23",
+                      "stock-available": "#065F46",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "inverse-primary": "#b4c5ff",
+                      "surface-dim": "#d9d9e5",
+                      "stock-limited": "#92400E",
+                      "primary-fixed": "#dbe1ff",
+                      "status-approved-bg": "#E0F2FE",
+                      "primary-container": "#2563eb",
+                      "primary": "#004ac6",
+                      "inverse-on-surface": "#f0f0fb",
+                      "on-secondary-container": "#57657a",
+                      "background": "#faf8ff",
+                      "on-surface-variant": "#434655",
+                      "outline": "#737686",
+                      "on-tertiary-fixed": "#360f00",
+                      "inverse-surface": "#2e3039",
+                      "status-rejected-text": "#9F1239",
+                      "outline-variant": "#c3c6d7",
+                      "on-primary-container": "#eeefff",
+                      "tertiary-container": "#bc4800",
+                      "surface-bright": "#faf8ff",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "secondary-container": "#d5e3fc",
+                      "status-overdue-text": "#FFFFFF",
+                      "status-rejected-bg": "#FFE4E6",
+                      "secondary": "#515f74",
+                      "surface-tint": "#0053db",
+                      "status-pending-bg": "#FEF3C7",
+                      "surface-container-lowest": "#ffffff",
+                      "status-partial-bg": "#FFEDD5",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed": "#ffdbcd",
+                      "status-loan-bg": "#E0E7FF",
+                      "stock-maintenance": "#1E293B",
+                      "stock-none": "#64748B",
+                      "on-primary-fixed": "#00174b",
+                      "secondary-fixed": "#d5e3fc",
+                      "surface": "#faf8ff",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "surface-container-low": "#f3f3fe",
+                      "status-loan-text": "#3730A3",
+                      "tertiary": "#943700",
+                      "on-error": "#ffffff",
+                      "surface-container": "#ededf9",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-container": "#ffede6",
+                      "status-overdue-bg": "#E11D48",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "status-pending-text": "#92400E",
+                      "on-error-container": "#93000a",
+                      "on-background": "#191b23",
+                      "status-partial-text": "#9A3412",
+                      "surface-container-high": "#e7e7f3",
+                      "status-success-text": "#065F46",
+                      "surface-variant": "#e1e2ed",
+                      "sidebar-dark": "#0F172A"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "padding-card": "1.5rem",
+                      "margin-page": "1rem",
+                      "container-max": "80rem",
+                      "gutter-sm": "1rem",
+                      "gutter-md": "1.5rem"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "title-sm": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "caption-xs": [
+                              "Inter"
+                      ],
+                      "badge-xs": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "30px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "title-sm": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "caption-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "badge-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for data tables */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+      </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased h-screen flex overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 bg-sidebar-dark flex-shrink-0 flex flex-col h-full z-20">
+<!-- Brand -->
+<div class="h-16 flex items-center px-6 border-b border-white/10">
+<span class="material-symbols-outlined text-primary-fixed mr-3 text-2xl">science</span>
+<span class="font-headline-sm text-headline-sm text-primary-fixed tracking-tight">LabCatalog</span>
+</div>
+<!-- Menu -->
+<nav class="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:bg-white/5 hover:text-white rounded-md transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-3 bg-primary/20 text-primary-fixed rounded-md transition-colors group border-l-4 border-primary" href="#">
+<span class="material-symbols-outlined mr-3 text-xl opacity-100" style="font-variation-settings: 'FILL' 1;">category</span>
+<span class="font-label-md text-label-md font-semibold">Kategori Alat</span>
+</a>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:bg-white/5 hover:text-white rounded-md transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">inventory_2</span>
+<span class="font-label-md text-label-md">Data Alat</span>
+</a>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:bg-white/5 hover:text-white rounded-md transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">receipt_long</span>
+<span class="font-label-md text-label-md">Tiket Masuk</span>
+<span class="ml-auto bg-error text-on-error font-badge-xs text-badge-xs px-2 py-0.5 rounded-full">3</span>
+</a>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:bg-white/5 hover:text-white rounded-md transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">warning</span>
+<span class="font-label-md text-label-md">Monitoring Overdue</span>
+</a>
+<a class="flex items-center px-4 py-3 text-secondary-fixed-dim hover:bg-white/5 hover:text-white rounded-md transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">history</span>
+<span class="font-label-md text-label-md">Laporan &amp; Riwayat</span>
+</a>
+</nav>
+<!-- User Profile -->
+<div class="p-4 border-t border-white/10">
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-title-sm text-title-sm mr-3">
+                    AD
+                </div>
+<div>
+<div class="font-label-md text-label-md text-white">Admin Utama</div>
+<div class="font-caption-xs text-caption-xs text-secondary-fixed-dim">admin@lab.edu</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full bg-background overflow-hidden">
+<!-- Top Header -->
+<header class="h-16 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between px-8 flex-shrink-0 z-10 shadow-sm">
+<h1 class="font-headline-md text-headline-md text-on-surface">Manajemen Kategori</h1>
+<div class="flex items-center space-x-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-4 py-2 rounded-md shadow-sm transition-colors flex items-center" onclick="document.getElementById('addModal').classList.remove('hidden')">
+<span class="material-symbols-outlined mr-2 text-sm">add</span>
+                    Tambah Kategori
+                </button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 overflow-auto p-8">
+<div class="max-w-container-max mx-auto">
+<!-- Table Card -->
+<div class="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant overflow-hidden">
+<!-- Search & Filter Bar -->
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/50">
+<div class="relative w-72">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow" placeholder="Cari kategori..." type="text"/>
+</div>
+<div class="font-caption-xs text-caption-xs text-on-surface-variant">
+                            Menampilkan 3 kategori
+                        </div>
+</div>
+<!-- Data Table -->
+<div class="table-container overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface font-label-md text-label-md border-b border-outline-variant">
+<th class="py-3 px-6 font-semibold w-16">ID</th>
+<th class="py-3 px-6 font-semibold">Nama Kategori</th>
+<th class="py-3 px-6 font-semibold">Deskripsi</th>
+<th class="py-3 px-6 font-semibold text-right">Jumlah Alat</th>
+<th class="py-3 px-6 font-semibold text-center w-32">Aksi</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-6 text-on-surface-variant">KAT-001</td>
+<td class="py-3 px-6 font-medium text-on-surface">Alat Ukur Presisi</td>
+<td class="py-3 px-6 text-on-surface-variant truncate max-w-xs">Peralatan untuk pengukuran detail dengan tingkat akurasi tinggi.</td>
+<td class="py-3 px-6 text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs bg-secondary-container text-on-secondary-container">
+                                            15
+                                        </span>
+</td>
+<td class="py-3 px-6">
+<div class="flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" onclick="document.getElementById('deleteModal').classList.remove('hidden')" title="Hapus">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-surface-container-low/30">
+<td class="py-3 px-6 text-on-surface-variant">KAT-002</td>
+<td class="py-3 px-6 font-medium text-on-surface">Mesin Produksi</td>
+<td class="py-3 px-6 text-on-surface-variant truncate max-w-xs">Peralatan berat dan mesin berskala besar untuk praktikum manufaktur.</td>
+<td class="py-3 px-6 text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs bg-secondary-container text-on-secondary-container">
+                                            8
+                                        </span>
+</td>
+<td class="py-3 px-6">
+<div class="flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" onclick="document.getElementById('deleteModal').classList.remove('hidden')" title="Hapus">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-6 text-on-surface-variant">KAT-003</td>
+<td class="py-3 px-6 font-medium text-on-surface">Elektronika Dasar</td>
+<td class="py-3 px-6 text-on-surface-variant truncate max-w-xs">Komponen dan kit pengujian sirkuit elektrik standar.</td>
+<td class="py-3 px-6 text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs bg-secondary-container text-on-secondary-container">
+                                            42
+                                        </span>
+</td>
+<td class="py-3 px-6">
+<div class="flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" onclick="document.getElementById('deleteModal').classList.remove('hidden')" title="Hapus">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-4 border-t border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<div class="font-caption-xs text-caption-xs text-on-surface-variant">
+                            Halaman 1 dari 1
+                        </div>
+<div class="flex space-x-2">
+<button class="px-3 py-1 border border-outline-variant rounded text-on-surface-variant opacity-50 cursor-not-allowed font-label-md text-label-md">Sebelumnya</button>
+<button class="px-3 py-1 border border-outline-variant rounded text-on-surface-variant opacity-50 cursor-not-allowed font-label-md text-label-md">Selanjutnya</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal: Add/Edit Category -->
+<div class="fixed inset-0 z-50 hidden" id="addModal">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-on-surface/50 backdrop-blur-sm transition-opacity" onclick="document.getElementById('addModal').classList.add('hidden')"></div>
+<!-- Modal Content -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant overflow-hidden flex flex-col max-h-[921px]">
+<!-- Modal Header -->
+<div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<h2 class="font-title-sm text-title-sm text-on-surface">Tambah Kategori Baru</h2>
+<button class="text-on-surface-variant hover:text-on-surface" onclick="document.getElementById('addModal').classList.add('hidden')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<div class="p-6 overflow-y-auto">
+<form class="space-y-5">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5">Nama Kategori <span class="text-error">*</span></label>
+<input class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Masukkan nama kategori" type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5">Deskripsi <span class="text-on-surface-variant font-normal">(Opsional)</span></label>
+<textarea class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none" placeholder="Tuliskan deskripsi singkat kategori ini..." rows="3"></textarea>
+</div>
+</form>
+</div>
+<!-- Modal Footer -->
+<div class="px-6 py-4 border-t border-outline-variant bg-surface-container-low flex justify-end space-x-3">
+<button class="px-4 py-2 border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low rounded-md font-label-md text-label-md transition-colors" onclick="document.getElementById('addModal').classList.add('hidden')">
+                    Batal
+                </button>
+<button class="px-4 py-2 bg-primary hover:bg-primary-container text-on-primary rounded-md font-label-md text-label-md shadow-sm transition-colors">
+                    Simpan Kategori
+                </button>
+</div>
+</div>
+</div>
+<!-- Modal: Deletion Confirmation -->
+<div class="fixed inset-0 z-50 hidden" id="deleteModal">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-on-surface/50 backdrop-blur-sm transition-opacity" onclick="document.getElementById('deleteModal').classList.add('hidden')"></div>
+<!-- Modal Content -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant overflow-hidden">
+<div class="p-6 text-center">
+<div class="w-12 h-12 rounded-full bg-error-container text-error flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-2xl">warning</span>
+</div>
+<h3 class="font-title-sm text-title-sm text-on-surface mb-2">Hapus Kategori?</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                    Apakah Anda yakin ingin menghapus kategori ini? <br/>
+<span class="font-medium text-error">Tindakan ini tidak dapat dibatalkan.</span>
+</p>
+<div class="flex space-x-3 justify-center">
+<button class="flex-1 px-4 py-2 border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low rounded-md font-label-md text-label-md transition-colors" onclick="document.getElementById('deleteModal').classList.add('hidden')">
+                        Batal
+                    </button>
+<button class="flex-1 px-4 py-2 bg-error hover:bg-[#991b1b] text-on-error rounded-md font-label-md text-label-md shadow-sm transition-colors" onclick="document.getElementById('deleteModal').classList.add('hidden')">
+                        Hapus
+                    </button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

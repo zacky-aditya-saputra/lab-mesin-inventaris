@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LabCatalog - Form Peminjaman</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#0053db",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary-container": "#57657a",
+                        "secondary": "#515f74",
+                        "inverse-surface": "#2e3039",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "status-overdue-bg": "#E11D48",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f3fe",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "status-success-bg": "#D1FAE5",
+                        "on-tertiary-fixed": "#360f00",
+                        "status-success-text": "#065F46",
+                        "status-approved-bg": "#E0F2FE",
+                        "status-pending-text": "#92400E",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e7e7f3",
+                        "status-partial-bg": "#FFEDD5",
+                        "inverse-primary": "#b4c5ff",
+                        "status-rejected-bg": "#FFE4E6",
+                        "status-loan-text": "#3730A3",
+                        "on-surface": "#191b23",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "status-overdue-text": "#FFFFFF",
+                        "on-background": "#191b23",
+                        "on-tertiary-container": "#ffede6",
+                        "stock-available": "#065F46",
+                        "status-rejected-text": "#9F1239",
+                        "surface-variant": "#e1e2ed",
+                        "surface-bright": "#faf8ff",
+                        "tertiary-container": "#bc4800",
+                        "stock-none": "#64748B",
+                        "error": "#ba1a1a",
+                        "tertiary": "#943700",
+                        "on-surface-variant": "#434655",
+                        "surface-container-highest": "#e1e2ed",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "primary-fixed": "#dbe1ff",
+                        "background": "#faf8ff",
+                        "primary-container": "#2563eb",
+                        "stock-maintenance": "#1E293B",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-dim": "#d9d9e5",
+                        "status-approved-text": "#075985",
+                        "outline": "#737686",
+                        "secondary-fixed": "#d5e3fc",
+                        "stock-limited": "#92400E",
+                        "status-pending-bg": "#FEF3C7",
+                        "sidebar-dark": "#0F172A",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c3c6d7",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "status-partial-text": "#9A3412",
+                        "on-primary-container": "#eeefff",
+                        "secondary-container": "#d5e3fc",
+                        "surface": "#faf8ff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#ededf9",
+                        "status-loan-bg": "#E0E7FF",
+                        "primary": "#004ac6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-sm": "1rem",
+                        "container-max": "80rem",
+                        "margin-page": "1rem",
+                        "gutter-md": "1.5rem",
+                        "padding-card": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "badge-xs": ["Inter"],
+                        "caption-xs": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-lg": ["30px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "badge-xs": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "caption-xs": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-sm": ["18px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } /* Slate 50 equivalent */
+        .step-line {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm flex justify-between items-center h-16 px-gutter-md max-w-container-max mx-auto left-0 right-0">
+<div class="font-headline-sm text-headline-sm text-primary dark:text-primary-fixed-dim font-bold">
+            LabCatalog
+        </div>
+<div class="hidden md:flex space-x-6">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 active:opacity-80 transition-opacity font-body-md text-body-md" href="#">Katalog</a>
+<a class="text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary dark:border-primary-fixed-dim pb-1 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 active:opacity-80 transition-opacity font-body-md text-body-md" href="#">Form Peminjaman</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 active:opacity-80 transition-opacity font-body-md text-body-md" href="#">Panduan</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 active:opacity-80 transition-opacity font-body-md text-body-md" href="#">Kontak</a>
+</div>
+<div>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-on-primary-fixed-variant transition-colors">
+                Masuk
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-16 px-margin-page md:px-gutter-md max-w-[800px] mx-auto w-full">
+<!-- Page Header -->
+<div class="mb-8 text-center">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Formulir Peminjaman Alat</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Lengkapi data di bawah ini untuk mengajukan peminjaman inventaris laboratorium.</p>
+</div>
+<!-- Step Indicator -->
+<div class="mb-8 relative">
+<div class="absolute top-1/2 left-0 w-full h-1 bg-surface-variant -translate-y-1/2 z-0 rounded-full"></div>
+<div class="absolute top-1/2 left-0 w-1/3 h-1 bg-primary -translate-y-1/2 z-0 rounded-full step-line" id="progress-bar"></div>
+<div class="relative z-10 flex justify-between">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md shadow-sm border-2 border-primary">1</div>
+<span class="mt-2 font-label-md text-label-md text-primary">Identitas</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-surface text-on-surface-variant flex items-center justify-center font-label-md text-label-md shadow-sm border-2 border-surface-variant" id="step-2-indicator">2</div>
+<span class="mt-2 font-label-md text-label-md text-on-surface-variant" id="step-2-text">Pilih Alat</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-surface text-on-surface-variant flex items-center justify-center font-label-md text-label-md shadow-sm border-2 border-surface-variant" id="step-3-indicator">3</div>
+<span class="mt-2 font-label-md text-label-md text-on-surface-variant" id="step-3-text">Jadwal &amp; Keperluan</span>
+</div>
+</div>
+</div>
+<!-- Form Steps Container -->
+<form class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6 md:p-8" id="loan-form">
+<!-- Step 1: Identitas Peminjam -->
+<div class="step-content block" id="step-1">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-variant pb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">person</span>
+                    Data Peminjam
+                </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="nama">Nama Lengkap</label>
+<input class="w-full h-10 px-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" id="nama" placeholder="Masukkan nama lengkap" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="nohp">No. HP (WhatsApp)</label>
+<input class="w-full h-10 px-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" id="nohp" placeholder="08xxxxxxxxxx" type="tel"/>
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface" for="instansi">Instansi / Departemen</label>
+<input class="w-full h-10 px-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" id="instansi" placeholder="Contoh: Teknik Elektro" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-2 mb-6">
+<label class="font-label-md text-label-md text-on-surface">Unggah Kartu Tanda Mahasiswa (KTM)</label>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center bg-surface hover:bg-surface-container-low transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors mb-3">cloud_upload</span>
+<p class="font-body-md text-body-md text-on-surface text-center mb-1">
+<span class="font-semibold text-primary">Klik untuk mengunggah</span> atau seret file ke sini
+                        </p>
+<p class="font-caption-xs text-caption-xs text-on-surface-variant">JPG, PNG, PDF (Maks. 2MB)</p>
+<input accept=".jpg,.jpeg,.png,.pdf" class="hidden" type="file"/>
+</div>
+<!-- Example Validation Error -->
+<!-- <p class="font-caption-xs text-caption-xs text-error mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">error</span> Format file tidak valid atau melebihi 2MB.</p> -->
+</div>
+<div class="flex justify-end pt-4 border-t border-surface-variant">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-2.5 rounded-lg hover:bg-on-primary-fixed-variant transition-colors flex items-center gap-2" onclick="nextStep(2)" type="button">
+                        Selanjutnya
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Step 2: Pilih Alat -->
+<div class="step-content hidden" id="step-2">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-variant pb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">handyman</span>
+                    Pilih Alat
+                </h2>
+<div class="bg-surface border border-outline-variant rounded-lg overflow-hidden mb-4">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[500px]">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-medium">Nama Alat</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-medium w-32">Stok</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant font-medium w-40">Jumlah</th>
+<th class="py-3 px-4 w-16 text-center"></th>
+</tr>
+</thead>
+<tbody id="item-list">
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full h-10 pl-10 pr-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest" placeholder="Cari alat..." type="text" value="Multimeter Digital Fluke"/>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 bg-status-success-bg text-status-success-text border border-status-success-text/20 px-2 py-1 rounded-full font-badge-xs text-badge-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-status-success-text"></span>
+                                            12 Tersedia
+                                        </span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center border border-outline-variant rounded-lg overflow-hidden w-28 bg-surface-container-lowest">
+<button class="w-8 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<input class="w-12 h-9 text-center font-body-md text-body-md text-on-surface border-none focus:ring-0 p-0" max="12" min="1" type="number" value="1"/>
+<button class="w-8 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="text-error hover:bg-error-container p-1.5 rounded-md transition-colors" title="Hapus" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</td>
+</tr>
+<!-- Example error row -->
+<tr class="border-b border-surface-variant bg-error-container/20">
+<td class="py-3 px-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-error text-[18px]">search</span>
+<input class="w-full h-10 pl-10 pr-3 py-2 border border-error rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-error focus:border-error bg-surface-container-lowest" type="text" value="Oscilloscope Tektronix"/>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 bg-status-rejected-bg text-status-rejected-text border border-status-rejected-text/20 px-2 py-1 rounded-full font-badge-xs text-badge-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-status-rejected-text"></span>
+                                            2 Tersedia
+                                        </span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center border border-error rounded-lg overflow-hidden w-28 bg-surface-container-lowest">
+<button class="w-8 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<input class="w-12 h-9 text-center font-body-md text-body-md text-error font-medium border-none focus:ring-0 p-0" min="1" type="number" value="3"/>
+<button class="w-8 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<p class="font-caption-xs text-caption-xs text-error mt-1 absolute">Jumlah melebihi stok</p>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="text-error hover:bg-error-container p-1.5 rounded-md transition-colors" title="Hapus" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<button class="mb-8 font-label-md text-label-md text-primary hover:text-on-primary-fixed-variant flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    Tambah Alat
+                </button>
+<div class="flex justify-between pt-4 border-t border-surface-variant">
+<button class="bg-surface text-secondary border border-outline-variant font-label-md text-label-md px-4 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors flex items-center gap-2" onclick="prevStep(1)" type="button">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        Kembali
+                    </button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-2.5 rounded-lg hover:bg-on-primary-fixed-variant transition-colors flex items-center gap-2" onclick="nextStep(3)" type="button">
+                        Selanjutnya
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Step 3: Jadwal & Keperluan -->
+<div class="step-content hidden" id="step-3">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-variant pb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">calendar_month</span>
+                    Jadwal &amp; Keperluan
+                </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="tgl_mulai">Tanggal Peminjaman</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px] pointer-events-none">calendar_today</span>
+<input class="w-full h-10 pl-10 pr-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" id="tgl_mulai" type="date"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="tgl_kembali">Tanggal Pengembalian</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-error text-[18px] pointer-events-none">calendar_today</span>
+<input class="w-full h-10 pl-10 pr-3 py-2 border border-error rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-error focus:border-error transition-shadow" id="tgl_kembali" type="date"/>
+</div>
+<p class="font-caption-xs text-caption-xs text-error mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">error</span> Tanggal pengembalian tidak boleh sebelum tanggal peminjaman</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 mb-8">
+<label class="font-label-md text-label-md text-on-surface" for="keperluan">Tujuan Keperluan</label>
+<textarea class="w-full px-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-shadow resize-y" id="keperluan" placeholder="Jelaskan secara singkat tujuan peminjaman alat (contoh: Praktikum Sistem Digital, Proyek Akhir)" rows="4"></textarea>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg mb-8 border border-outline-variant/50">
+<h3 class="font-title-sm text-title-sm text-on-surface mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-status-pending-text text-[20px]">info</span>
+                        Pernyataan
+                    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                        Dengan menekan tombol Ajukan Peminjaman, saya menyatakan bahwa data yang diisi adalah benar, dan saya bersedia bertanggung jawab penuh atas alat yang dipinjam sesuai dengan syarat dan ketentuan laboratorium.
+                    </p>
+</div>
+<div class="flex justify-between pt-4 border-t border-surface-variant">
+<button class="bg-surface text-secondary border border-outline-variant font-label-md text-label-md px-4 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors flex items-center gap-2" onclick="prevStep(2)" type="button">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        Kembali
+                    </button>
+<button class="bg-primary text-on-primary font-title-sm text-title-sm px-6 py-2.5 rounded-lg hover:bg-on-primary-fixed-variant transition-colors shadow-md flex items-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[20px]">send</span>
+                        Ajukan Peminjaman
+                    </button>
+</div>
+</div>
+</form>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-auto bg-sidebar-dark dark:bg-black">
+<div class="flex flex-col md:flex-row justify-between items-center py-8 px-gutter-md max-w-container-max mx-auto">
+<div class="mb-4 md:mb-0">
+<span class="font-headline-sm text-headline-sm text-primary-fixed">LabCatalog</span>
+<p class="font-caption-xs text-caption-xs text-surface-variant opacity-70 mt-1">© 2024 University Laboratory Inventory System</p>
+</div>
+<div class="flex space-x-6">
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Kebijakan Privasi</a>
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Syarat &amp; Ketentuan</a>
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Bantuan</a>
+</div>
+</div>
+</footer>
+<script>
+        function updateUI(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            // Show current step
+            document.getElementById(`step-${step}`).classList.remove('hidden');
+            document.getElementById(`step-${step}`).classList.add('block');
+
+            // Update Progress Bar
+            const bar = document.getElementById('progress-bar');
+            if(step === 1) bar.style.width = '33.33%';
+            else if(step === 2) bar.style.width = '66.66%';
+            else if(step === 3) bar.style.width = '100%';
+
+            // Update Indicators
+            const updateInd = (num, active) => {
+                const ind = document.getElementById(`step-${num}-indicator`);
+                const txt = document.getElementById(`step-${num}-text`);
+                if(ind && txt) {
+                    if(active) {
+                        ind.className = "w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md shadow-sm border-2 border-primary";
+                        txt.className = "mt-2 font-label-md text-label-md text-primary";
+                    } else {
+                        ind.className = "w-8 h-8 rounded-full bg-surface text-on-surface-variant flex items-center justify-center font-label-md text-label-md shadow-sm border-2 border-surface-variant";
+                        txt.className = "mt-2 font-label-md text-label-md text-on-surface-variant";
+                    }
+                }
+            }
+
+            if(step >= 2) updateInd(2, true); else updateInd(2, false);
+            if(step >= 3) updateInd(3, true); else updateInd(3, false);
+            
+            // Scroll to top of form
+            document.getElementById('loan-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function nextStep(step) {
+            updateUI(step);
+        }
+
+        function prevStep(step) {
+            updateUI(step);
+        }
+    </script>
+</body></html>

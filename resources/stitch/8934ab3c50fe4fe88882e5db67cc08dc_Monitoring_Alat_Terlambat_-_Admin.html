@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lab Admin - Monitoring Overdue</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#e1e2ed",
+                      "inverse-surface": "#2e3039",
+                      "status-success-text": "#065F46",
+                      "sidebar-dark": "#0F172A",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-high": "#e7e7f3",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#bc4800",
+                      "tertiary": "#943700",
+                      "secondary": "#515f74",
+                      "status-rejected-text": "#9F1239",
+                      "status-approved-bg": "#E0F2FE",
+                      "stock-available": "#065F46",
+                      "on-primary-container": "#eeefff",
+                      "on-surface-variant": "#434655",
+                      "inverse-on-surface": "#f0f0fb",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "status-pending-bg": "#FEF3C7",
+                      "on-background": "#191b23",
+                      "status-overdue-bg": "#E11D48",
+                      "on-tertiary-container": "#ffede6",
+                      "on-primary-fixed": "#00174b",
+                      "secondary-container": "#d5e3fc",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "status-loan-bg": "#E0E7FF",
+                      "status-rejected-bg": "#FFE4E6",
+                      "stock-maintenance": "#1E293B",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "error": "#ba1a1a",
+                      "surface-container": "#ededf9",
+                      "inverse-primary": "#b4c5ff",
+                      "outline": "#737686",
+                      "stock-none": "#64748B",
+                      "background": "#faf8ff",
+                      "error-container": "#ffdad6",
+                      "on-error-container": "#93000a",
+                      "status-loan-text": "#3730A3",
+                      "secondary-fixed": "#d5e3fc",
+                      "primary": "#004ac6",
+                      "on-tertiary-fixed": "#360f00",
+                      "surface-bright": "#faf8ff",
+                      "on-secondary-container": "#57657a",
+                      "stock-limited": "#92400E",
+                      "status-success-bg": "#D1FAE5",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "status-approved-text": "#075985",
+                      "surface": "#faf8ff",
+                      "status-overdue-text": "#FFFFFF",
+                      "primary-fixed": "#dbe1ff",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "surface-dim": "#d9d9e5",
+                      "surface-container-low": "#f3f3fe",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "status-pending-text": "#92400E",
+                      "status-partial-text": "#9A3412",
+                      "surface-tint": "#0053db",
+                      "primary-container": "#2563eb",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-error": "#ffffff",
+                      "outline-variant": "#c3c6d7",
+                      "status-partial-bg": "#FFEDD5",
+                      "on-surface": "#191b23"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-page": "1rem",
+                      "container-max": "80rem",
+                      "gutter-sm": "1rem",
+                      "padding-card": "1.5rem",
+                      "gutter-md": "1.5rem"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "badge-xs": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "title-sm": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "caption-xs": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "badge-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "30px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-sm": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "caption-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+        .material-symbols-outlined.filled {
+          font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col antialiased text-on-surface">
+<!-- TopNavBar -->
+<nav class="bg-surface border-b border-outline-variant shadow-sm fixed top-0 w-full z-50">
+<div class="flex justify-between items-center h-16 px-gutter-md max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<a class="font-headline-sm text-headline-sm text-primary font-bold" href="#">LabCatalog</a>
+<div class="hidden md:flex gap-6 h-full items-center">
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 h-full flex items-center" href="#">Katalog</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 h-full flex items-center" href="#">Panduan</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200 h-full flex items-center" href="#">Kontak</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-DEFAULT font-label-md text-label-md hover:opacity-90 transition-opacity active:opacity-80">
+                    Masuk
+                </button>
+</div>
+</div>
+</nav>
+<div class="flex flex-1 pt-16 h-full">
+<!-- Sidebar -->
+<aside class="w-64 bg-sidebar-dark text-slate-300 hidden md:flex flex-col flex-shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto border-r border-slate-800">
+<div class="p-6">
+<p class="font-label-md text-label-md text-slate-500 uppercase tracking-wider mb-4">Administration</p>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-slate-300 hover:bg-slate-800 hover:text-white transition-colors group font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="dashboard">dashboard</span>
+                        Dashboard
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-slate-300 hover:bg-slate-800 hover:text-white transition-colors group font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="inventory_2">inventory_2</span>
+                        Inventory
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-slate-300 hover:bg-slate-800 hover:text-white transition-colors group font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="assignment">assignment</span>
+                        Loans &amp; Tickets
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT bg-slate-800 text-white transition-colors group font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined text-white transition-colors" data-icon="warning">warning</span>
+                        Monitoring Overdue
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-slate-300 hover:bg-slate-800 hover:text-white transition-colors group font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="group">group</span>
+                        Users
+                    </a>
+</nav>
+</div>
+<div class="mt-auto p-6 border-t border-slate-800">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-slate-300 hover:bg-slate-800 hover:text-white transition-colors group font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="settings">settings</span>
+                    Settings
+                </a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-margin-page md:p-gutter-md overflow-x-hidden w-full max-w-container-max mx-auto h-[calc(100vh-4rem)] overflow-y-auto">
+<!-- Header Section -->
+<div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Alat Terlambat (Overdue)</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Monitor and manage equipment loans that have passed their due date.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface border border-outline-variant text-on-surface px-4 py-2 rounded-DEFAULT font-label-md text-label-md hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="filter_list">filter_list</span>
+                        Filter
+                    </button>
+<button class="bg-surface border border-outline-variant text-on-surface px-4 py-2 rounded-DEFAULT font-label-md text-label-md hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+                        Export
+                    </button>
+</div>
+</div>
+<!-- Stats Overview -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="bg-surface-container-lowest p-padding-card rounded-lg border border-outline-variant shadow-sm flex flex-col gap-2 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10 text-status-overdue-bg">
+<span class="material-symbols-outlined text-[64px]" data-icon="warning">warning</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Total Overdue</span>
+<span class="font-headline-lg text-headline-lg text-status-overdue-bg font-bold">12</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-error" data-icon="trending_up">trending_up</span>
+                        +2 from yesterday
+                    </span>
+</div>
+<div class="bg-surface-container-lowest p-padding-card rounded-lg border border-outline-variant shadow-sm flex flex-col gap-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Critical (&gt;7 Days)</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold">4</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">Requires immediate action</span>
+</div>
+<div class="bg-surface-container-lowest p-padding-card rounded-lg border border-outline-variant shadow-sm flex flex-col gap-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Pending Return Review</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold">3</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">Items marked returned, awaiting check</span>
+</div>
+</div>
+<!-- Data Table Section -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<!-- Table Controls -->
+<div class="p-4 border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<div class="relative w-full max-w-sm">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow" placeholder="Search by ticket or name..." type="text"/>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse whitespace-nowrap min-w-max">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant">
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant font-semibold">No. Tiket</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant font-semibold">Nama Peminjam</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant font-semibold">No. HP</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant font-semibold">Nama Alat</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant font-semibold">Tanggal Jatuh Tempo</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant font-semibold">Terlambat</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant font-semibold text-right">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-md text-body-md text-on-surface">
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-6 py-4 font-medium text-primary">TKT-2409-082</td>
+<td class="px-6 py-4">Budi Santoso</td>
+<td class="px-6 py-4">
+<a class="text-status-success-text hover:underline flex items-center gap-1" href="#" onclick="event.stopPropagation()">
+<span class="material-symbols-outlined text-[16px]" data-icon="forum">forum</span>
+                                        0812-3456-7890
+                                    </a>
+</td>
+<td class="px-6 py-4">Oscilloscope Tektronix TBS1052B</td>
+<td class="px-6 py-4">12 Sep 2024</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 bg-status-overdue-bg text-status-overdue-text px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs font-semibold shadow-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="error">error</span>
+                                        5 Hari
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="View Details" class="text-secondary hover:text-primary transition-colors p-1" onclick="event.stopPropagation()">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-6 py-4 font-medium text-primary">TKT-2409-075</td>
+<td class="px-6 py-4">Siti Aminah</td>
+<td class="px-6 py-4">
+<a class="text-status-success-text hover:underline flex items-center gap-1" href="#" onclick="event.stopPropagation()">
+<span class="material-symbols-outlined text-[16px]" data-icon="forum">forum</span>
+                                        0856-1234-5678
+                                    </a>
+</td>
+<td class="px-6 py-4">Digital Multimeter Fluke 115</td>
+<td class="px-6 py-4">10 Sep 2024</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 bg-status-overdue-bg text-status-overdue-text px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs font-semibold shadow-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="error">error</span>
+                                        7 Hari
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="View Details" class="text-secondary hover:text-primary transition-colors p-1" onclick="event.stopPropagation()">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-6 py-4 font-medium text-primary">TKT-2409-091</td>
+<td class="px-6 py-4">Ahmad Reza</td>
+<td class="px-6 py-4">
+<a class="text-status-success-text hover:underline flex items-center gap-1" href="#" onclick="event.stopPropagation()">
+<span class="material-symbols-outlined text-[16px]" data-icon="forum">forum</span>
+                                        0811-9876-5432
+                                    </a>
+</td>
+<td class="px-6 py-4">Function Generator Rigol DG1022Z</td>
+<td class="px-6 py-4">15 Sep 2024</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 bg-status-partial-bg text-status-partial-text border border-status-partial-text/20 px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs font-semibold">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                                        2 Hari
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="View Details" class="text-secondary hover:text-primary transition-colors p-1" onclick="event.stopPropagation()">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group bg-surface-dim/30">
+<td class="px-6 py-4 font-medium text-primary">TKT-2408-112</td>
+<td class="px-6 py-4">Diana Putri</td>
+<td class="px-6 py-4">
+<a class="text-status-success-text hover:underline flex items-center gap-1" href="#" onclick="event.stopPropagation()">
+<span class="material-symbols-outlined text-[16px]" data-icon="forum">forum</span>
+                                        0822-5555-1111
+                                    </a>
+</td>
+<td class="px-6 py-4">Mikroskop Binokuler Olympus CX23</td>
+<td class="px-6 py-4">25 Aug 2024</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 bg-status-overdue-bg text-status-overdue-text px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs font-semibold shadow-sm ring-2 ring-status-overdue-bg/50">
+<span class="material-symbols-outlined text-[14px]" data-icon="error">error</span>
+                                        23 Hari
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button aria-label="View Details" class="text-secondary hover:text-primary transition-colors p-1" onclick="event.stopPropagation()">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-4 border-t border-outline-variant bg-surface-container-lowest flex items-center justify-between">
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">Showing 1 to 4 of 12 entries</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-surface border border-outline-variant rounded-DEFAULT text-on-surface-variant font-label-md text-label-md hover:bg-surface-container disabled:opacity-50 disabled:cursor-not-allowed" disabled="">Prev</button>
+<button class="px-3 py-1 bg-primary text-on-primary rounded-DEFAULT font-label-md text-label-md">1</button>
+<button class="px-3 py-1 bg-surface border border-outline-variant rounded-DEFAULT text-on-surface font-label-md text-label-md hover:bg-surface-container">2</button>
+<button class="px-3 py-1 bg-surface border border-outline-variant rounded-DEFAULT text-on-surface font-label-md text-label-md hover:bg-surface-container">3</button>
+<button class="px-3 py-1 bg-surface border border-outline-variant rounded-DEFAULT text-on-surface font-label-md text-label-md hover:bg-surface-container">Next</button>
+</div>
+</div>
+</div>
+<!-- Empty State Example (Hidden by default, shown for reference) -->
+<div class="hidden bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm p-12 flex flex-col items-center justify-center text-center mt-8">
+<div class="w-16 h-16 bg-status-success-bg rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[32px] text-status-success-text" data-icon="task_alt">task_alt</span>
+</div>
+<h3 class="font-title-sm text-title-sm text-on-surface mb-2">Semua Aman!</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Saat ini tidak ada alat yang terlambat dikembalikan. Semua peminjaman masih dalam batas waktu yang ditentukan.</p>
+</div>
+</main>
+</div>
+</body></html>

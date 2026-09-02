@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detail Spesifikasi Alat - Modal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "status-rejected-text": "#9F1239",
+                      "status-approved-bg": "#E0F2FE",
+                      "on-primary-container": "#eeefff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "outline-variant": "#c3c6d7",
+                      "stock-limited": "#92400E",
+                      "sidebar-dark": "#0F172A",
+                      "secondary-fixed": "#d5e3fc",
+                      "secondary": "#515f74",
+                      "status-overdue-bg": "#E11D48",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#2563eb",
+                      "on-background": "#191b23",
+                      "surface-container-high": "#e7e7f3",
+                      "on-secondary-container": "#57657a",
+                      "surface-container-lowest": "#ffffff",
+                      "status-overdue-text": "#FFFFFF",
+                      "status-approved-text": "#075985",
+                      "inverse-surface": "#2e3039",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-primary-fixed": "#00174b",
+                      "inverse-primary": "#b4c5ff",
+                      "error": "#ba1a1a",
+                      "surface": "#faf8ff",
+                      "surface-dim": "#d9d9e5",
+                      "surface-tint": "#0053db",
+                      "status-rejected-bg": "#FFE4E6",
+                      "tertiary-container": "#bc4800",
+                      "stock-maintenance": "#1E293B",
+                      "status-pending-text": "#92400E",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "status-loan-bg": "#E0E7FF",
+                      "tertiary": "#943700",
+                      "status-success-bg": "#D1FAE5",
+                      "surface-bright": "#faf8ff",
+                      "primary-fixed": "#dbe1ff",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "on-surface-variant": "#434655",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "surface-variant": "#e1e2ed",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f0f0fb",
+                      "status-loan-text": "#3730A3",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-surface": "#191b23",
+                      "status-partial-bg": "#FFEDD5",
+                      "stock-available": "#065F46",
+                      "surface-container-highest": "#e1e2ed",
+                      "background": "#faf8ff",
+                      "on-tertiary-container": "#ffede6",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "surface-container": "#ededf9",
+                      "error-container": "#ffdad6",
+                      "stock-none": "#64748B",
+                      "surface-container-low": "#f3f3fe",
+                      "secondary-container": "#d5e3fc",
+                      "outline": "#737686",
+                      "primary": "#004ac6",
+                      "status-success-text": "#065F46",
+                      "status-partial-text": "#9A3412",
+                      "on-error": "#ffffff",
+                      "status-pending-bg": "#FEF3C7",
+                      "on-tertiary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "80rem",
+                      "padding-card": "1.5rem",
+                      "gutter-md": "1.5rem",
+                      "margin-page": "1rem",
+                      "gutter-sm": "1rem"
+              },
+              "fontFamily": {
+                      "badge-xs": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "caption-xs": [
+                              "Inter"
+                      ],
+                      "title-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "badge-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "caption-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-sm": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "30px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased h-screen overflow-hidden">
+<!-- Background Layer (Catalog View Placeholder) -->
+<div aria-hidden="true" class="absolute inset-0 z-0 select-none overflow-hidden">
+<img alt="Background Catalog" class="w-full h-full object-cover blur-sm opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj9SEoSbTTkCHxliayyys7dK5tJPZ6MV-Bw-lVFZRdsmS8lLWyT4l4xWWAdVqLd-dBC6DnszLnRbvR97iy2MIHz-QA_dOjMGUXVSOLyl0oIBkkldObpsrIuYJ8ibzzilyuZX4nqxFHb8rQJq7uhqD4W0IAeOFV9N0mK534fkoI6Hs8U7HwXrf8hQeimdVCEhbRvq13J8-howBjhqY4S3Kq3ATeQ6hSow4ze1GDWgsw978J2UtGFHsu"/>
+</div>
+<!-- Modal Overlay -->
+<div aria-labelledby="modal-title" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-sidebar-dark/40 backdrop-blur-sm" role="dialog">
+<!-- Modal Container -->
+<div class="bg-surface-container-lowest w-full max-w-4xl rounded-xl shadow-xl flex flex-col max-h-[921px] overflow-hidden border border-outline-variant/30">
+<!-- Modal Header -->
+<div class="flex items-center justify-between px-6 py-4 border-b border-surface-variant bg-surface-container-low">
+<h2 class="font-title-sm text-title-sm text-on-surface m-0" id="modal-title">Detail Spesifikasi Alat</h2>
+<button aria-label="Close modal" class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded-full p-1" type="button">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Modal Content (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-6 md:p-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+<!-- Left Column: Image -->
+<div class="flex flex-col gap-4">
+<div class="aspect-square rounded-lg border border-surface-variant bg-surface-container-low flex items-center justify-center overflow-hidden p-4 relative group">
+<img alt="Gambar Micrometer Sekrup" class="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105" data-alt="A high-quality, evenly lit studio photograph of a mechanical engineering micrometer on a clean white background. The image is hyper-realistic, focusing on the metallic texture and precise measurement markings. Corporate utilitarian style, sharp focus, technical accuracy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcDK6ThiUvRltyyHfQ-HIOatO81mvHtfHH6UOIALvEfWR2DOBXJFn9ay_viQDcuINZzdBsLVmuPlKbZB9Y30sv2Hb0pIXmIbpYL20KbgzWzGkk1Z_XL390vkUOCDRvM09Bire7KAwpTP-ypNtd-wqRtO-qUqVKvUnbeqzpqXRHfyZ1hNTlhjK5IPFYO7PvsVOp08A-vZlRFLYIwzcmPvLJn4r8v3yt3GWvn-HUaD7vhf6G_2ARiAwB"/>
+</div>
+</div>
+<!-- Right Column: Details & Actions -->
+<div class="flex flex-col">
+<!-- Header Info -->
+<div class="mb-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-surface-container px-2 py-1 rounded font-badge-xs text-badge-xs text-secondary uppercase tracking-wider border border-outline-variant/50">M-001</span>
+<span class="bg-surface-container px-2 py-1 rounded font-badge-xs text-badge-xs text-secondary uppercase tracking-wider border border-outline-variant/50">Alat Ukur</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface mb-2">Micrometer Sekrup Digital</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Alat ukur presisi untuk mengukur ketebalan atau diameter luar benda dengan tingkat ketelitian tinggi. Digunakan dalam praktikum metrologi industri.</p>
+</div>
+<!-- Technical Specs -->
+<div class="mb-8">
+<h3 class="font-label-md text-label-md text-on-surface mb-3 border-b border-surface-variant pb-2">Spesifikasi Teknis</h3>
+<dl class="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 font-body-md text-body-md">
+<div class="sm:col-span-1">
+<dt class="text-on-surface-variant">Rentang Ukur</dt>
+<dd class="mt-1 text-on-surface font-medium">0 - 25 mm</dd>
+</div>
+<div class="sm:col-span-1">
+<dt class="text-on-surface-variant">Ketelitian</dt>
+<dd class="mt-1 text-on-surface font-medium">0.001 mm</dd>
+</div>
+<div class="sm:col-span-1">
+<dt class="text-on-surface-variant">Material</dt>
+<dd class="mt-1 text-on-surface font-medium">Baja Karbon (Carbide Tipped)</dd>
+</div>
+<div class="sm:col-span-1">
+<dt class="text-on-surface-variant">Dimensi PxLxT</dt>
+<dd class="mt-1 text-on-surface font-medium">160 x 60 x 25 mm</dd>
+</div>
+</dl>
+</div>
+<!-- Availability Metrics -->
+<div class="bg-surface-container-low rounded-lg border border-surface-variant p-4 mb-8">
+<div class="flex flex-col sm:flex-row gap-4 justify-between">
+<div class="flex-1">
+<span class="block font-caption-xs text-caption-xs text-on-surface-variant mb-1">Stok Fisik Total</span>
+<span class="font-title-sm text-title-sm text-on-surface">15 Unit</span>
+</div>
+<div class="w-px bg-surface-variant hidden sm:block"></div>
+<div class="flex-1">
+<span class="block font-caption-xs text-caption-xs text-on-surface-variant mb-1">Tersedia untuk Diajukan</span>
+<div class="flex items-center gap-2">
+<span class="font-title-sm text-title-sm text-status-success-text">12 Unit</span>
+<span class="inline-flex items-center bg-status-success-bg text-status-success-text px-2 py-0.5 rounded-full font-badge-xs text-badge-xs border border-status-success-text/20">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="check_circle">check_circle</span>
+                                            Tersedia
+                                        </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="mt-auto pt-4 border-t border-surface-variant flex justify-end gap-3">
+<button class="px-6 py-2.5 rounded font-label-md text-label-md text-secondary bg-surface-container hover:bg-surface-container-highest transition-colors border border-outline-variant focus:outline-none focus:ring-2 focus:ring-secondary/50" type="button">
+                                Batal
+                            </button>
+<button class="px-6 py-2.5 rounded font-label-md text-label-md text-on-primary bg-primary hover:bg-primary/90 transition-colors shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-container-lowest flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="add_shopping_cart">add_shopping_cart</span>
+                                Ajukan Peminjaman
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>
