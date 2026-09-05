@@ -68,9 +68,9 @@
             </a>
 
             <!-- Tiket Masuk -->
-            <a href="{{ route('loans.index') }}" 
-               class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->routeIs('loans.index', 'loans.review') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
-                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('loans.index', 'loans.review') ? 'opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('loans.index', 'loans.review') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>confirmation_number</span>
+            <a href="{{ route('admin.loans.index') }}" 
+               class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? 'opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>confirmation_number</span>
                 <span class="font-label-md text-label-md">Tiket Masuk</span>
                 @if(isset($pendingCount) && $pendingCount > 0)
                     <span class="ml-auto bg-error text-on-error font-badge-xs text-badge-xs py-0.5 px-2 rounded-full">{{ $pendingCount }}</span>
@@ -78,14 +78,14 @@
             </a>
 
             <!-- Monitoring Overdue -->
-            <a href="{{ route('loans.index', ['status' => 'OVERDUE']) }}" 
+            <a href="{{ route('admin.loans.index', ['status' => 'OVERDUE']) }}" 
                class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->fullUrlIs('*status=OVERDUE*') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
                 <span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">warning</span>
                 <span class="font-label-md text-label-md">Monitoring Overdue</span>
             </a>
 
             <!-- Laporan & Riwayat -->
-            <a href="{{ route('loans.index', ['view' => 'reports']) }}" 
+            <a href="{{ route('admin.loans.index', ['view' => 'reports']) }}" 
                class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->fullUrlIs('*view=reports*') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
                 <span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">history</span>
                 <span class="font-label-md text-label-md">Laporan &amp; Riwayat</span>

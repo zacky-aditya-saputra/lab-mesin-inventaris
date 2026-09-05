@@ -7,9 +7,9 @@
     filterByTab(status) {
         this.selectedTab = status;
         if (status === 'all') {
-            window.location.href = '{{ route('loans.index') }}';
+            window.location.href = '{{ route('admin.loans.index') }}';
         } else {
-            window.location.href = '{{ route('loans.index') }}?status=' + status;
+            window.location.href = '{{ route('admin.loans.index') }}?status=' + status;
         }
     }
 }" class="space-y-6">
@@ -20,7 +20,7 @@
             <p class="font-body-md text-body-md text-on-surface-variant">Kelola verifikasi permohonan, serah terima alat, dan pengembalian.</p>
         </div>
         <div class="flex gap-2">
-            <a href="{{ route('loans.index', ['status' => 'OVERDUE']) }}" 
+            <a href="{{ route('admin.loans.index', ['status' => 'OVERDUE']) }}" 
                class="px-4 py-2 bg-error-container text-error hover:bg-error hover:text-white font-label-md text-label-md rounded-lg transition-colors flex items-center gap-1.5 shadow-sm">
                 <span class="material-symbols-outlined text-sm">warning</span>
                 Monitoring Overdue
@@ -158,7 +158,7 @@
                             </td>
                             <!-- Actions -->
                             <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <a href="{{ route('loans.review', $loan) }}" 
+                                <a href="{{ route('admin.loans.review', $loan) }}" 
                                    class="inline-flex items-center gap-1 px-3.5 py-1.5 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-label-md text-label-md transition-colors shadow-sm">
                                     <span class="material-symbols-outlined text-sm">tune</span>
                                     Atur

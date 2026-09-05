@@ -4,7 +4,7 @@
 <div class="max-w-5xl mx-auto space-y-6">
     <!-- Breadcrumb -->
     <div class="flex items-center justify-between">
-        <a href="{{ route('loans.index') }}" class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
+        <a href="{{ route('admin.loans.index') }}" class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
             <span class="material-symbols-outlined text-lg">arrow_back</span>
             Kembali ke Daftar Tiket
         </a>
@@ -119,7 +119,7 @@
 
         <!-- Form for PENDING status (Partial Approval / Full Approval / Reject) -->
         @if ($loan->status === 'PENDING')
-            <form action="{{ route('loans.update-status', $loan) }}" method="POST" class="space-y-6">
+            <form action="{{ route('admin.loans.update-status', $loan) }}" method="POST" class="space-y-6">
                 @csrf
                 @method('PATCH')
 
@@ -199,7 +199,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('loans.update-status', $loan) }}" method="POST">
+            <form action="{{ route('admin.loans.update-status', $loan) }}" method="POST">
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="action" value="handover">
@@ -216,7 +216,7 @@
 
         <!-- Form for ON_LOAN / OVERDUE status (Confirm Return with condition Baik/Rusak/Hilang) -->
         @elseif (in_array($loan->status, ['ON_LOAN', 'OVERDUE']))
-            <form action="{{ route('loans.return', $loan) }}" method="POST" class="space-y-6">
+            <form action="{{ route('admin.loans.return', $loan) }}" method="POST" class="space-y-6">
                 @csrf
 
                 <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant">

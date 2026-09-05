@@ -5,7 +5,7 @@
     <!-- Metric Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <!-- Card 1: Tiket Menunggu Verifikasi -->
-        <a href="{{ route('loans.index', ['status' => 'PENDING']) }}" 
+        <a href="{{ route('admin.loans.index', ['status' => 'PENDING']) }}" 
            class="bg-surface-container-lowest rounded-xl p-padding-card shadow-sm border border-outline-variant flex flex-col justify-between hover:shadow-md transition-shadow group">
             <div class="flex justify-between items-start mb-4">
                 <div>
@@ -23,7 +23,7 @@
         </a>
 
         <!-- Card 2: Tiket Terlambat (Overdue) -->
-        <a href="{{ route('loans.index', ['status' => 'OVERDUE']) }}" 
+        <a href="{{ route('admin.loans.index', ['status' => 'OVERDUE']) }}" 
            class="bg-surface-container-lowest rounded-xl p-padding-card shadow-sm border border-outline-variant flex flex-col justify-between hover:shadow-md transition-shadow group">
             <div class="flex justify-between items-start mb-4">
                 <div>
@@ -41,7 +41,7 @@
         </a>
 
         <!-- Card 3: Alat Sedang Dipinjam -->
-        <a href="{{ route('loans.index', ['status' => 'ON_LOAN']) }}" 
+        <a href="{{ route('admin.loans.index', ['status' => 'ON_LOAN']) }}" 
            class="bg-surface-container-lowest rounded-xl p-padding-card shadow-sm border border-outline-variant flex flex-col justify-between hover:shadow-md transition-shadow group">
             <div class="flex justify-between items-start mb-4">
                 <div>
@@ -64,7 +64,7 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <p class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary transition-colors">Total Alat Lab</p>
-                    <h2 class="font-headline-lg text-headline-lg text-on-surface mt-1">{{ $totalToolsCount ?? 0 }}</h2>
+                    <h2 class="font-headline-lg text-headline-lg text-on-surface mt-1">{{ $totalTools ?? 0 }}</h2>
                 </div>
                 <div class="w-10 h-10 rounded-lg bg-status-success-bg text-status-success-text flex items-center justify-center">
                     <span class="material-symbols-outlined">inventory_2</span>
@@ -72,7 +72,7 @@
             </div>
             <div class="flex items-center space-x-1 text-status-success-text font-caption-xs text-caption-xs">
                 <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                <span>{{ $totalCategoriesCount ?? 0 }} Kategori Terdaftar</span>
+                <span>{{ $totalCategories ?? 0 }} Kategori • {{ $totalStock ?? 0 }} Unit Fisik</span>
             </div>
         </a>
     </div>
@@ -84,7 +84,7 @@
             <p class="font-body-md text-body-md text-on-primary-container opacity-90">Verifikasi antrean tiket pengajuan mahasiswa atau daftarkan unit alat laboratorium baru.</p>
         </div>
         <div class="flex flex-wrap gap-3">
-            <a href="{{ route('loans.index') }}" class="px-4 py-2 bg-white text-primary font-label-md text-label-md font-semibold rounded-lg hover:bg-slate-100 transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('admin.loans.index') }}" class="px-4 py-2 bg-white text-primary font-label-md text-label-md font-semibold rounded-lg hover:bg-slate-100 transition-colors shadow-sm flex items-center gap-2">
                 <span class="material-symbols-outlined text-sm">confirmation_number</span>
                 Lihat Antrean Tiket
             </a>
@@ -102,7 +102,7 @@
                 <h3 class="font-title-sm text-title-sm text-on-surface">Pengajuan Tiket Terbaru</h3>
                 <p class="font-caption-xs text-caption-xs text-on-surface-variant">Daftar permohonan peminjaman alat terkini dari mahasiswa.</p>
             </div>
-            <a href="{{ route('loans.index') }}" class="text-primary hover:underline font-label-md text-label-md flex items-center gap-1">
+            <a href="{{ route('admin.loans.index') }}" class="text-primary hover:underline font-label-md text-label-md flex items-center gap-1">
                 Lihat Semua Tiket
                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </a>
@@ -160,7 +160,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a href="{{ route('loans.review', $loan) }}" 
+                                <a href="{{ route('admin.loans.review', $loan) }}" 
                                    class="inline-flex items-center px-3 py-1.5 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-label-md text-label-md transition-colors shadow-sm">
                                     Atur
                                 </a>

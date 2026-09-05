@@ -9,7 +9,7 @@
             <p class="font-body-md text-body-md text-on-surface-variant">Pantau dan kelola peminjaman alat laboratorium yang telah melewati batas tanggal jatuh tempo.</p>
         </div>
         <div class="flex gap-3">
-            <a href="{{ route('loans.index') }}" 
+            <a href="{{ route('admin.loans.index') }}" 
                class="bg-surface-container-lowest border border-outline-variant text-on-surface px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors flex items-center gap-2">
                 <span class="material-symbols-outlined text-base">arrow_back</span>
                 Kembali ke Antrean
@@ -108,7 +108,7 @@
                                 </span>
                             </td>
                             <td class="py-4 px-6 text-right">
-                                <a href="{{ route('loans.review', $loan) }}" 
+                                <a href="{{ route('admin.loans.review', $loan) }}" 
                                    class="inline-flex items-center gap-1 px-3.5 py-1.5 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-label-md text-label-md transition-colors shadow-sm">
                                     Proses Pengembalian
                                 </a>

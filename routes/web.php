@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ToolController;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
@@ -12,10 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn (): RedirectResponse => redirect()->route('catalog.index'));
 
-Route::get('/katalog', fn (): string => 'Placeholder: halaman e-catalog publik.')
+Route::get('/katalog', [CatalogController::class, 'index'])
     ->name('catalog.index');
 
-Route::get('/katalog/{slug}', fn (string $slug): string => "Placeholder: detail spesifikasi alat ({$slug}).")
+Route::get('/katalog/{slug}', [CatalogController::class, 'show'])
     ->name('catalog.show');
 
 /*
@@ -62,47 +66,15 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function (): void {
-        Route::get('/dashboard', fn (): string => 'Placeholder: admin dashboard.')
+        Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
-        Route::prefix('categories')->name('categories.')->group(function (): void {
-            Route::get('/', fn (): string => 'Placeholder: daftar kategori alat.')
-                ->name('index');
+        Route::resource('categories', CategoryController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
-            Route::post('/', fn (): string => 'Placeholder: simpan kategori alat.')
-                ->name('store');
+        Route::resource('tools', ToolController::class)
+            ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
-            Route::put('/{category}', fn (string $category): string => "Placeholder: perbarui kategori ({$category}).")
-                ->name('update');
-
-            Route::delete('/{category}', fn (string $category): string => "Placeholder: hapus kategori ({$category}).")
-                ->name('destroy');
-        });
-
-        Route::prefix('tools')->name('tools.')->group(function (): void {
-            Route::get('/', fn (): string => 'Placeholder: daftar alat.')
-                ->name('index');
-
-            Route::get('/create', fn (): string => 'Placeholder: form tambah alat.')
-                ->name('create');
-
-            Route::post('/', fn (): string => 'Placeholder: simpan alat.')
-                ->name('store');
-
-            Route::get('/{tool}/edit', fn (string $tool): string => "Placeholder: form ubah alat ({$tool}).")
-                ->name('edit');
-
-            Route::put('/{tool}', fn (string $tool): string => "Placeholder: perbarui alat ({$tool}).")
-                ->name('update');
-
-            Route::delete('/{tool}', fn (string $tool): string => "Placeholder: hapus alat ({$tool}).")
-                ->name('destroy');
-        });
-    });
-
-Route::middleware(['auth', 'role:admin'])
-    ->prefix('admin')
-    ->group(function (): void {
         Route::get('/loans', fn (): string => 'Placeholder: antrean tiket peminjaman.')
             ->name('loans.index');
 
