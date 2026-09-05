@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Riwayat Pengajuan Saya - LabCatalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#2e3039",
+                      "surface-container": "#ededf9",
+                      "on-background": "#191b23",
+                      "secondary-container": "#d5e3fc",
+                      "surface-container-highest": "#e1e2ed",
+                      "primary-fixed": "#dbe1ff",
+                      "status-partial-text": "#9A3412",
+                      "on-primary-container": "#eeefff",
+                      "on-tertiary-container": "#ffede6",
+                      "inverse-primary": "#b4c5ff",
+                      "on-error-container": "#93000a",
+                      "status-pending-bg": "#FEF3C7",
+                      "inverse-on-surface": "#f0f0fb",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#e1e2ed",
+                      "surface-container-low": "#f3f3fe",
+                      "on-error": "#ffffff",
+                      "stock-available": "#065F46",
+                      "background": "#faf8ff",
+                      "on-surface": "#191b23",
+                      "stock-maintenance": "#1E293B",
+                      "status-approved-text": "#075985",
+                      "primary-container": "#2563eb",
+                      "surface-bright": "#faf8ff",
+                      "sidebar-dark": "#0F172A",
+                      "stock-none": "#64748B",
+                      "on-tertiary": "#ffffff",
+                      "primary": "#004ac6",
+                      "status-rejected-text": "#9F1239",
+                      "on-surface-variant": "#434655",
+                      "surface": "#faf8ff",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed": "#d5e3fc",
+                      "secondary": "#515f74",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "status-overdue-text": "#FFFFFF",
+                      "status-loan-text": "#3730A3",
+                      "surface-tint": "#0053db",
+                      "tertiary-container": "#bc4800",
+                      "tertiary-fixed": "#ffdbcd",
+                      "status-pending-text": "#92400E",
+                      "status-partial-bg": "#FFEDD5",
+                      "status-success-text": "#065F46",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-secondary-container": "#57657a",
+                      "surface-dim": "#d9d9e5",
+                      "status-approved-bg": "#E0F2FE",
+                      "status-loan-bg": "#E0E7FF",
+                      "outline-variant": "#c3c6d7",
+                      "status-success-bg": "#D1FAE5",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "status-rejected-bg": "#FFE4E6",
+                      "outline": "#737686",
+                      "tertiary": "#943700",
+                      "status-overdue-bg": "#E11D48",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "stock-limited": "#92400E",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "surface-container-high": "#e7e7f3",
+                      "on-primary-fixed": "#00174b",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb596"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-page": "1rem",
+                      "gutter-md": "1.5rem",
+                      "gutter-sm": "1rem",
+                      "padding-card": "1.5rem",
+                      "container-max": "80rem"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "caption-xs": [
+                              "Inter"
+                      ],
+                      "title-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "badge-xs": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "caption-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-sm": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "30px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "badge-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .expandable-row {
+            transition: all 0.3s ease;
+        }
+        .expanded-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .expanded-content.open {
+            max-height: 500px; /* Arbitrary large max-height for transition */
+        }
+        .rotate-icon {
+            transition: transform 0.3s ease;
+        }
+        .rotate-icon.up {
+            transform: rotate(180deg);
+        }
+      </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-surface dark:bg-inverse-surface fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline shadow-sm">
+<div class="flex justify-between items-center h-16 px-gutter-md max-w-container-max mx-auto">
+<!-- Brand -->
+<a class="font-headline-sm text-headline-sm text-primary dark:text-primary-fixed-dim font-bold tracking-tight" href="#">
+                LabCatalog
+            </a>
+<!-- Navigation Links (Desktop) -->
+<div class="hidden md:flex space-x-8 items-center">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 active:opacity-80 transition-opacity font-label-md text-label-md" href="#">Katalog</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 active:opacity-80 transition-opacity font-label-md text-label-md" href="#">Panduan</a>
+<a class="text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary dark:border-primary-fixed-dim pb-1 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 active:opacity-80 transition-opacity font-label-md text-label-md" href="#">Riwayat</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 active:opacity-80 transition-opacity font-label-md text-label-md" href="#">Kontak</a>
+</div>
+<!-- Trailing Action -->
+<div class="flex items-center space-x-4">
+<div class="hidden md:block">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="search">search</span>
+</div>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded shadow-sm hover:bg-surface-tint transition-colors">
+                    Profil
+                </button>
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow pt-24 pb-12 px-gutter-md max-w-container-max mx-auto w-full flex flex-col gap-6">
+<!-- Header -->
+<header class="mb-2">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Riwayat Pengajuan Saya</h1>
+<p class="text-on-surface-variant font-body-md text-body-md max-w-2xl">Pantau status pengajuan peminjaman alat laboratorium Anda. Klik pada baris tiket untuk melihat rincian alat dan catatan dari admin.</p>
+</header>
+<!-- Stats/Filters Row (Optional for Utility) -->
+<div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center bg-surface-container-lowest p-4 rounded-lg border border-outline-variant shadow-sm">
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-status-loan-text"></span>
+<span class="font-label-md text-label-md text-on-surface">2 Aktif</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-status-pending-text"></span>
+<span class="font-label-md text-label-md text-on-surface">1 Menunggu</span>
+</div>
+</div>
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm" data-icon="search">search</span>
+<input class="w-full pl-9 pr-3 py-2 bg-surface rounded border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md transition-colors" placeholder="Cari tiket..." type="text"/>
+</div>
+</div>
+<!-- Table Container -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm overflow-hidden flex flex-col gap-0">
+<!-- Table Header (Desktop) -->
+<div class="hidden md:grid grid-cols-12 gap-4 p-4 bg-surface-container-low border-b border-outline-variant font-label-md text-label-md text-on-surface-variant items-center">
+<div class="col-span-3">No. Tiket &amp; Tanggal</div>
+<div class="col-span-4">Ringkasan Alat</div>
+<div class="col-span-3">Periode Pinjam</div>
+<div class="col-span-2 text-right">Status</div>
+</div>
+<!-- List Items -->
+<div class="flex flex-col">
+<!-- Ticket Row 1: Menunggu -->
+<div class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container-lowest transition-colors">
+<div class="expandable-row p-4 cursor-pointer grid grid-cols-1 md:grid-cols-12 gap-4 items-start md:items-center" onclick="toggleRow('ticket-1', this)">
+<!-- Ticket Info -->
+<div class="col-span-1 md:col-span-3 flex flex-col gap-1 relative">
+<div class="flex items-center gap-2">
+<span class="font-title-sm text-title-sm text-on-surface">TIC-2024-001</span>
+<span class="w-2 h-2 rounded-full bg-primary" title="Update Terbaru"></span>
+</div>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">Diajukan: 24 Okt 2024</span>
+</div>
+<!-- Summary -->
+<div class="col-span-1 md:col-span-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="science">science</span>
+<span class="font-body-md text-body-md text-on-surface truncate">Micrometer Sekrup, +2 lainnya</span>
+</div>
+<!-- Date Range -->
+<div class="col-span-1 md:col-span-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-md text-body-md text-on-surface-variant">25 Okt - 28 Okt 2024</span>
+</div>
+<!-- Status & Action -->
+<div class="col-span-1 md:col-span-2 flex justify-between md:justify-end items-center gap-3">
+<span class="bg-status-pending-bg text-status-pending-text font-badge-xs text-badge-xs px-2 py-1 rounded-full border border-status-pending-text/20 whitespace-nowrap">
+                                Menunggu
+                            </span>
+<span class="material-symbols-outlined text-on-surface-variant rotate-icon" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Expanded Content -->
+<div class="expanded-content bg-surface-container px-4" id="ticket-1">
+<div class="py-4 border-t border-outline-variant/50">
+<h4 class="font-label-md text-label-md text-on-surface mb-3">Rincian Pengajuan</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md text-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-md text-label-md">
+<th class="py-2 px-2">Nama Alat</th>
+<th class="py-2 px-2 text-center">Jml Diminta</th>
+<th class="py-2 px-2 text-center">Jml Disetujui</th>
+<th class="py-2 px-2">Catatan Admin</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 text-on-surface">
+<tr>
+<td class="py-2 px-2">Micrometer Sekrup (0.01mm)</td>
+<td class="py-2 px-2 text-center">2</td>
+<td class="py-2 px-2 text-center text-outline">-</td>
+<td class="py-2 px-2 text-on-surface-variant italic">Menunggu review laboran</td>
+</tr>
+<tr>
+<td class="py-2 px-2">Jangka Sorong (0.05mm)</td>
+<td class="py-2 px-2 text-center">1</td>
+<td class="py-2 px-2 text-center text-outline">-</td>
+<td class="py-2 px-2 text-on-surface-variant italic">-</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 flex justify-end">
+<button class="text-error font-label-md text-label-md hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="cancel">cancel</span> Batalkan Pengajuan
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Ticket Row 2: Sedang Dipinjam -->
+<div class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container-lowest transition-colors">
+<div class="expandable-row p-4 cursor-pointer grid grid-cols-1 md:grid-cols-12 gap-4 items-start md:items-center" onclick="toggleRow('ticket-2', this)">
+<div class="col-span-1 md:col-span-3 flex flex-col gap-1 relative">
+<span class="font-title-sm text-title-sm text-on-surface">TIC-2024-002</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">Diajukan: 20 Okt 2024</span>
+</div>
+<div class="col-span-1 md:col-span-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="biotech">biotech</span>
+<span class="font-body-md text-body-md text-on-surface truncate">Mikroskop Binokuler</span>
+</div>
+<div class="col-span-1 md:col-span-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-md text-body-md text-on-surface-variant">21 Okt - 25 Okt 2024</span>
+</div>
+<div class="col-span-1 md:col-span-2 flex justify-between md:justify-end items-center gap-3">
+<span class="bg-status-loan-bg text-status-loan-text font-badge-xs text-badge-xs px-2 py-1 rounded-full border border-status-loan-text/20 whitespace-nowrap">
+                                Sedang Dipinjam
+                            </span>
+<span class="material-symbols-outlined text-on-surface-variant rotate-icon" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Expanded Content -->
+<div class="expanded-content bg-surface-container px-4" id="ticket-2">
+<div class="py-4 border-t border-outline-variant/50">
+<h4 class="font-label-md text-label-md text-on-surface mb-3">Rincian Pengajuan</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md text-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-md text-label-md">
+<th class="py-2 px-2">Nama Alat</th>
+<th class="py-2 px-2 text-center">Jml Diminta</th>
+<th class="py-2 px-2 text-center">Jml Disetujui</th>
+<th class="py-2 px-2">Status Item</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 text-on-surface">
+<tr>
+<td class="py-2 px-2">Mikroskop Binokuler Olympus CX23</td>
+<td class="py-2 px-2 text-center">1</td>
+<td class="py-2 px-2 text-center">1</td>
+<td class="py-2 px-2 text-status-loan-text font-medium">Dipinjam</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 flex flex-col gap-2 p-3 bg-surface rounded border border-outline-variant/50 text-caption-xs font-caption-xs text-on-surface-variant">
+<strong>Catatan Pengambilan:</strong> Silakan kembalikan dalam keadaan bersih beserta kabel power.
+                            </div>
+</div>
+</div>
+</div>
+<!-- Ticket Row 3: Disetujui Sebagian -->
+<div class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container-lowest transition-colors">
+<div class="expandable-row p-4 cursor-pointer grid grid-cols-1 md:grid-cols-12 gap-4 items-start md:items-center" onclick="toggleRow('ticket-3', this)">
+<div class="col-span-1 md:col-span-3 flex flex-col gap-1 relative">
+<div class="flex items-center gap-2">
+<span class="font-title-sm text-title-sm text-on-surface">TIC-2024-003</span>
+</div>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">Diajukan: 15 Okt 2024</span>
+</div>
+<div class="col-span-1 md:col-span-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="cable">cable</span>
+<span class="font-body-md text-body-md text-on-surface truncate">Oscilloscope, Kabel BNC, +1</span>
+</div>
+<div class="col-span-1 md:col-span-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-md text-body-md text-on-surface-variant">16 Okt - 18 Okt 2024</span>
+</div>
+<div class="col-span-1 md:col-span-2 flex justify-between md:justify-end items-center gap-3">
+<span class="bg-status-partial-bg text-status-partial-text font-badge-xs text-badge-xs px-2 py-1 rounded-full border border-status-partial-text/20 whitespace-nowrap">
+                                Disetujui Sebagian
+                            </span>
+<span class="material-symbols-outlined text-on-surface-variant rotate-icon" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Expanded Content -->
+<div class="expanded-content bg-surface-container px-4" id="ticket-3">
+<div class="py-4 border-t border-outline-variant/50">
+<h4 class="font-label-md text-label-md text-on-surface mb-3">Rincian Pengajuan</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md text-body-md">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-md text-label-md">
+<th class="py-2 px-2">Nama Alat</th>
+<th class="py-2 px-2 text-center">Jml Diminta</th>
+<th class="py-2 px-2 text-center">Jml Disetujui</th>
+<th class="py-2 px-2">Catatan Admin</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 text-on-surface">
+<tr>
+<td class="py-2 px-2">Oscilloscope Digital 2CH</td>
+<td class="py-2 px-2 text-center">1</td>
+<td class="py-2 px-2 text-center">1</td>
+<td class="py-2 px-2">-</td>
+</tr>
+<tr>
+<td class="py-2 px-2">Kabel BNC to Alligator</td>
+<td class="py-2 px-2 text-center">4</td>
+<td class="py-2 px-2 text-center">2</td>
+<td class="py-2 px-2 text-status-partial-text">Stok terbatas, hanya bisa dipinjam 2.</td>
+</tr>
+<tr>
+<td class="py-2 px-2 text-on-surface-variant line-through">Function Generator</td>
+<td class="py-2 px-2 text-center text-on-surface-variant line-through">1</td>
+<td class="py-2 px-2 text-center text-on-surface-variant">0</td>
+<td class="py-2 px-2 text-error">Sedang dalam perbaikan rutin.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Ticket Row 4: Dikembalikan -->
+<div class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container-lowest transition-colors opacity-75">
+<div class="expandable-row p-4 cursor-pointer grid grid-cols-1 md:grid-cols-12 gap-4 items-start md:items-center" onclick="toggleRow('ticket-4', this)">
+<div class="col-span-1 md:col-span-3 flex flex-col gap-1 relative">
+<span class="font-title-sm text-title-sm text-on-surface">TIC-2024-004</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">Diajukan: 01 Okt 2024</span>
+</div>
+<div class="col-span-1 md:col-span-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="precision_manufacturing">precision_manufacturing</span>
+<span class="font-body-md text-body-md text-on-surface truncate">Neraca Analitik</span>
+</div>
+<div class="col-span-1 md:col-span-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-md text-body-md text-on-surface-variant">02 Okt - 03 Okt 2024</span>
+</div>
+<div class="col-span-1 md:col-span-2 flex justify-between md:justify-end items-center gap-3">
+<span class="bg-status-success-bg text-status-success-text font-badge-xs text-badge-xs px-2 py-1 rounded-full border border-status-success-text/20 whitespace-nowrap">
+                                Dikembalikan
+                            </span>
+<span class="material-symbols-outlined text-on-surface-variant rotate-icon" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Expanded Content -->
+<div class="expanded-content bg-surface-container px-4" id="ticket-4">
+<div class="py-4 border-t border-outline-variant/50">
+<h4 class="font-label-md text-label-md text-on-surface mb-3">Rincian Pengajuan</h4>
+<p class="text-on-surface-variant font-body-md text-body-md mb-2">Semua alat telah dikembalikan dengan kondisi baik pada 03 Okt 2024.</p>
+</div>
+</div>
+</div>
+<!-- Empty State (Hidden in this demo, showing how it looks) -->
+<!-- 
+                 <div class="py-12 flex flex-col items-center justify-center text-center">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant mb-4" data-icon="inbox">inbox</span>
+                    <h3 class="font-title-sm text-title-sm text-on-surface mb-1">Belum ada riwayat pengajuan</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant max-w-sm">Anda belum pernah mengajukan peminjaman alat. Silakan kunjungi halaman Katalog untuk mulai meminjam.</p>
+                 </div>
+                 -->
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-sidebar-dark dark:bg-black w-full mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center py-8 px-gutter-md max-w-container-max mx-auto">
+<!-- Brand -->
+<div class="font-headline-sm text-headline-sm text-primary-fixed mb-4 md:mb-0">
+                LabCatalog
+            </div>
+<!-- Copyright -->
+<div class="font-caption-xs text-caption-xs text-surface-variant opacity-70 mb-4 md:mb-0 text-center">
+                © 2024 University Laboratory Inventory System
+            </div>
+<!-- Links -->
+<div class="flex space-x-6">
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Kebijakan Privasi</a>
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Syarat &amp; Ketentuan</a>
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Bantuan</a>
+</div>
+</div>
+</footer>
+<script>
+        function toggleRow(id, headerElement) {
+            const content = document.getElementById(id);
+            const icon = headerElement.querySelector('.rotate-icon');
+            
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.classList.remove('up');
+            } else {
+                // Optional: Close others
+                // document.querySelectorAll('.expanded-content.open').forEach(el => {
+                //     el.classList.remove('open');
+                //     el.previousElementSibling.querySelector('.rotate-icon').classList.remove('up');
+                // });
+                
+                content.classList.add('open');
+                icon.classList.add('up');
+            }
+        }
+    </script>
+</body></html>

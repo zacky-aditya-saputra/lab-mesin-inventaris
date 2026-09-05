@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LabCatalog - Dashboard Utama</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "stock-available": "#065F46",
+                      "status-approved-bg": "#E0F2FE",
+                      "primary": "#004ac6",
+                      "status-loan-bg": "#E0E7FF",
+                      "tertiary-fixed": "#ffdbcd",
+                      "surface": "#faf8ff",
+                      "inverse-surface": "#2e3039",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "on-secondary": "#ffffff",
+                      "primary-container": "#2563eb",
+                      "on-surface": "#191b23",
+                      "secondary-container": "#d5e3fc",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-error": "#ffffff",
+                      "on-tertiary-container": "#ffede6",
+                      "outline": "#737686",
+                      "error": "#ba1a1a",
+                      "status-overdue-bg": "#E11D48",
+                      "inverse-primary": "#b4c5ff",
+                      "stock-none": "#64748B",
+                      "status-approved-text": "#075985",
+                      "surface-tint": "#0053db",
+                      "on-primary-fixed": "#00174b",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "tertiary-container": "#bc4800",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#d5e3fc",
+                      "status-loan-text": "#3730A3",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#f0f0fb",
+                      "stock-limited": "#92400E",
+                      "surface-container-high": "#e7e7f3",
+                      "surface-bright": "#faf8ff",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "status-pending-bg": "#FEF3C7",
+                      "on-primary-container": "#eeefff",
+                      "surface-container": "#ededf9",
+                      "surface-container-highest": "#e1e2ed",
+                      "status-partial-text": "#9A3412",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "surface-variant": "#e1e2ed",
+                      "on-secondary-container": "#57657a",
+                      "surface-dim": "#d9d9e5",
+                      "stock-maintenance": "#1E293B",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "on-background": "#191b23",
+                      "primary-fixed": "#dbe1ff",
+                      "sidebar-dark": "#0F172A",
+                      "tertiary": "#943700",
+                      "on-tertiary-fixed": "#360f00",
+                      "status-pending-text": "#92400E",
+                      "status-success-text": "#065F46",
+                      "error-container": "#ffdad6",
+                      "status-overdue-text": "#FFFFFF",
+                      "on-surface-variant": "#434655",
+                      "surface-container-low": "#f3f3fe",
+                      "status-success-bg": "#D1FAE5",
+                      "status-rejected-text": "#9F1239",
+                      "status-rejected-bg": "#FFE4E6",
+                      "background": "#faf8ff",
+                      "status-partial-bg": "#FFEDD5",
+                      "secondary": "#515f74",
+                      "on-error-container": "#93000a",
+                      "outline-variant": "#c3c6d7"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter-md": "1.5rem",
+                      "padding-card": "1.5rem",
+                      "container-max": "80rem",
+                      "margin-page": "1rem",
+                      "gutter-sm": "1rem"
+              },
+              "fontFamily": {
+                      "badge-xs": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "caption-xs": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "title-sm": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "badge-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "caption-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "30px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-sm": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md h-screen flex overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 bg-sidebar-dark text-on-primary flex-shrink-0 flex flex-col hidden md:flex">
+<div class="h-16 flex items-center px-gutter-md border-b border-white/10">
+<span class="font-headline-sm text-headline-sm font-bold tracking-tight">LabCatalog</span>
+</div>
+<nav class="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-primary-container text-on-primary-container" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-fixed-dim hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="font-label-md text-label-md">Kategori Alat</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-fixed-dim hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md">Data Alat</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-fixed-dim hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-label-md text-label-md">Tiket Masuk</span>
+<span class="ml-auto bg-error text-on-error font-badge-xs text-badge-xs py-0.5 px-2 rounded-full">12</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-fixed-dim hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-md text-label-md">Monitoring Overdue</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-secondary-fixed-dim hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">Laporan &amp; Riwayat</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/10">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">person</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-white">Admin Laboratorium</p>
+<p class="font-caption-xs text-caption-xs text-secondary-fixed-dim">Teknik Elektro</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden">
+<!-- Header -->
+<header class="h-16 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between px-gutter-md flex-shrink-0">
+<div class="flex items-center">
+<button class="md:hidden mr-4 text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Dashboard Utama</h1>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<div class="text-right hidden sm:block text-on-surface-variant font-caption-xs text-caption-xs">
+<span id="current-date">Senin, 24 Okt 2023</span><br/>
+<span class="font-label-md text-label-md text-on-surface" id="current-time">09:41 WIB</span>
+</div>
+<button class="w-10 h-10 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto p-gutter-md bg-surface">
+<div class="max-w-container-max mx-auto space-y-6">
+<!-- Metric Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Card 1: Tiket Menunggu -->
+<div class="bg-surface-container-lowest rounded-xl p-padding-card shadow-sm border border-outline-variant flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Tiket Menunggu</p>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-1">12</h2>
+</div>
+<div class="w-10 h-10 rounded-lg bg-status-pending-bg text-status-pending-text flex items-center justify-center">
+<span class="material-symbols-outlined">hourglass_empty</span>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-status-pending-text font-caption-xs text-caption-xs">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span>Butuh Tindakan</span>
+</div>
+</div>
+<!-- Card 2: Tiket Terlambat -->
+<div class="bg-surface-container-lowest rounded-xl p-padding-card shadow-sm border border-outline-variant flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Tiket Terlambat</p>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-1">3</h2>
+</div>
+<div class="w-10 h-10 rounded-lg bg-status-overdue-bg text-status-overdue-text flex items-center justify-center">
+<span class="material-symbols-outlined">warning</span>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-error font-caption-xs text-caption-xs">
+<span class="material-symbols-outlined text-[16px]">priority_high</span>
+<span>Segera Hubungi</span>
+</div>
+</div>
+<!-- Card 3: Total Tiket Aktif -->
+<div class="bg-surface-container-lowest rounded-xl p-padding-card shadow-sm border border-outline-variant flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Total Tiket Aktif</p>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-1">45</h2>
+</div>
+<div class="w-10 h-10 rounded-lg bg-status-loan-bg text-status-loan-text flex items-center justify-center">
+<span class="material-symbols-outlined">assignment</span>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-on-surface-variant font-caption-xs text-caption-xs">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span>Pending, Disetujui, Dipinjam</span>
+</div>
+</div>
+<!-- Card 4: Stok Kritis -->
+<div class="bg-surface-container-lowest rounded-xl p-padding-card shadow-sm border border-outline-variant flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Stok Kritis</p>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-1">8</h2>
+</div>
+<div class="w-10 h-10 rounded-lg bg-status-partial-bg text-status-partial-text flex items-center justify-center">
+<span class="material-symbols-outlined">inventory</span>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-status-partial-text font-caption-xs text-caption-xs">
+<span class="material-symbols-outlined text-[16px]">error_outline</span>
+<span>Item &lt; 3 unit</span>
+</div>
+</div>
+</div>
+<!-- Main Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Column: Aktivitas & Tiket Terbaru -->
+<div class="lg:col-span-2 space-y-4">
+<div class="flex justify-between items-center">
+<h3 class="font-title-sm text-title-sm text-on-surface">Aktivitas &amp; Tiket Terbaru</h3>
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md transition-colors">Lihat Semua</button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
+<th class="px-4 py-3 font-medium">No. Tiket</th>
+<th class="px-4 py-3 font-medium">Mahasiswa</th>
+<th class="px-4 py-3 font-medium">Ringkasan Alat</th>
+<th class="px-4 py-3 font-medium">Status</th>
+<th class="px-4 py-3 font-medium text-right">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-md text-body-md text-on-surface">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-4 py-3 font-medium">TK-2310-045</td>
+<td class="px-4 py-3">
+<div class="flex flex-col">
+<span>Budi Santoso</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">21098765</span>
+</div>
+</td>
+<td class="px-4 py-3">Oscilloscope, Multimeter... (3 item)</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-pending-bg text-status-pending-text border border-status-pending-text/20">
+                                                    MENUNGGU
+                                                </span>
+</td>
+<td class="px-4 py-3 text-right">
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded-md transition-colors inline-flex">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-4 py-3 font-medium">TK-2310-044</td>
+<td class="px-4 py-3">
+<div class="flex flex-col">
+<span>Siti Aminah</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">21098766</span>
+</div>
+</td>
+<td class="px-4 py-3">Solder Station (1 item)</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-loan-bg text-status-loan-text border border-status-loan-text/20">
+                                                    DIPINJAM
+                                                </span>
+</td>
+<td class="px-4 py-3 text-right">
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded-md transition-colors inline-flex">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors bg-status-overdue-bg/5">
+<td class="px-4 py-3 font-medium">TK-2310-042</td>
+<td class="px-4 py-3">
+<div class="flex flex-col">
+<span>Ahmad Dahlan</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">21098762</span>
+</div>
+</td>
+<td class="px-4 py-3">Power Supply DC (2 item)</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-overdue-bg text-status-overdue-text border border-status-overdue-text/20">
+                                                    TERLAMBAT
+                                                </span>
+</td>
+<td class="px-4 py-3 text-right">
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded-md transition-colors inline-flex">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-4 py-3 font-medium">TK-2310-041</td>
+<td class="px-4 py-3">
+<div class="flex flex-col">
+<span>Dewi Lestari</span>
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">21098761</span>
+</div>
+</td>
+<td class="px-4 py-3">Function Generator (1 item)</td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-approved-bg text-status-approved-text border border-status-approved-text/20">
+                                                    DISETUJUI
+                                                </span>
+</td>
+<td class="px-4 py-3 text-right">
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded-md transition-colors inline-flex">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Right Column: Stok Alat Kritis -->
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<h3 class="font-title-sm text-title-sm text-on-surface">Stok Alat Kritis</h3>
+<button class="text-on-surface-variant hover:text-on-surface p-1 rounded-md transition-colors">
+<span class="material-symbols-outlined text-sm">more_vert</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-4">
+<ul class="space-y-4">
+<li class="flex items-center justify-between pb-3 border-b border-outline-variant/50 last:border-0 last:pb-0">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">precision_manufacturing</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Oscilloscope Digital</p>
+<p class="font-caption-xs text-caption-xs text-on-surface-variant">ID: T-001</p>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-stock-limited">
+<span class="font-label-md text-label-md font-bold">1</span>
+<span class="material-symbols-outlined text-sm">warning</span>
+</div>
+</li>
+<li class="flex items-center justify-between pb-3 border-b border-outline-variant/50 last:border-0 last:pb-0">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">build</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Solder Station Hakko</p>
+<p class="font-caption-xs text-caption-xs text-on-surface-variant">ID: T-045</p>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-stock-limited">
+<span class="font-label-md text-label-md font-bold">2</span>
+<span class="material-symbols-outlined text-sm">warning</span>
+</div>
+</li>
+<li class="flex items-center justify-between pb-3 border-b border-outline-variant/50 last:border-0 last:pb-0">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">memory</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Arduino Mega 2560</p>
+<p class="font-caption-xs text-caption-xs text-on-surface-variant">ID: T-112</p>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-error">
+<span class="font-label-md text-label-md font-bold">0</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+</li>
+<li class="flex items-center justify-between pb-3 border-b border-outline-variant/50 last:border-0 last:pb-0">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">electrical_services</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Kabel Jumper M-M</p>
+<p class="font-caption-xs text-caption-xs text-on-surface-variant">ID: C-021</p>
+</div>
+</div>
+<div class="flex items-center space-x-1 text-stock-limited">
+<span class="font-label-md text-label-md font-bold">2</span>
+<span class="material-symbols-outlined text-sm">warning</span>
+</div>
+</li>
+</ul>
+<div class="mt-4 pt-4 border-t border-outline-variant text-center">
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md transition-colors">Kelola Inventaris</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

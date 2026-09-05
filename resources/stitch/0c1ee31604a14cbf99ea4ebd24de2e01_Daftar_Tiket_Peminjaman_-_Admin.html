@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tiket Peminjaman - LabCatalog Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-primary-container": "#eeefff",
+                        "status-rejected-text": "#9F1239",
+                        "primary-container": "#2563eb",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "status-loan-text": "#3730A3",
+                        "status-approved-bg": "#E0F2FE",
+                        "status-overdue-text": "#FFFFFF",
+                        "on-tertiary-fixed": "#360f00",
+                        "status-overdue-bg": "#E11D48",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "sidebar-dark": "#0F172A",
+                        "surface-bright": "#faf8ff",
+                        "status-approved-text": "#075985",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-error-container": "#93000a",
+                        "surface": "#faf8ff",
+                        "stock-maintenance": "#1E293B",
+                        "status-success-bg": "#D1FAE5",
+                        "status-pending-text": "#92400E",
+                        "surface-tint": "#0053db",
+                        "secondary": "#515f74",
+                        "stock-available": "#065F46",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e2ed",
+                        "tertiary-container": "#bc4800",
+                        "surface-dim": "#d9d9e5",
+                        "status-rejected-bg": "#FFE4E6",
+                        "status-partial-bg": "#FFEDD5",
+                        "on-surface-variant": "#434655",
+                        "stock-limited": "#92400E",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "inverse-primary": "#b4c5ff",
+                        "on-surface": "#191b23",
+                        "on-secondary": "#ffffff",
+                        "background": "#faf8ff",
+                        "inverse-surface": "#2e3039",
+                        "on-background": "#191b23",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-tertiary-container": "#ffede6",
+                        "status-pending-bg": "#FEF3C7",
+                        "surface-container-high": "#e7e7f3",
+                        "primary": "#004ac6",
+                        "status-loan-bg": "#E0E7FF",
+                        "on-secondary-container": "#57657a",
+                        "status-success-text": "#065F46",
+                        "status-partial-text": "#9A3412",
+                        "surface-container-low": "#f3f3fe",
+                        "outline-variant": "#c3c6d7",
+                        "secondary-fixed": "#d5e3fc",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary": "#ffffff",
+                        "stock-none": "#64748B",
+                        "tertiary": "#943700",
+                        "secondary-container": "#d5e3fc",
+                        "outline": "#737686",
+                        "surface-container": "#ededf9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-md": "1.5rem",
+                        "padding-card": "1.5rem",
+                        "gutter-sm": "1rem",
+                        "container-max": "80rem",
+                        "margin-page": "1rem"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "caption-xs": ["Inter"],
+                        "badge-xs": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-lg": ["30px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "caption-xs": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "badge-xs": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-sm": ["18px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row font-body-md text-body-md overflow-x-hidden">
+<!-- Admin Sidebar (Hidden on Mobile, flex on md+) -->
+<aside class="hidden md:flex flex-col w-64 min-w-[16rem] bg-sidebar-dark text-on-primary-fixed border-r border-outline-variant/10 shrink-0 h-screen sticky top-0">
+<div class="h-16 flex items-center px-6 border-b border-outline-variant/10">
+<span class="font-headline-md text-headline-md text-primary-fixed">LabCatalog</span>
+</div>
+<nav class="flex-1 overflow-y-auto py-4">
+<ul class="space-y-1 px-3">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-tint text-on-primary font-bold shadow-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-label-md text-label-md">Tiket Masuk</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventaris</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Pengguna</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="p-4 border-t border-outline-variant/10">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary-fixed-dim hover:bg-error-container hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Keluar</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
+<!-- TopAppBar Header (Visible on Desktop for alignment, and serves as mobile Nav) -->
+<header class="flex justify-between items-center h-16 px-gutter-md border-b border-outline-variant bg-surface sticky top-0 z-40">
+<!-- Mobile Menu Button & Brand -->
+<div class="flex items-center gap-4 md:hidden">
+<button class="text-on-surface hover:bg-surface-container rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">LabCatalog</span>
+</div>
+<!-- Desktop Title (Hidden on mobile) -->
+<div class="hidden md:flex items-center">
+<h1 class="font-headline-md text-headline-md text-on-surface">Tiket Peminjaman</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-on-surface hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-surface"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-md text-label-md font-bold shadow-sm">
+                    AD
+                </div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-gutter-md md:p-8 flex-1 bg-surface-container-low max-w-container-max mx-auto w-full">
+<!-- Mobile Title -->
+<div class="md:hidden mb-6">
+<h1 class="font-headline-md text-headline-md text-on-surface">Tiket Peminjaman</h1>
+</div>
+<!-- Main Interactive Area -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden flex flex-col h-full md:h-auto max-h-full">
+<!-- Toolbar: Tabs & Search -->
+<div class="p-4 border-b border-outline-variant flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-surface">
+<!-- Tabs Navigation (Horizontal Scrollable) -->
+<div class="overflow-x-auto no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0">
+<nav class="flex gap-2 min-w-max pb-1">
+<button class="px-4 py-2 rounded-full font-label-md text-label-md bg-secondary-container text-on-secondary-container whitespace-nowrap border border-transparent">
+                                Semua
+                            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container whitespace-nowrap border border-outline-variant flex items-center gap-2">
+                                Menunggu
+                                <span class="bg-error text-on-error px-1.5 py-0.5 rounded-full text-[10px] font-bold leading-none">12</span>
+</button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container whitespace-nowrap border border-outline-variant">
+                                Disetujui
+                            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container whitespace-nowrap border border-outline-variant">
+                                Disetujui Sebagian
+                            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container whitespace-nowrap border border-outline-variant">
+                                Ditolak
+                            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container whitespace-nowrap border border-outline-variant">
+                                Sedang Dipinjam
+                            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container whitespace-nowrap border border-outline-variant">
+                                Terlambat
+                            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container whitespace-nowrap border border-outline-variant">
+                                Dikembalikan
+                            </button>
+</nav>
+</div>
+<!-- Search & Filter -->
+<div class="flex items-center gap-3 w-full lg:w-auto shrink-0">
+<div class="relative w-full lg:w-64">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="search">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border border-outline-variant rounded-lg leading-5 bg-surface-container-lowest placeholder-outline focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary font-body-md text-body-md text-on-surface sm:text-sm transition-colors duration-200" placeholder="Cari tiket atau nama..." type="text"/>
+</div>
+<button aria-label="Filter" class="p-2 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-container transition-colors flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]" data-icon="tune">tune</span>
+</button>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="overflow-x-auto flex-1">
+<table class="min-w-full divide-y divide-outline-variant text-left">
+<thead class="bg-surface-container-low font-label-md text-label-md text-on-surface-variant">
+<tr>
+<th class="px-6 py-4 whitespace-nowrap" scope="col">No. Tiket</th>
+<th class="px-6 py-4 whitespace-nowrap" scope="col">Nama Pengaju</th>
+<th class="px-6 py-4 min-w-[200px]" scope="col">Ringkasan Alat</th>
+<th class="px-6 py-4 whitespace-nowrap" scope="col">Tanggal Pengajuan</th>
+<th class="px-6 py-4 whitespace-nowrap" scope="col">Rentang Pinjam</th>
+<th class="px-6 py-4 whitespace-nowrap text-center" scope="col">Status</th>
+<th class="px-6 py-4 whitespace-nowrap text-right" scope="col">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface">
+<!-- Row 1: Menunggu -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 whitespace-nowrap font-medium text-primary">#TK-2024-001</td>
+<td class="px-6 py-4 whitespace-nowrap">Budi Santoso<br/><span class="text-on-surface-variant font-caption-xs text-caption-xs">NIM: 123456789</span></td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">3x Mikroskop Binokuler, 1x Multimeter...</td>
+<td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">24 Okt 2024</td>
+<td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">25 Okt - 28 Okt</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-pending-bg text-status-pending-text border border-status-pending-text/20">
+                                        Menunggu
+                                    </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<button class="inline-flex items-center gap-1 px-3 py-1.5 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-primary/90 transition-colors shadow-sm">
+                                        Atur
+                                    </button>
+</td>
+</tr>
+<!-- Row 2: Disetujui Sebagian -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 whitespace-nowrap font-medium text-primary">#TK-2024-002</td>
+<td class="px-6 py-4 whitespace-nowrap">Siti Aminah<br/><span class="text-on-surface-variant font-caption-xs text-caption-xs">NIM: 987654321</span></td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">1x Osiloskop Digital, 5x Kabel Jumper...</td>
+<td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">23 Okt 2024</td>
+<td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">26 Okt - 30 Okt</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-partial-bg text-status-partial-text border border-status-partial-text/20">
+                                        Sebagian
+                                    </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<button class="inline-flex items-center justify-center p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Detail">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Terlambat -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 whitespace-nowrap font-medium text-primary">#TK-2024-003</td>
+<td class="px-6 py-4 whitespace-nowrap">Andi Darmawan<br/><span class="text-on-surface-variant font-caption-xs text-caption-xs">NIM: 456123789</span></td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">2x Arduino Uno R3, 1x Sensor Ultrasonik</td>
+<td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">15 Okt 2024</td>
+<td class="px-6 py-4 whitespace-nowrap text-error font-medium">16 Okt - 18 Okt</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-overdue-bg text-status-overdue-text border border-status-overdue-text/20">
+                                        Terlambat
+                                    </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<button class="inline-flex items-center justify-center p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Detail">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Sedang Dipinjam -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 whitespace-nowrap font-medium text-primary">#TK-2024-004</td>
+<td class="px-6 py-4 whitespace-nowrap">Dewi Lestari<br/><span class="text-on-surface-variant font-caption-xs text-caption-xs">NIM: 789123456</span></td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">1x Kamera DSLR, 1x Tripod, 2x SD Card...</td>
+<td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">22 Okt 2024</td>
+<td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">24 Okt - 26 Okt</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-loan-bg text-status-loan-text border border-status-loan-text/20">
+                                        Dipinjam
+                                    </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<button class="inline-flex items-center justify-center p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Detail">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="p-4 border-t border-outline-variant bg-surface flex items-center justify-between">
+<span class="font-caption-xs text-caption-xs text-on-surface-variant">Menampilkan 1-4 dari 45 tiket</span>
+<div class="flex items-center gap-2">
+<button class="p-1 text-outline hover:text-on-surface disabled:opacity-50 transition-colors" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-md bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded-md text-on-surface hover:bg-surface-container font-label-md text-label-md flex items-center justify-center transition-colors">2</button>
+<button class="w-8 h-8 rounded-md text-on-surface hover:bg-surface-container font-label-md text-label-md flex items-center justify-center transition-colors">3</button>
+<button class="p-1 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Empty State Example (Hidden by default for demonstration, can be toggled via JS) -->
+<div class="hidden bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant mt-6 p-12 flex flex-col items-center justify-center text-center">
+<div class="w-16 h-16 bg-surface-container-highest rounded-full flex items-center justify-center mb-4 text-outline">
+<span class="material-symbols-outlined text-[32px]" data-icon="search_off">search_off</span>
+</div>
+<h3 class="font-title-sm text-title-sm text-on-surface mb-2">Tidak ada tiket ditemukan</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Coba ubah kata kunci pencarian atau sesuaikan filter status untuk menemukan tiket yang Anda cari.</p>
+<button class="mt-6 px-4 py-2 border border-outline text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">
+                    Hapus Filter
+                </button>
+</div>
+</div>
+</main>
+</body></html>

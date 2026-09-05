@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manajemen Data Alat - LabCatalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "status-approved-bg": "#E0F2FE",
+                        "surface-bright": "#faf8ff",
+                        "status-success-text": "#065F46",
+                        "status-partial-bg": "#FFEDD5",
+                        "on-tertiary": "#ffffff",
+                        "status-approved-text": "#075985",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-dim": "#d9d9e5",
+                        "on-secondary-container": "#57657a",
+                        "secondary-container": "#d5e3fc",
+                        "status-rejected-text": "#9F1239",
+                        "sidebar-dark": "#0F172A",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "status-overdue-text": "#FFFFFF",
+                        "on-error": "#ffffff",
+                        "stock-maintenance": "#1E293B",
+                        "tertiary-container": "#bc4800",
+                        "primary-container": "#2563eb",
+                        "primary": "#004ac6",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "surface-container": "#ededf9",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary": "#ffffff",
+                        "status-success-bg": "#D1FAE5",
+                        "stock-available": "#065F46",
+                        "outline": "#737686",
+                        "surface-tint": "#0053db",
+                        "secondary": "#515f74",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-primary-container": "#eeefff",
+                        "on-primary-fixed": "#00174b",
+                        "surface": "#faf8ff",
+                        "status-partial-text": "#9A3412",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "status-loan-bg": "#E0E7FF",
+                        "tertiary": "#943700",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-tertiary-container": "#ffede6",
+                        "on-surface": "#191b23",
+                        "status-pending-bg": "#FEF3C7",
+                        "status-overdue-bg": "#E11D48",
+                        "inverse-surface": "#2e3039",
+                        "tertiary-fixed": "#ffdbcd",
+                        "status-rejected-bg": "#FFE4E6",
+                        "stock-limited": "#92400E",
+                        "surface-container-high": "#e7e7f3",
+                        "surface-variant": "#e1e2ed",
+                        "background": "#faf8ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "primary-fixed": "#dbe1ff",
+                        "error": "#ba1a1a",
+                        "stock-none": "#64748B",
+                        "on-background": "#191b23",
+                        "status-loan-text": "#3730A3",
+                        "secondary-fixed": "#d5e3fc",
+                        "surface-container-low": "#f3f3fe",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-tertiary-fixed": "#360f00",
+                        "status-pending-text": "#92400E",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#3a485b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "80rem",
+                        "padding-card": "1.5rem",
+                        "margin-page": "1rem",
+                        "gutter-sm": "1rem",
+                        "gutter-md": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "badge-xs": ["Inter", "sans-serif"],
+                        "title-sm": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "caption-xs": ["Inter", "sans-serif"],
+                        "headline-sm": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["30px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "badge-xs": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "caption-xs": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-sm": ["18px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 bg-sidebar-dark flex flex-col h-full flex-shrink-0 relative z-20 shadow-xl">
+<div class="h-16 flex items-center px-6 border-b border-white/10">
+<span class="font-headline-sm text-headline-sm text-primary-fixed tracking-tight">LabCatalog</span>
+</div>
+<div class="px-4 py-6 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Menu Navigasi</div>
+<nav class="flex-1 overflow-y-auto px-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="category">category</span>
+<span class="font-label-md text-label-md">Kategori Alat</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary-container text-white group shadow-sm" href="#">
+<span class="material-symbols-outlined text-white" data-icon="inventory_2" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-label-md text-label-md font-medium">Data Alat</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors group mt-4" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-label-md text-label-md">Tiket Masuk</span>
+<span class="ml-auto bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="warning">warning</span>
+<span class="font-label-md text-label-md">Monitoring Overdue</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" data-icon="history">history</span>
+<span class="font-label-md text-label-md">Laporan &amp; Riwayat</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/10 mt-auto">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-white">Admin Lab</p>
+<p class="font-caption-xs text-caption-xs text-slate-400">admin@ulab.edu</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-surface-container-low">
+<!-- Header -->
+<header class="h-16 bg-surface-container-lowest border-b border-outline-variant/30 flex items-center justify-between px-8 flex-shrink-0 z-10 shadow-sm">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Manajemen Data Alat</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative w-72">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl" data-icon="search">search</span>
+<input class="w-full h-10 pl-10 pr-4 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-sm transition-shadow" placeholder="Cari nama, kode alat..." type="text"/>
+</div>
+<button class="h-10 px-4 bg-primary hover:bg-primary/90 text-white rounded-lg font-label-md text-label-md flex items-center gap-2 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                    Tambah Alat
+                </button>
+</div>
+</header>
+<!-- Tab Content Area -->
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-container-max mx-auto space-y-6">
+<!-- Tabs -->
+<div class="flex border-b border-outline-variant/50 mb-6">
+<button class="px-4 py-2 border-b-2 border-primary text-primary font-title-sm text-title-sm mr-4" onclick="switchTab('list')">Daftar Alat</button>
+<button class="px-4 py-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-title-sm text-title-sm transition-colors" onclick="switchTab('stock')">Penyesuaian Stok</button>
+</div>
+<!-- Tab: Tool List -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden" id="tab-list">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high border-b border-outline-variant/50">
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant w-16">Item</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant">Nama Alat</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant">Kategori</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant">Kode Inv.</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant text-right">Total</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant text-right">Tersedia</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant text-center">Status</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant text-center">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 font-body-md text-body-md text-on-surface">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="w-10 h-10 rounded bg-surface-container border border-outline-variant/50 flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-outline" data-icon="science">science</span>
+</div>
+</td>
+<td class="px-6 py-4 font-medium text-on-surface">Mikroskop Binokuler</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-badge-xs text-badge-xs border border-slate-200">Optik</span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">OPT-001</td>
+<td class="px-6 py-4 text-right">12</td>
+<td class="px-6 py-4 text-right font-medium text-status-success-text">8</td>
+<td class="px-6 py-4 text-center">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-primary-container checked:right-0 right-5" id="toggle1" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-primary-container cursor-pointer" for="toggle1"></label>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-primary hover:bg-primary-fixed rounded" title="Edit">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 text-outline cursor-not-allowed" title="Tidak dapat dihapus (memiliki riwayat)">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="w-10 h-10 rounded bg-surface-container border border-outline-variant/50 flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-outline" data-icon="precision_manufacturing">precision_manufacturing</span>
+</div>
+</td>
+<td class="px-6 py-4 font-medium text-on-surface">Centrifuge Digital</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-badge-xs text-badge-xs border border-slate-200">Mekanik</span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">MEK-042</td>
+<td class="px-6 py-4 text-right">4</td>
+<td class="px-6 py-4 text-right font-medium text-status-success-text">4</td>
+<td class="px-6 py-4 text-center">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-outline-variant checked:right-0 right-5" id="toggle2" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-outline-variant cursor-pointer" for="toggle2"></label>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-primary hover:bg-primary-fixed rounded" title="Edit">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 text-error hover:bg-error-container rounded" title="Hapus">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination (Static for demo) -->
+<div class="bg-surface-container-lowest px-6 py-3 flex items-center justify-between border-t border-outline-variant/30">
+<p class="font-caption-xs text-caption-xs text-on-surface-variant">Menampilkan 1 hingga 2 dari 45 data</p>
+<div class="flex gap-1">
+<button class="px-3 py-1 rounded border border-outline-variant/50 text-on-surface-variant disabled:opacity-50" disabled="">Sebel.</button>
+<button class="px-3 py-1 rounded bg-primary text-white">1</button>
+<button class="px-3 py-1 rounded border border-outline-variant/50 hover:bg-surface-container text-on-surface">2</button>
+<button class="px-3 py-1 rounded border border-outline-variant/50 hover:bg-surface-container text-on-surface">Lanjut</button>
+</div>
+</div>
+</div>
+<!-- Tab: Stock Adjustment (Hidden by default, inline styled block for demo visibility logic if needed, but keeping simple structural logic) -->
+<!-- <div id="tab-stock" class="hidden ..."> ... </div> -->
+</div>
+</div>
+</main>
+<style>
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #2563eb; /* primary-container */
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #2563eb;
+        }
+        .toggle-checkbox {
+            right: 1.25rem;
+            z-index: 1;
+            border-color: #e1e2ed;
+            transition: all 0.3s;
+        }
+        .toggle-label {
+            width: 2.5rem;
+            transition: all 0.3s;
+        }
+    </style>
+<script>
+        function switchTab(tabId) {
+            // Simplified tab switching logic for UI demonstration
+            console.log("Switching to tab:", tabId);
+            // In a real app, this would toggle visibility of #tab-list and #tab-stock
+        }
+    </script>
+</body></html>

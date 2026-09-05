@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Masuk ke LabCatalog</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Design System -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "status-overdue-bg": "#E11D48",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#d5e3fc",
+                    "inverse-primary": "#b4c5ff",
+                    "status-pending-bg": "#FEF3C7",
+                    "surface-bright": "#faf8ff",
+                    "surface-tint": "#0053db",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "status-success-bg": "#D1FAE5",
+                    "status-approved-text": "#075985",
+                    "on-primary-container": "#eeefff",
+                    "stock-available": "#065F46",
+                    "secondary-fixed": "#d5e3fc",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-secondary-fixed-variant": "#3a485b",
+                    "error": "#ba1a1a",
+                    "outline": "#737686",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-secondary": "#ffffff",
+                    "background": "#faf8ff",
+                    "surface-container": "#ededf9",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "status-loan-text": "#3730A3",
+                    "stock-none": "#64748B",
+                    "status-pending-text": "#92400E",
+                    "on-primary-fixed": "#00174b",
+                    "inverse-on-surface": "#f0f0fb",
+                    "tertiary-container": "#bc4800",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#2e3039",
+                    "status-overdue-text": "#FFFFFF",
+                    "surface-dim": "#d9d9e5",
+                    "primary-container": "#2563eb",
+                    "status-rejected-text": "#9F1239",
+                    "status-loan-bg": "#E0E7FF",
+                    "stock-limited": "#92400E",
+                    "on-surface": "#191b23",
+                    "secondary": "#515f74",
+                    "surface-container-highest": "#e1e2ed",
+                    "status-success-text": "#065F46",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-surface-variant": "#434655",
+                    "primary-fixed": "#dbe1ff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-secondary-fixed": "#0d1c2e",
+                    "secondary-fixed-dim": "#b9c7df",
+                    "tertiary": "#943700",
+                    "sidebar-dark": "#0F172A",
+                    "status-partial-bg": "#FFEDD5",
+                    "on-secondary-container": "#57657a",
+                    "surface": "#faf8ff",
+                    "on-tertiary-container": "#ffede6",
+                    "surface-container-low": "#f3f3fe",
+                    "status-rejected-bg": "#FFE4E6",
+                    "status-approved-bg": "#E0F2FE",
+                    "on-background": "#191b23",
+                    "outline-variant": "#c3c6d7",
+                    "stock-maintenance": "#1E293B",
+                    "on-tertiary-fixed": "#360f00",
+                    "surface-variant": "#e1e2ed",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#e7e7f3",
+                    "status-partial-text": "#9A3412",
+                    "primary": "#004ac6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "80rem",
+                    "padding-card": "1.5rem",
+                    "gutter-sm": "1rem",
+                    "gutter-md": "1.5rem",
+                    "margin-page": "1rem"
+            },
+            "fontFamily": {
+                    "caption-xs": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "badge-xs": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "title-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "caption-xs": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-lg": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "badge-xs": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "title-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-sm": ["18px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface-container text-on-surface font-body-md flex flex-col min-h-screen">
+<!-- TopNavBar Component -->
+<header class="bg-surface border-b border-outline-variant shadow-sm fixed top-0 w-full z-50">
+<div class="flex justify-between items-center h-16 px-gutter-md max-w-container-max mx-auto">
+<!-- Brand -->
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="science">science</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">LabCatalog</span>
+</div>
+<!-- Navigation Links (Hidden on Mobile, flex on md+) -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-md text-label-md active:opacity-80 transition-opacity" href="#">Katalog</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-md text-label-md active:opacity-80 transition-opacity" href="#">Panduan</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-md text-label-md active:opacity-80 transition-opacity" href="#">Kontak</a>
+</nav>
+<!-- Trailing Action -->
+<div class="flex items-center gap-4">
+<!-- Suppressed normal action since we are ON the login page, but keeping component structure -->
+<a class="text-primary hover:text-primary-fixed-dim transition-colors duration-200 font-label-md text-label-md hidden md:block" href="#">Masuk</a>
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center pt-24 pb-12 px-gutter-md w-full">
+<!-- Login Card -->
+<div class="w-full max-w-md bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant p-8 relative overflow-hidden">
+<!-- Subtle top accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+<!-- Header -->
+<div class="mb-8">
+<h1 class="font-headline-md text-headline-md text-on-surface font-bold mb-2">Masuk ke LabCatalog</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Gunakan akun mahasiswa Anda untuk mengajukan peminjaman alat.</p>
+</div>
+<!-- Validation Error Alert -->
+<div class="bg-error-container border border-error rounded-lg p-4 mb-6 flex items-start gap-3">
+<span class="material-symbols-outlined text-error mt-0.5" data-icon="error" data-weight="fill" style="font-variation-settings: 'FILL' 1;">error</span>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-error-container">Email atau password yang Anda masukkan salah.</p>
+</div>
+</div>
+<!-- Login Form -->
+<form action="#" class="space-y-5" method="POST">
+<!-- Email Field -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1.5" for="email">Email Address</label>
+<input autofocus="" class="w-full rounded-lg border-outline-variant bg-surface-container-lowest text-on-surface focus:border-primary focus:ring-1 focus:ring-primary h-10 px-3 font-body-md text-body-md transition-shadow" id="email" name="email" placeholder="mahasiswa@univ.edu" required="" type="email"/>
+</div>
+<!-- Password Field -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1.5" for="password">Password</label>
+<input class="w-full rounded-lg border-outline-variant bg-surface-container-lowest text-on-surface focus:border-primary focus:ring-1 focus:ring-primary h-10 px-3 font-body-md text-body-md transition-shadow" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+<!-- Remember & Forgot -->
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4 cursor-pointer transition-colors" name="remember" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Remember me</span>
+</label>
+<a class="font-label-md text-label-md text-primary hover:underline transition-all" href="#">Lupa password?</a>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md rounded-lg h-10 mt-6 flex items-center justify-center hover:bg-on-primary-fixed-variant transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" type="submit">
+                    Masuk
+                </button>
+</form>
+<!-- Registration Link -->
+<div class="mt-8 text-center border-t border-outline-variant pt-6">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Belum punya akun? 
+                    <a class="text-primary font-label-md text-label-md hover:underline" href="#">Daftar sekarang</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="bg-sidebar-dark w-full mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center py-8 px-gutter-md max-w-container-max mx-auto gap-4">
+<!-- Brand / Copyright -->
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-headline-sm text-headline-sm text-primary-fixed">LabCatalog</span>
+<span class="font-caption-xs text-caption-xs text-surface-variant opacity-70">© 2024 University Laboratory Inventory System</span>
+</div>
+<!-- Footer Links -->
+<div class="flex items-center gap-6">
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Kebijakan Privasi</a>
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Syarat &amp; Ketentuan</a>
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Bantuan</a>
+</div>
+</div>
+</footer>
+</body></html>

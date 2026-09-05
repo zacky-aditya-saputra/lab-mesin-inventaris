@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beranda - LabCatalog Unwahas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "status-approved-text": "#075985",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#d5e3fc",
+                        "outline": "#737686",
+                        "sidebar-dark": "#0F172A",
+                        "status-loan-text": "#3730A3",
+                        "stock-maintenance": "#1E293B",
+                        "status-overdue-text": "#FFFFFF",
+                        "surface-variant": "#e1e2ed",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "status-rejected-text": "#9F1239",
+                        "surface-container-highest": "#e1e2ed",
+                        "status-loan-bg": "#E0E7FF",
+                        "status-pending-text": "#92400E",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#bc4800",
+                        "stock-none": "#64748B",
+                        "surface-container-high": "#e7e7f3",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "on-tertiary-fixed": "#360f00",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-tint": "#0053db",
+                        "on-surface": "#191b23",
+                        "inverse-primary": "#b4c5ff",
+                        "inverse-surface": "#2e3039",
+                        "status-success-text": "#065F46",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#d5e3fc",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "on-secondary-container": "#57657a",
+                        "surface-container": "#ededf9",
+                        "status-approved-bg": "#E0F2FE",
+                        "tertiary-fixed": "#ffdbcd",
+                        "status-partial-bg": "#FFEDD5",
+                        "status-success-bg": "#D1FAE5",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-dim": "#d9d9e5",
+                        "stock-limited": "#92400E",
+                        "tertiary": "#943700",
+                        "stock-available": "#065F46",
+                        "status-pending-bg": "#FEF3C7",
+                        "on-tertiary-container": "#ffede6",
+                        "secondary": "#515f74",
+                        "background": "#faf8ff",
+                        "primary-container": "#2563eb",
+                        "on-background": "#191b23",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "primary": "#004ac6",
+                        "on-primary-fixed": "#00174b",
+                        "surface-container-low": "#f3f3fe",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "status-overdue-bg": "#E11D48",
+                        "status-partial-text": "#9A3412",
+                        "on-primary-container": "#eeefff",
+                        "on-surface-variant": "#434655",
+                        "error": "#ba1a1a",
+                        "status-rejected-bg": "#FFE4E6",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#faf8ff",
+                        "outline-variant": "#c3c6d7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-sm": "1rem",
+                        "padding-card": "1.5rem",
+                        "gutter-md": "1.5rem",
+                        "container-max": "80rem",
+                        "margin-page": "1rem"
+                    },
+                    "fontFamily": {
+                        "badge-xs": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "caption-xs": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "badge-xs": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-sm": ["18px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "caption-xs": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-lg": ["30px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased" x-data="labCatalog()">
+<!-- TopNavBar -->
+<nav class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm fixed top-0 w-full z-50">
+<div class="flex justify-between items-center h-16 px-gutter-md max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<a class="font-headline-sm text-headline-sm text-primary dark:text-primary-fixed-dim font-bold flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" data-icon="science" data-weight="fill" style="font-variation-settings: 'FILL' 1;">science</span>
+                    LabCatalog
+                </a>
+<div class="hidden md:flex gap-6">
+<!-- Katalog is Active -->
+<a class="text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary dark:border-primary-fixed-dim pb-1 font-body-md text-body-md" href="#">Katalog</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 font-body-md text-body-md" href="#">Panduan</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 font-body-md text-body-md" href="#">Kontak</a>
+</div>
+</div>
+<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-4 py-2 rounded shadow-sm hover:opacity-90 active:opacity-80 transition-opacity">
+                Masuk
+            </button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="pt-24 pb-16 px-gutter-md max-w-container-max mx-auto min-h-screen flex flex-col">
+<!-- Hero Section -->
+<header class="text-center mb-12 mt-8">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-6">Katalog Alat Laboratorium</h1>
+<div class="max-w-2xl mx-auto relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 rounded-lg border-outline-variant bg-surface-container-lowest focus:ring-primary-container focus:border-primary-container shadow-sm transition-all" placeholder="Cari nama alat, kode, atau kategori..." type="text" x-model="searchQuery"/>
+</div>
+</header>
+<!-- Filter Chips -->
+<div class="flex flex-wrap justify-center gap-3 mb-10">
+<template :key="category" x-for="category in categories">
+<button :class="activeCategory === category 
+                        ? 'bg-primary-container text-on-primary-container font-medium' 
+                        : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-dim transition-colors'" @click="activeCategory = category" class="px-4 py-2 rounded-full font-label-md text-label-md border border-outline-variant" x-text="category">
+</button>
+</template>
+</div>
+<!-- Tool Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="filteredTools.length &gt; 0">
+<template :key="tool.id" x-for="tool in filteredTools">
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
+<div class="relative h-48 w-full bg-surface-variant">
+<!-- Image placeholder logic using generic industrial tool images -->
+<img :data-alt="`A clean, highly detailed photograph of a ${tool.name} used in an engineering laboratory. The tool is placed on a pristine white surface, lit by bright, cool-toned industrial lighting emphasizing its metallic textures and precise calibration marks. Professional, utilitarian, technical aesthetic.`" :src="tool.image" class="w-full h-full object-cover"/>
+</div>
+<div class="p-padding-card flex-grow flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<span class="font-caption-xs text-caption-xs text-secondary px-2 py-1 bg-secondary-container rounded-sm" x-text="tool.code"></span>
+<span class="font-caption-xs text-caption-xs text-outline" x-text="tool.category"></span>
+</div>
+<h3 class="font-title-sm text-title-sm text-on-surface mb-4" x-text="tool.name"></h3>
+<div class="mt-auto pt-4 border-t border-outline-variant">
+<!-- Status Badge Logic based on stock status -->
+<span :class="{
+                                    'bg-status-success-bg text-status-success-text border-status-success-text': tool.status === 'Tersedia',
+                                    'bg-status-pending-bg text-status-pending-text border-status-pending-text': tool.status === 'Stok Terbatas',
+                                    'bg-surface-variant text-stock-none border-outline': tool.status === 'Tidak Tersedia'
+                                }" class="inline-flex items-center px-2 py-1 rounded-full font-badge-xs text-badge-xs border border-opacity-30">
+<span :data-weight="tool.status === 'Tersedia' ? 'fill' : ''" :style="tool.status === 'Tersedia' ? 'font-variation-settings: \'FILL\' 1;' : ''" class="material-symbols-outlined text-[14px] mr-1" data-icon="inventory_2">inventory_2</span>
+<span x-text="tool.status"></span>
+</span>
+</div>
+</div>
+</div>
+</template>
+</div>
+<!-- Empty State -->
+<div class="flex flex-col items-center justify-center py-20 text-center flex-grow" style="display: none;" x-show="filteredTools.length === 0">
+<div class="w-32 h-32 mb-6 opacity-50 bg-surface-variant rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-outline" data-icon="search_off">search_off</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Alat tidak ditemukan</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+                Kami tidak dapat menemukan alat yang cocok dengan pencarian atau filter Anda. Coba kata kunci lain atau pilih kategori berbeda.
+            </p>
+<button @click="resetFilters" class="mt-6 text-primary-container font-label-md text-label-md hover:underline">
+                Reset Pencarian
+            </button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-sidebar-dark dark:bg-black w-full mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center py-8 px-gutter-md max-w-container-max mx-auto">
+<div class="mb-4 md:mb-0">
+<h4 class="font-headline-sm text-headline-sm text-primary-fixed mb-1">LabCatalog Unwahas</h4>
+<p class="font-caption-xs text-caption-xs text-surface-variant opacity-70">© 2024 University Laboratory Inventory System</p>
+</div>
+<div class="flex gap-6">
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Kebijakan Privasi</a>
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Syarat &amp; Ketentuan</a>
+<a class="font-caption-xs text-caption-xs text-surface-variant opacity-70 hover:opacity-100 transition-opacity" href="#">Bantuan</a>
+</div>
+</div>
+</footer>
+<script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('labCatalog', () => ({
+                searchQuery: '',
+                activeCategory: 'Semua Alat',
+                categories: ['Semua Alat', 'Alat Ukur', 'Alat Uji Material', 'Alat Bantu Praktikum'],
+                tools: [
+                    { id: 1, code: 'M-001', name: 'Micrometer Sekrup', category: 'Alat Ukur', status: 'Tersedia', image: 'placeholder' },
+                    { id: 2, code: 'U-102', name: 'Universal Testing Machine', category: 'Alat Uji Material', status: 'Tersedia', image: 'placeholder' },
+                    { id: 3, code: 'M-045', name: 'Jangka Sorong Digital', category: 'Alat Ukur', status: 'Stok Terbatas', image: 'placeholder' },
+                    { id: 4, code: 'P-301', name: 'Set Kunci Pas Mekanik', category: 'Alat Bantu Praktikum', status: 'Tidak Tersedia', image: 'placeholder' },
+                    { id: 5, code: 'U-205', name: 'Hardness Tester', category: 'Alat Uji Material', status: 'Tersedia', image: 'placeholder' },
+                    { id: 6, code: 'M-112', name: 'Multimeter Digital Pro', category: 'Alat Ukur', status: 'Stok Terbatas', image: 'placeholder' }
+                ],
+                get filteredTools() {
+                    return this.tools.filter(tool => {
+                        const matchesSearch = tool.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                                              tool.code.toLowerCase().includes(this.searchQuery.toLowerCase());
+                        const matchesCategory = this.activeCategory === 'Semua Alat' || tool.category === this.activeCategory;
+                        return matchesSearch && matchesCategory;
+                    });
+                },
+                resetFilters() {
+                    this.searchQuery = '';
+                    this.activeCategory = 'Semua Alat';
+                }
+            }))
+        })
+    </script>
+</body></html>
