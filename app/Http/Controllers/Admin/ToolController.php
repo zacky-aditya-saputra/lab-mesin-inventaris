@@ -24,7 +24,9 @@ class ToolController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.tools.index', compact('tools'));
+        $categories = Category::query()->orderBy('name')->get();
+
+        return view('admin.tools.index', compact('tools', 'categories'));
     }
 
     /**

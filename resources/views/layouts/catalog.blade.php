@@ -15,6 +15,9 @@
 
     <!-- Vite Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
     @stack('styles')
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased" x-data="{ mobileMenuOpen: false }">

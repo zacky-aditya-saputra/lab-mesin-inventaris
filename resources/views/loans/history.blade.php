@@ -205,7 +205,7 @@
         </div>
 
         <!-- Pagination -->
-        @if ($loanRequests->hasPages())
+        @if (method_exists($loanRequests, 'hasPages') && $loanRequests->hasPages())
             <div class="p-4 border-t border-outline-variant bg-surface-container-lowest">
                 {{ $loanRequests->links() }}
             </div>

@@ -100,22 +100,135 @@
                 </div>
 
                 <!-- Unggah Foto Alat -->
-                <div class="md:col-span-2">
-                    <label class="block font-label-md text-label-md text-on-surface mb-1.5">Ganti Foto Alat</label>
-                    @if($tool->image_path)
-                        <div class="mb-3 flex items-center gap-4">
-                            <img src="{{ asset('storage/' . $tool->image_path) }}" alt="{{ $tool->name }}" class="w-20 h-20 object-cover rounded-lg border border-outline-variant">
-                            <span class="font-caption-xs text-caption-xs text-on-surface-variant">Gambar saat ini terpasang. Unggah file baru untuk mengganti.</span>
+                <div class="md:col-span-2"
+                     x-data="{
+                         initialUrl: '{{ $tool->image_path ? asset('storage/' . $tool->image_path) : '' }}',
+                         previewUrl: '{{ $tool->image_path ? asset('storage/' . $tool->image_path) : '' }}',
+                         isExistingImage: {{ $tool->image_path ? 'true' : 'false' }},
+                         fileName: '{{ $tool->image_path ? basename($tool->image_path) : '' }}',
+                         fileSize: '',
+                         errorMessage: '',
+                         handleImageChange(event) {
+                             this.errorMessage = '';
+                             const file = event.target.files[0];
+                             if (!file) {
+                                 this.clearImage();
+                                 return;
+                             }
+                             if (!['image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
+                                 this.errorMessage = 'Format file tidak didukung. Harap pilih gambar JPG, PNG, atau WebP.';
+                                 this.clearImage();
+                                 event.target.value = '';
+                                 return;
+                             }
+                             if (file.size > 2 * 1024 * 1024) {
+                                 this.errorMessage = 'Ukuran gambar melebihi batas maksimal 2MB.';
+                                 this.clearImage();
+                                 event.target.value = '';
+                                 return;
+                             }
+                             this.isExistingImage = false;
+                             this.fileName = file.name;
+                             this.fileSize = (file.size / 1024).toFixed(1) + ' KB';
+                             const reader = new FileReader();
+                             reader.onload = (e) => { this.previewUrl = e.target.result; };
+                             reader.readAsDataURL(file);
+                         },
+                         clearImage() {
+                             const input = document.getElementById('image');
+                             if (input) input.value = '';
+                             if (this.initialUrl) {
+                                 this.previewUrl = this.initialUrl;
+                                 this.isExistingImage = true;
+                                 this.fileName = '{{ $tool->image_path ? basename($tool->image_path) : '' }}';
+                                 this.fileSize = '';
+                             } else {
+                                 this.previewUrl = null;
+                                 this.isExistingImage = false;
+                                 this.fileName = '';
+                                 this.fileSize = '';
+                             }
+                         }
+                     }">
+                    <label class="block font-label-md text-label-md text-on-surface mb-1.5">Foto / Gambar Alat</label>
+
+                    <!-- Alert Validasi Error Sisi Klien -->
+                    <div x-show="errorMessage" x-cloak class="p-3 mb-3 rounded-lg bg-error/10 border border-error/20 text-error flex items-center justify-between gap-2 text-xs font-medium">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">error</span>
+                            <span x-text="errorMessage"></span>
                         </div>
-                    @endif
-                    <div class="border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center bg-surface-container-low/40 hover:bg-surface-container-low transition-colors cursor-pointer relative">
-                        <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">add_photo_alternate</span>
-                        <p class="font-body-md text-body-md text-on-surface text-center mb-1">
-                            <span class="font-semibold text-primary">Klik untuk memilih gambar baru</span> atau seret ke sini
-                        </p>
-                        <p class="font-caption-xs text-caption-xs text-on-surface-variant">JPG, PNG, WebP (Maksimal 2MB)</p>
-                        <input id="image" name="image" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer"/>
+                        <button type="button" @click="errorMessage = ''" class="hover:opacity-75">
+                            <span class="material-symbols-outlined text-sm">close</span>
+                        </button>
                     </div>
+
+                    <!-- Kartu Pratinjau Foto (Foto Lama atau Foto Baru Terpilih) -->
+                    <div x-show="previewUrl" x-cloak class="p-4 rounded-xl border border-outline-variant bg-surface-container-low/50 flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                        <img :src="previewUrl" :alt="fileName || '{{ $tool->name }}'" class="h-36 w-36 object-contain rounded-lg border border-outline-variant bg-surface-container flex-shrink-0" />
+                        <div class="flex-1 min-w-0 text-center sm:text-left flex flex-col justify-between h-full py-1">
+                            <div>
+                                <div class="flex items-center justify-center sm:justify-start gap-2 mb-1.5">
+                                    <span x-show="isExistingImage" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-badge-xs font-medium bg-surface-container-high text-on-surface-variant border border-outline-variant">
+                                        Foto Saat Ini
+                                    </span>
+                                    <span x-show="!isExistingImage" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-badge-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                                        Foto Baru Terpilih
+                                    </span>
+                                </div>
+                                <p class="font-label-md text-label-md text-on-surface truncate font-semibold" x-text="fileName || '{{ $tool->image_path ? basename($tool->image_path) : '' }}'"></p>
+                                <p class="font-caption-xs text-caption-xs text-on-surface-variant mt-0.5" x-show="isExistingImage">Foto aktif yang saat ini digunakan pada inventaris</p>
+                                <p class="font-caption-xs text-caption-xs text-on-surface-variant mt-0.5" x-show="!isExistingImage" x-text="fileSize"></p>
+                            </div>
+                            <div class="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                <button type="button" 
+                                        @click="document.getElementById('image').click()" 
+                                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-xs font-medium shadow-sm transition-colors">
+                                    <span class="material-symbols-outlined text-base">photo_camera</span>
+                                    <span x-text="isExistingImage ? 'Pilih Foto Pengganti' : 'Ganti Foto Lain'"></span>
+                                </button>
+                                <template x-if="isExistingImage">
+                                    <button type="button" 
+                                            @click="previewUrl = null" 
+                                            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-outline-variant hover:bg-surface-container-low text-secondary font-label-md text-xs font-medium transition-colors">
+                                        <span class="material-symbols-outlined text-base">upload_file</span>
+                                        Buka Area Dropzone
+                                    </button>
+                                </template>
+                                <template x-if="!isExistingImage">
+                                    <button type="button" 
+                                            @click="clearImage()" 
+                                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-error/30 text-error hover:bg-error/10 font-label-md text-xs font-medium transition-colors">
+                                        <span class="material-symbols-outlined text-base" x-text="initialUrl ? 'undo' : 'delete'"></span>
+                                        <span x-text="initialUrl ? 'Batalkan & Kembalikan ke Foto Lama' : 'Hapus Foto'"></span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dropzone Default (Ketika previewUrl Kosong) -->
+                    <div x-show="!previewUrl" x-cloak class="space-y-3">
+                        <div class="border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center bg-surface-container-low/40 hover:bg-surface-container-low transition-colors cursor-pointer relative">
+                            <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">add_photo_alternate</span>
+                            <p class="font-body-md text-body-md text-on-surface text-center mb-1">
+                                <span class="font-semibold text-primary">Klik untuk memilih gambar baru</span> atau seret ke sini
+                            </p>
+                            <p class="font-caption-xs text-caption-xs text-on-surface-variant">JPG, PNG, WebP (Maksimal 2MB)</p>
+                            <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/jpg" @change="handleImageChange($event)" class="absolute inset-0 opacity-0 cursor-pointer"/>
+                        </div>
+                        <template x-if="initialUrl">
+                            <div class="text-center">
+                                <button type="button" 
+                                        @click="clearImage()" 
+                                        class="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary-container font-medium transition-colors">
+                                    <span class="material-symbols-outlined text-sm">undo</span>
+                                    Batalkan perubahan dan gunakan foto saat ini
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+
                     @error('image')
                         <p class="mt-1 font-caption-xs text-caption-xs text-error">{{ $message }}</p>
                     @enderror

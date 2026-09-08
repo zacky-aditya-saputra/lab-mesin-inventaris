@@ -27,10 +27,14 @@
         </div>
     </div>
 
-    <!-- Student Info & KTM Preview Grid -->
+    <!-- Borrower Info & Identity Document Preview Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Student Details Card -->
+        <!-- Borrower Details Card -->
         <div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm space-y-4">
+            @php
+                preg_match('/^\[(.+?)\]\s*/', (string) $loan->purpose, $clientTagMatches);
+                $clientTag = $clientTagMatches[1] ?? null;
+            @endphp
             <h3 class="font-title-sm text-title-sm text-on-surface font-bold border-b border-outline-variant pb-3 flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary">badge</span>
                 Informasi Peminjam
@@ -42,8 +46,12 @@
                     <p class="font-semibold text-on-surface">{{ $loan->user->name ?? '-' }}</p>
                 </div>
                 <div>
-                    <span class="text-on-surface-variant text-caption-xs font-medium">NIM / NIP</span>
+                    <span class="text-on-surface-variant text-caption-xs font-medium">Nomor Identitas (NIM / NIK)</span>
                     <p class="font-mono text-on-surface font-semibold">{{ $loan->user->identity_number ?? '-' }}</p>
+                </div>
+                <div>
+                    <span class="text-on-surface-variant text-caption-xs font-medium">Asal / Instansi / Domisili</span>
+                    <p class="font-semibold text-on-surface">{{ $clientTag ?? '-' }}</p>
                 </div>
                 <div>
                     <span class="text-on-surface-variant text-caption-xs font-medium">Email</span>
@@ -78,16 +86,16 @@
             </div>
         </div>
 
-        <!-- KTM Preview Card -->
+        <!-- Identity Document (KTM / KTP) Preview Card -->
         <div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm flex flex-col justify-between">
             <div>
                 <h3 class="font-title-sm text-title-sm text-on-surface font-bold border-b border-outline-variant pb-3 flex items-center gap-2 mb-4">
                     <span class="material-symbols-outlined text-primary">credit_card</span>
-                    Berkas KTM
+                    Berkas Identitas (KTM / KTP)
                 </h3>
                 @if($loan->identity_card_path)
                     <div class="aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant bg-surface-container flex items-center justify-center relative group">
-                        <img src="{{ asset('storage/' . $loan->identity_card_path) }}" alt="KTM Mahasiswa" class="w-full h-full object-cover">
+                        <img src="{{ asset('storage/' . $loan->identity_card_path) }}" alt="Dokumen Identitas Peminjam" class="w-full h-full object-cover">
                         <a href="{{ asset('storage/' . $loan->identity_card_path) }}" target="_blank" 
                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-label-md text-label-md gap-1">
                             <span class="material-symbols-outlined text-base">fullscreen</span>
@@ -97,7 +105,7 @@
                 @else
                     <div class="p-8 text-center text-on-surface-variant border-2 border-dashed border-outline-variant rounded-lg">
                         <span class="material-symbols-outlined text-4xl text-outline mb-2">image_not_supported</span>
-                        <p class="font-caption-xs text-caption-xs">Tidak ada berkas KTM terlampir.</p>
+                        <p class="font-caption-xs text-caption-xs">Tidak ada berkas identitas terlampir.</p>
                     </div>
                 @endif
             </div>

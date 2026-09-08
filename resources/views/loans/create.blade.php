@@ -59,8 +59,52 @@
                 Data Peminjam
             </h2>
 
+            <!-- Jenis Klien / Identitas -->
+            <div class="mb-6">
+                <label class="font-label-md text-label-md text-on-surface block mb-2">Jenis Klien / Identitas <span class="text-error">*</span></label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label class="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors"
+                           :class="clientType === 'mahasiswa' ? 'border-primary bg-primary/5' : 'border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low'">
+                        <input type="radio" name="client_type" value="mahasiswa" x-model="clientType" required class="w-4 h-4 text-primary focus:ring-primary shrink-0"/>
+                        <span class="flex flex-col">
+                            <span class="font-label-md text-label-md font-semibold text-on-surface flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-primary text-lg">school</span>
+                                Mahasiswa Unwahas
+                            </span>
+                            <span class="font-caption-xs text-caption-xs text-on-surface-variant">Verifikasi dengan KTM</span>
+                        </span>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors"
+                           :class="clientType === 'umum' ? 'border-primary bg-primary/5' : 'border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low'">
+                        <input type="radio" name="client_type" value="umum" x-model="clientType" required class="w-4 h-4 text-primary focus:ring-primary shrink-0"/>
+                        <span class="flex flex-col">
+                            <span class="font-label-md text-label-md font-semibold text-on-surface flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-primary text-lg">groups</span>
+                                Masyarakat / Klien Umum
+                            </span>
+                            <span class="font-caption-xs text-caption-xs text-on-surface-variant">Verifikasi dengan KTP</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Afiliasi Klien Umum (hanya untuk Klien Umum) -->
+            <div x-show="clientType === 'umum'" x-transition style="display: none;" class="mb-6 p-4 rounded-xl border border-outline-variant bg-surface-container-low">
+                <label class="font-label-md text-label-md text-on-surface block mb-2">Status Afiliasi</label>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="affiliation_type" value="instansi" x-model="affiliationType" class="w-4 h-4 text-primary focus:ring-primary shrink-0"/>
+                        <span class="font-body-md text-body-md text-on-surface">Berafiliasi dengan Perusahaan / Instansi / Bengkel</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="affiliation_type" value="individu" x-model="affiliationType" class="w-4 h-4 text-primary focus:ring-primary shrink-0"/>
+                        <span class="font-body-md text-body-md text-on-surface">Perorangan / Individu (Tanpa Instansi)</span>
+                    </label>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <!-- Nama Mahasiswa -->
+                <!-- Nama Peminjam -->
                 <div class="flex flex-col gap-1.5">
                     <label class="font-label-md text-label-md text-on-surface" for="borrower_name">Nama Lengkap <span class="text-error">*</span></label>
                     <input class="w-full h-11 px-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest" 
@@ -83,49 +127,70 @@
                            type="tel"/>
                 </div>
 
-                <!-- NIM / NIP -->
+                <!-- Nomor Identitas (NIM / NIK) -->
                 <div class="flex flex-col gap-1.5">
-                    <label class="font-label-md text-label-md text-on-surface" for="borrower_identity">NIM / NIP <span class="text-error">*</span></label>
+                    <label class="font-label-md text-label-md text-on-surface" for="borrower_identity">
+                        <span x-text="clientType === 'mahasiswa' ? 'NIM (Nomor Induk Mahasiswa)' : 'NIK KTP (16 Digit)'"></span> <span class="text-error">*</span>
+                    </label>
                     <input class="w-full h-11 px-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest font-mono" 
                            id="borrower_identity" 
                            name="borrower_identity" 
                            value="{{ old('borrower_identity', auth()->user()->identity_number ?? '') }}" 
+                           :placeholder="clientType === 'mahasiswa' ? 'Contoh: 32602100...' : 'Contoh: 3301xxxxxxxxxxxx'" 
                            required 
                            type="text"/>
                 </div>
 
-                <!-- Instansi / Prodi -->
+                <!-- Asal / Instansi / Domisili -->
                 <div class="flex flex-col gap-1.5">
-                    <label class="font-label-md text-label-md text-on-surface" for="institution">Program Studi / Instansi <span class="text-error">*</span></label>
+                    <label class="font-label-md text-label-md text-on-surface" for="institution">
+                        <span x-text="clientType === 'mahasiswa' ? 'Program Studi / Fakultas' : (affiliationType === 'individu' ? 'Kota / Alamat Domisili Peminjam' : 'Nama Instansi / Perusahaan / Bengkel')"></span> <span class="text-error">*</span>
+                    </label>
                     <input class="w-full h-11 px-3 py-2 border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest" 
                            id="institution" 
                            name="institution" 
                            value="{{ old('institution', 'Teknik Mesin Unwahas') }}" 
-                           placeholder="Contoh: Teknik Mesin S1" 
+                           :placeholder="clientType === 'mahasiswa' ? 'Contoh: S1 Teknik Mesin' : (affiliationType === 'individu' ? 'Contoh: Perorangan - Kel. Menoreh, Kota Semarang' : 'Contoh: CV Mesin Perkakas / Bengkel Bubut Mandiri')" 
                            required 
                            type="text"/>
                 </div>
             </div>
 
-            <!-- Upload KTM -->
+            <!-- Upload Dokumen Identitas (KTM / KTP) -->
             <div class="flex flex-col gap-2 mb-6">
-                <label class="font-label-md text-label-md text-on-surface">Unggah Kartu Tanda Mahasiswa (KTM) <span class="text-error">*</span></label>
+                <label class="font-label-md text-label-md text-on-surface">
+                    <span x-text="clientType === 'mahasiswa' ? 'Unggah Kartu Tanda Mahasiswa (KTM)' : 'Unggah Kartu Tanda Penduduk (KTP)'"></span> <span class="text-error">*</span>
+                </label>
                 <div class="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center bg-surface-container-low/40 hover:bg-surface-container-low transition-colors cursor-pointer relative group">
                     <span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors mb-2">cloud_upload</span>
                     <p class="font-body-md text-body-md text-on-surface text-center mb-1">
-                        <span class="font-semibold text-primary">Klik untuk memilih berkas KTM</span> atau seret file ke sini
+                        <span class="font-semibold text-primary">Klik untuk memilih berkas <span x-text="clientType === 'mahasiswa' ? 'KTM' : 'KTP'"></span></span> atau seret file ke sini
                     </p>
                     <p class="font-caption-xs text-caption-xs text-on-surface-variant">JPG, PNG, PDF (Maksimal 2MB)</p>
-                    <input id="identity_card" name="identity_card" accept=".jpg,.jpeg,.png,.pdf" class="absolute inset-0 opacity-0 cursor-pointer" type="file" required/>
+                    <input id="identity_card" name="identity_card" accept=".jpg,.jpeg,.png,.pdf" class="absolute inset-0 opacity-0 cursor-pointer" type="file" @change="handleFileChange($event)" required/>
+                </div>
+                <!-- Preview nama & ukuran file -->
+                <div x-show="selectedFileName" x-cloak class="mt-2 p-2 bg-status-success-bg/30 border border-status-success-text/30 rounded-lg flex items-center justify-between text-xs text-status-success-text">
+                    <span class="flex items-center gap-1 font-medium truncate max-w-xs">
+                        <span class="material-symbols-outlined text-sm">description</span>
+                        <span x-text="selectedFileName"></span>
+                    </span>
+                    <span x-text="selectedFileSize" class="font-mono"></span>
                 </div>
                 @error('identity_card')
                     <p class="font-caption-xs text-caption-xs text-error mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
+            <!-- Error alert Step 1 -->
+            <div x-show="step1Error" x-cloak class="p-3 mb-4 rounded-lg bg-error/10 border border-error/20 text-error flex items-center gap-2 text-sm font-medium">
+                <span class="material-symbols-outlined text-base">error</span>
+                <span x-text="step1Error"></span>
+            </div>
+
             <!-- Wizard Step 1 Nav -->
             <div class="flex justify-end pt-4 border-t border-surface-variant">
-                <button type="button" @click="currentStep = 2" 
+                <button type="button" @click="goToStep2()" 
                         class="bg-primary text-on-primary font-label-md text-label-md px-6 py-2.5 rounded-lg hover:bg-primary-container transition-colors flex items-center gap-2">
                     Selanjutnya
                     <span class="material-symbols-outlined text-base">arrow_forward</span>
@@ -177,19 +242,27 @@
                                     <!-- Quantity Selector -->
                                     <td class="py-3 px-4">
                                         <div class="flex items-center border border-outline-variant rounded-lg overflow-hidden w-28 bg-surface-container-lowest">
-                                            <button type="button" @click="if(item.quantity > 1) item.quantity--" 
-                                                    class="w-8 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors">
+                                            <button type="button" 
+                                                    @click="if(item.quantity > 1) { item.quantity--; step2Error = ''; }" 
+                                                    :disabled="item.quantity <= 1 || item.max_stock <= 0"
+                                                    :class="(item.quantity <= 1 || item.max_stock <= 0) ? 'opacity-40 cursor-not-allowed' : 'hover:bg-surface-container'"
+                                                    class="w-8 h-9 flex items-center justify-center text-on-surface-variant transition-colors">
                                                 <span class="material-symbols-outlined text-[18px]">remove</span>
                                             </button>
                                             <input :name="'items[' + index + '][quantity]'" 
                                                    type="number" 
                                                    x-model.number="item.quantity" 
+                                                   @input="step2Error = ''"
                                                    :max="item.max_stock" 
-                                                   min="1" 
+                                                   :min="item.max_stock > 0 ? 1 : 0" 
+                                                   :disabled="item.max_stock <= 0"
                                                    required
-                                                   class="w-12 h-9 text-center font-body-md text-body-md text-on-surface border-none focus:ring-0 p-0"/>
-                                            <button type="button" @click="if(item.quantity < item.max_stock) item.quantity++" 
-                                                    class="w-8 h-9 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors">
+                                                   class="w-12 h-9 text-center font-body-md text-body-md text-on-surface border-none focus:ring-0 p-0 disabled:bg-surface-container-low disabled:text-on-surface-variant/50"/>
+                                            <button type="button" 
+                                                    @click="if(item.quantity < item.max_stock && item.max_stock > 0) { item.quantity++; step2Error = ''; }" 
+                                                    :disabled="item.quantity >= item.max_stock || item.max_stock <= 0"
+                                                    :class="(item.quantity >= item.max_stock || item.max_stock <= 0) ? 'opacity-40 cursor-not-allowed' : 'hover:bg-surface-container'"
+                                                    class="w-8 h-9 flex items-center justify-center text-on-surface-variant transition-colors">
                                                 <span class="material-symbols-outlined text-[18px]">add</span>
                                             </button>
                                         </div>
@@ -210,6 +283,12 @@
                 </div>
             </div>
 
+            <!-- Error alert Step 2 -->
+            <div x-show="step2Error" x-cloak class="p-3 mb-4 rounded-lg bg-error/10 border border-error/20 text-error flex items-center gap-2 text-sm font-medium">
+                <span class="material-symbols-outlined text-base">error</span>
+                <span x-text="step2Error"></span>
+            </div>
+
             <!-- Add More Tool Row -->
             <button type="button" @click="addItem()" 
                     class="mb-8 font-label-md text-label-md text-primary hover:text-primary-container flex items-center gap-1.5 transition-colors font-semibold">
@@ -224,7 +303,7 @@
                     <span class="material-symbols-outlined text-base">arrow_back</span>
                     Kembali
                 </button>
-                <button type="button" @click="currentStep = 3" 
+                <button type="button" @click="goToStep3()" 
                         class="bg-primary text-on-primary font-label-md text-label-md px-6 py-2.5 rounded-lg hover:bg-primary-container transition-colors flex items-center gap-2">
                     Selanjutnya
                     <span class="material-symbols-outlined text-base">arrow_forward</span>
@@ -323,29 +402,117 @@
         if (initialToolId) {
             const found = availableTools.find(t => t.id == initialToolId);
             if (found) {
-                initialItem = { tool_id: found.id, quantity: 1, max_stock: found.available_stock };
+                initialItem = { 
+                    tool_id: found.id, 
+                    quantity: found.available_stock > 0 ? 1 : 0, 
+                    max_stock: found.available_stock 
+                };
             }
         }
 
         return {
             currentStep: 1,
+            step1Error: '',
+            step2Error: '',
+            selectedFileName: '',
+            selectedFileSize: '',
+            clientType: 'mahasiswa',
+            affiliationType: 'instansi',
             availableTools: availableTools,
             items: [initialItem],
+            handleFileChange(event) {
+                this.step1Error = '';
+                const file = event.target.files[0];
+                if (file) {
+                    if (file.size > 2 * 1024 * 1024) {
+                        this.step1Error = 'Ukuran berkas melebihi batas maksimal 2MB.';
+                        event.target.value = '';
+                        this.selectedFileName = '';
+                        this.selectedFileSize = '';
+                        return;
+                    }
+                    this.selectedFileName = file.name;
+                    this.selectedFileSize = (file.size / 1024).toFixed(1) + ' KB';
+                } else {
+                    this.selectedFileName = '';
+                    this.selectedFileSize = '';
+                }
+            },
+            validateStep1() {
+                this.step1Error = '';
+                const borrowerName = document.getElementById('borrower_name')?.value?.trim();
+                const borrowerPhone = document.getElementById('borrower_phone')?.value?.trim();
+                const borrowerIdentity = document.getElementById('borrower_identity')?.value?.trim();
+                const institution = document.getElementById('institution')?.value?.trim();
+                const fileInput = document.getElementById('identity_card');
+
+                if (!borrowerName || !borrowerPhone || !borrowerIdentity || !institution) {
+                    this.step1Error = 'Harap lengkapi semua bidang data identitas bertanda bintang (*).';
+                    return false;
+                }
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                    this.step1Error = 'Wajib mengunggah berkas dokumen identitas (KTM / KTP).';
+                    return false;
+                }
+                return true;
+            },
+            goToStep2() {
+                if (this.validateStep1()) {
+                    this.currentStep = 2;
+                }
+            },
+            validateStep2() {
+                this.step2Error = '';
+                if (!this.items || this.items.length === 0) {
+                    this.step2Error = 'Harap pilih minimal 1 alat laboratorium.';
+                    return false;
+                }
+                for (let i = 0; i < this.items.length; i++) {
+                    const item = this.items[i];
+                    if (!item.tool_id) {
+                        this.step2Error = 'Harap pilih alat laboratorium pada setiap baris.';
+                        return false;
+                    }
+                    if (item.max_stock <= 0) {
+                        this.step2Error = 'Alat yang Anda pilih memiliki stok 0 (habis). Harap pilih alat yang tersedia atau hapus baris tersebut.';
+                        return false;
+                    }
+                    if (item.quantity < 1 || item.quantity > item.max_stock) {
+                        this.step2Error = 'Jumlah pinjam tidak boleh melebihi stok tersedia.';
+                        return false;
+                    }
+                }
+                return true;
+            },
+            goToStep3() {
+                if (this.validateStep2()) {
+                    this.currentStep = 3;
+                }
+            },
             addItem() {
                 this.items.push({ tool_id: '', quantity: 1, max_stock: 0 });
+                this.step2Error = '';
             },
             removeItem(index) {
                 if (this.items.length > 1) {
                     this.items.splice(index, 1);
+                    this.step2Error = '';
                 }
             },
             updateToolInfo(item) {
                 const found = this.availableTools.find(t => t.id == item.tool_id);
                 if (found) {
                     item.max_stock = found.available_stock;
-                    if (item.quantity > item.max_stock) {
-                        item.quantity = item.max_stock > 0 ? 1 : 0;
+                    if (found.available_stock <= 0) {
+                        item.quantity = 0;
+                    } else {
+                        if (item.quantity === 0) {
+                            item.quantity = 1;
+                        } else if (item.quantity > item.max_stock) {
+                            item.quantity = item.max_stock;
+                        }
                     }
+                    this.step2Error = '';
                 }
             }
         };
