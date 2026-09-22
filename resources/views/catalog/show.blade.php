@@ -42,6 +42,25 @@
                     <div class="font-body-md text-body-md text-on-surface-variant whitespace-pre-line text-sm">{{ $tool->specification ?? 'Tidak ada spesifikasi khusus.' }}</div>
                 </div>
 
+                <!-- Laboratory Origin Info -->
+                @if ($tool->laboratory)
+                    <div class="mb-6 bg-surface-container-low rounded-xl border border-outline-variant p-4 flex items-start gap-3">
+                        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">science</span>
+                        <div>
+                            <span class="block font-label-md text-label-md text-on-surface font-semibold mb-0.5">Asal Laboratorium</span>
+                            <a href="{{ route('catalog.index', ['lab' => $tool->laboratory->slug]) }}"
+                               class="font-body-md text-body-md text-primary hover:underline">
+                                {{ $tool->laboratory->name }}
+                            </a>
+                            @if ($tool->laboratory->location)
+                                <span class="block font-caption-xs text-caption-xs text-on-surface-variant mt-1">
+                                    Lokasi ruangan: {{ $tool->laboratory->location }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Availability Box -->
                 <div class="bg-surface-container-low rounded-xl border border-outline-variant p-4 mb-6">
                     <div class="grid grid-cols-2 gap-4">

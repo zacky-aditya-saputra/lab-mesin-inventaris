@@ -3,22 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLoanRequest;
+use App\Models\Laboratory;
 use App\Models\LoanRequest;
 use App\Models\Tool;
+use App\Models\User;
+use App\Notifications\NewLoanRequestNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class LoanController extends Controller
 {
     /**
-     * Display the loan request form with all active tools.
+     * Display the loan request form with laboratories and all active tools.
      */
     public function create(): View
     {
+        $laboratories = Laboratory::query()
+            ->where('is_active', true)
+            ->whereHas('tools', fn ($query) => $query->where('is_active', true))
+            ->orderBy('name')
+            ->get();
+
         $toolsList = Tool::query()
-            ->with('category')
+            ->with(['category', 'laboratory'])
             ->where('is_active', true)
             ->orderBy('name')
             ->get()
@@ -26,12 +37,19 @@ class LoanController extends Controller
                 'id' => $tool->id,
                 'code' => $tool->code,
                 'name' => $tool->name,
+                'laboratory_id' => $tool->laboratory_id,
                 'available_stock' => $tool->available_stock,
                 'image' => $tool->image_path ? asset('storage/'.$tool->image_path) : null,
             ])
             ->all();
 
-        return view('loans.create', compact('toolsList'));
+        $user = auth()->user();
+
+        $isProfileComplete = filled($user->identity_number)
+            && filled($user->phone_number)
+            && filled($user->identity_card_path);
+
+        return view('loans.create', compact('toolsList', 'laboratories', 'user', 'isProfileComplete'));
     }
 
     /**
@@ -39,26 +57,42 @@ class LoanController extends Controller
      */
     public function store(StoreLoanRequest $request): RedirectResponse
     {
-        $path = $request->file('identity_card')->store('identity_cards', 'public');
+        $user = $request->user();
 
-        $loanRequest = DB::transaction(function () use ($request, $path): LoanRequest {
-            $user = $request->user();
+        if ($request->filled('phone_number')) {
+            $user->phone_number = $request->input('phone_number');
+        }
 
-            if (blank($user->phone_number) && $request->filled('borrower_phone')) {
-                $user->update(['phone_number' => $request->input('borrower_phone')]);
+        if ($request->hasFile('identity_card_file')) {
+            if (filled($user->identity_card_path)) {
+                Storage::disk('public')->delete($user->identity_card_path);
             }
 
-            if (blank($user->identity_number) && $request->filled('borrower_identity')) {
-                $user->update(['identity_number' => $request->input('borrower_identity')]);
-            }
+            $user->identity_card_path = $request->file('identity_card_file')->store('identity_cards', 'public');
+        }
 
+        if ($user->isDirty()) {
+            $user->save();
+        }
+
+        if (blank($user->identity_card_path)) {
+            return back()
+                ->withInput()
+                ->with('error', 'Dokumen identitas (KTM/KTP) belum terunggah di profil Anda. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        $loanLetterPath = $request->file('loan_letter')->store('loan_letters', 'public');
+
+        $loanRequest = DB::transaction(function () use ($request, $user, $loanLetterPath): LoanRequest {
             $loanRequest = LoanRequest::query()->create([
                 'user_id' => $user->id,
+                'laboratory_id' => (int) $request->input('laboratory_id'),
                 'ticket_number' => $this->generateTicketNumber(),
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),
-                'purpose' => $this->buildClientTag($request).' '.$request->input('purpose'),
-                'identity_card_path' => $path,
+                'purpose' => $request->input('purpose'),
+                'identity_card_path' => $user->identity_card_path,
+                'loan_letter_path' => $loanLetterPath,
                 'status' => 'PENDING',
             ]);
 
@@ -73,6 +107,13 @@ class LoanController extends Controller
 
             return $loanRequest;
         });
+
+        $laborans = User::query()
+            ->where('role', 'laboran')
+            ->where('laboratory_id', $loanRequest->laboratory_id)
+            ->get();
+
+        Notification::send($laborans, new NewLoanRequestNotification($loanRequest));
 
         return redirect()
             ->route('loans.history')
@@ -117,23 +158,5 @@ class LoanController extends Controller
         } while (LoanRequest::query()->where('ticket_number', $ticketNumber)->exists());
 
         return $ticketNumber;
-    }
-
-    /**
-     * Build the borrower category tag prefixed to the loan purpose.
-     */
-    private function buildClientTag(StoreLoanRequest $request): string
-    {
-        $institution = $request->input('institution');
-
-        if ($request->input('client_type') === 'mahasiswa') {
-            return "[Mahasiswa - {$institution}]";
-        }
-
-        if ($request->input('client_type') === 'umum' && $request->input('affiliation_type') === 'individu') {
-            return "[Umum/Individu - {$institution}]";
-        }
-
-        return "[Umum/Instansi - {$institution}]";
     }
 }

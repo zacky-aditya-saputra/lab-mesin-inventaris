@@ -20,9 +20,20 @@
     </style>
     @stack('styles')
 </head>
-<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased" x-data="{ mobileMenuOpen: false }">
-    <!-- TopNavBar -->
-    <nav class="bg-surface border-b border-outline-variant shadow-sm fixed top-0 w-full z-50">
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased" x-data="{ mobileMenuOpen: false, userMenuOpen: false, logoutOpen: false }">
+    <!-- TopNavBar (Glassmorphism) -->
+    @php
+        $authUser = auth()->user();
+        $roleLabel = 'Mahasiswa';
+        if ($authUser) {
+            if ($authUser->isKepalaLab()) {
+                $roleLabel = 'Kepala Lab';
+            } elseif ($authUser->isLaboran()) {
+                $roleLabel = 'Laboran '.str_replace('Laboratorium', 'Lab', $authUser->laboratory?->name ?? '');
+            }
+        }
+    @endphp
+    <nav class="bg-white/85 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-xs">
         <div class="flex justify-between items-center h-16 px-gutter-md max-w-container-max mx-auto">
             <div class="flex items-center gap-8">
                 <!-- Brand -->
@@ -38,17 +49,6 @@
                         Katalog
                     </a>
 
-                    @auth
-                        <a href="{{ route('loans.history') }}" 
-                           class="{{ request()->routeIs('loans.history') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary transition-colors duration-200' }} font-body-md text-body-md">
-                            Riwayat Pengajuan
-                        </a>
-                        <a href="{{ route('loans.create') }}" 
-                           class="{{ request()->routeIs('loans.create') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary transition-colors duration-200' }} font-body-md text-body-md">
-                            Ajukan Peminjaman
-                        </a>
-                    @endauth
-
                     <a href="#panduan" class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md">
                         Panduan
                     </a>
@@ -59,32 +59,85 @@
             </div>
 
             <!-- Right Actions -->
-            <div class="hidden md:flex items-center gap-4">
+            <div class="hidden md:flex items-center gap-3">
                 @auth
-                    @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('admin.dashboard') }}" class="bg-primary-container text-on-primary-container font-label-md text-label-md px-4 py-2 rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-sm">dashboard</span>
-                            Dashboard Admin
-                        </a>
-                    @else
-                        <div class="flex items-center gap-3">
-                            <div class="text-right">
-                                <p class="font-label-md text-label-md text-on-surface font-medium leading-none">{{ auth()->user()->name }}</p>
-                                <p class="font-caption-xs text-caption-xs text-on-surface-variant">{{ auth()->user()->identity_number ?? 'Mahasiswa' }}</p>
+                    <x-notification-bell />
+
+                    <!-- User Avatar Dropdown Menu -->
+                    <div class="relative" @click.outside="userMenuOpen = false">
+                        <button type="button" @click="userMenuOpen = !userMenuOpen"
+                                class="flex items-center gap-2.5 pl-1.5 pr-2.5 py-1.5 rounded-full border border-slate-200/90 bg-white/70 hover:bg-slate-50 hover:border-slate-300 shadow-xs transition-all duration-150 cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-b from-blue-600 to-blue-700 text-white flex items-center justify-center font-bold text-xs shadow-sm ring-1 ring-inset ring-white/20 flex-shrink-0">
+                                {{ strtoupper(substr($authUser->name, 0, 1)) }}
                             </div>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="p-2 text-on-surface-variant hover:text-error hover:bg-surface-container rounded-lg transition-colors" title="Keluar">
-                                    <span class="material-symbols-outlined text-xl">logout</span>
+                            <div class="text-left hidden lg:block max-w-[150px]">
+                                <p class="text-sm font-semibold text-slate-800 leading-tight truncate">{{ $authUser->name }}</p>
+                                <p class="text-[11px] font-medium text-blue-700/80 leading-tight truncate">{{ $roleLabel }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-lg text-slate-400 transition-transform duration-200" :class="userMenuOpen ? 'rotate-180' : ''">expand_more</span>
+                        </button>
+
+                        <!-- Dropdown Card -->
+                        <div x-show="userMenuOpen" x-cloak
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             class="absolute right-0 mt-2.5 w-72 rounded-xl border border-slate-200/90 bg-white shadow-xl shadow-slate-900/10 overflow-hidden origin-top-right">
+                            <!-- Identity Card -->
+                            <div class="px-4 py-3.5 border-b border-slate-100 bg-slate-50/70">
+                                <p class="text-sm font-bold text-slate-900 truncate">{{ $authUser->name }}</p>
+                                <p class="text-xs text-slate-500 truncate mb-2">{{ $authUser->email }}</p>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/80">
+                                    <span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                    {{ $roleLabel }}
+                                </span>
+                            </div>
+
+                            <!-- Role-based Menu Items -->
+                            <div class="py-1.5 px-1.5">
+                                @if ($authUser->isLaboran() || $authUser->isKepalaLab())
+                                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                        <span class="material-symbols-outlined text-lg text-slate-400">dashboard</span>
+                                        Kelola Lab (Dashboard)
+                                    </a>
+                                    <a href="{{ route('catalog.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                        <span class="material-symbols-outlined text-lg text-slate-400">menu_book</span>
+                                        Katalog Publik
+                                    </a>
+                                @else
+                                    <a href="{{ route('loans.create') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                        <span class="material-symbols-outlined text-lg text-slate-400">add_circle</span>
+                                        Ajukan Peminjaman
+                                    </a>
+                                    <a href="{{ route('loans.history') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                        <span class="material-symbols-outlined text-lg text-slate-400">history</span>
+                                        Riwayat Pengajuan Tiket
+                                    </a>
+                                @endif
+                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                    <span class="material-symbols-outlined text-lg text-slate-400">manage_accounts</span>
+                                    Pengaturan Profil Saya
+                                </a>
+                            </div>
+
+                            <!-- Divider + Logout -->
+                            <div class="border-t border-slate-100 py-1.5 px-1.5">
+                                <button type="button" @click="userMenuOpen = false; logoutOpen = true"
+                                        class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer">
+                                    <span class="material-symbols-outlined text-lg">logout</span>
+                                    Keluar / Logout
                                 </button>
-                            </form>
+                            </div>
                         </div>
-                    @endif
+                    </div>
                 @else
-                    <a href="{{ route('login') }}" class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors shadow-sm">
+                    <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-medium tracking-tight shadow-sm hover:shadow ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Masuk
                     </a>
-                    <a href="{{ route('register') }}" class="bg-surface-container-high text-on-surface font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-surface-dim transition-colors border border-outline-variant">
+                    <a href="{{ route('register') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium tracking-tight border border-slate-300/80 hover:border-slate-400 shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Daftar
                     </a>
                 @endauth
@@ -102,21 +155,25 @@
              class="md:hidden bg-surface border-b border-outline-variant px-4 py-4 space-y-3"
              style="display: none;">
             <a href="{{ route('catalog.index') }}" class="block font-label-md text-label-md text-on-surface py-2">Katalog Alat</a>
+            <a href="#panduan" class="block font-label-md text-label-md text-on-surface py-2">Panduan</a>
+            <a href="#kontak" class="block font-label-md text-label-md text-on-surface py-2">Kontak</a>
             @auth
-                <a href="{{ route('loans.history') }}" class="block font-label-md text-label-md text-on-surface py-2">Riwayat Pengajuan</a>
-                <a href="{{ route('loans.create') }}" class="block font-label-md text-label-md text-on-surface py-2">Ajukan Peminjaman</a>
-                @if(auth()->user()->role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}" class="block font-label-md text-label-md text-primary font-bold py-2">Dashboard Admin</a>
+                @if ($authUser->isLaboran() || $authUser->isKepalaLab())
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 font-label-md text-label-md text-primary font-bold py-2">
+                        <span class="material-symbols-outlined text-lg">dashboard</span>
+                        Kelola Lab (Dashboard)
+                    </a>
+                @else
+                    <a href="{{ route('loans.create') }}" class="block font-label-md text-label-md text-on-surface py-2">Ajukan Peminjaman</a>
+                    <a href="{{ route('loans.history') }}" class="block font-label-md text-label-md text-on-surface py-2">Riwayat Pengajuan Tiket</a>
                 @endif
+                <a href="{{ route('profile.edit') }}" class="block font-label-md text-label-md text-on-surface py-2">Pengaturan Profil Saya</a>
                 <div class="pt-3 border-t border-outline-variant flex items-center justify-between">
                     <div>
-                        <p class="font-label-md text-label-md text-on-surface">{{ auth()->user()->name }}</p>
-                        <p class="font-caption-xs text-caption-xs text-on-surface-variant">{{ auth()->user()->email }}</p>
+                        <p class="font-label-md text-label-md text-on-surface font-semibold">{{ $authUser->name }}</p>
+                        <p class="font-caption-xs text-caption-xs text-on-surface-variant">{{ $roleLabel }}</p>
                     </div>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="text-error font-label-md text-label-md">Keluar</button>
-                    </form>
+                    <button type="button" @click="mobileMenuOpen = false; logoutOpen = true" class="text-error font-label-md text-label-md cursor-pointer">Keluar</button>
                 </div>
             @else
                 <div class="pt-3 border-t border-outline-variant flex gap-2">
@@ -127,8 +184,41 @@
         </div>
     </nav>
 
+    <!-- Logout Confirmation Modal -->
+    <div x-show="logoutOpen" x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[70] flex items-center justify-center p-4"
+         style="display: none;">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="logoutOpen = false"></div>
+        <div class="relative bg-white w-full max-w-sm rounded-2xl border border-slate-200/80 shadow-2xl p-6 text-center">
+            <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl text-rose-600">logout</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 tracking-tight">Keluar dari Sistem?</h3>
+            <p class="text-sm text-slate-500 mt-1.5">Apakah Anda yakin ingin mengakhiri sesi Anda saat ini?</p>
+            <div class="mt-5 flex gap-3">
+                <button type="button" @click="logoutOpen = false"
+                        class="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium tracking-tight border border-slate-300/80 hover:border-slate-400 shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
+                    Batal
+                </button>
+                <form method="POST" action="{{ route('logout') }}" class="flex-1">
+                    @csrf
+                    <button type="submit"
+                            class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-gradient-to-b from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white text-sm font-medium tracking-tight shadow-sm hover:shadow ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
+                        Ya, Keluar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content Canvas -->
-    <main class="flex-grow pt-16">
+    <main class="flex-grow">
         <!-- Flash Alerts -->
         @if (session('success'))
             <div class="max-w-container-max mx-auto px-gutter-md mt-6">

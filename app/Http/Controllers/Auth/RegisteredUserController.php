@@ -32,19 +32,27 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'identity_number' => ['nullable', 'string', 'max:50'],
-            'phone_number' => ['nullable', 'string', 'max:20'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'identity_type' => ['required', 'in:mahasiswa,umum'],
+            'identity_number' => $request->input('identity_type') === 'umum'
+                ? ['required', 'numeric', 'digits:13']
+                : ['required', 'string', 'max:30'],
+            'phone_number' => ['required', 'string', 'max:20'],
+            'institution' => ['required', 'string', 'max:255'],
+            'identity_card_file' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
-            'identity_number' => $request->identity_number,
-            'phone_number' => $request->phone_number,
-            'role' => 'student',
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'klien',
+            'identity_type' => $request->identity_type,
+            'identity_number' => $request->identity_number,
+            'phone_number' => $request->phone_number,
+            'institution' => $request->institution,
+            'identity_card_path' => $request->file('identity_card_file')->store('identity_cards', 'public'),
         ]);
 
         event(new Registered($user));

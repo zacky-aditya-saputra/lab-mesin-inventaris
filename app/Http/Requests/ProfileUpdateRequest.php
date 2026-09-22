@@ -16,6 +16,8 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isLabStaff = $this->user()->isLaboran() || $this->user()->isKepalaLab();
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
@@ -26,6 +28,11 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'identity_type' => ['nullable', Rule::in($isLabStaff ? ['pegawai'] : ['mahasiswa', 'umum'])],
+            'identity_number' => ['nullable', 'string', 'max:30'],
+            'phone_number' => ['nullable', 'string', 'max:20'],
+            'institution' => ['nullable', 'string', 'max:255'],
+            'identity_card_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
         ];
     }
 }

@@ -3,6 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Laboratory;
+use App\Models\LoanItem;
+use App\Models\LoanLog;
+use App\Models\LoanRequest;
+use App\Models\StudentActivityLog;
 use App\Models\Tool;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,17 +22,129 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Tool::query()->delete();
+        LoanLog::query()->delete();
+        LoanItem::query()->delete();
+        LoanRequest::query()->delete();
+        Tool::withTrashed()->forceDelete();
         Category::query()->delete();
         User::query()->delete();
+        Laboratory::query()->delete();
+        StudentActivityLog::query()->delete();
+
+        $lpp = Laboratory::create([
+            'name' => 'Laboratorium Proses Produksi',
+            'code' => 'LPP',
+            'slug' => 'laboratorium-proses-produksi',
+            'location' => 'Gedung D Lantai 1',
+            'description' => 'Laboratorium proses produksi dan pemesinan konvensional.',
+            'is_active' => true,
+        ]);
+
+        $lke = Laboratory::create([
+            'name' => 'Laboratorium Konversi Energi & Otomotif',
+            'code' => 'LKE',
+            'slug' => 'laboratorium-konversi-energi-otomotif',
+            'location' => 'Gedung D Lantai 1',
+            'description' => 'Laboratorium konversi energi dan kajian otomotif.',
+            'is_active' => true,
+        ]);
+
+        $lmat = Laboratory::create([
+            'name' => 'Laboratorium Material & Metalurgi',
+            'code' => 'LMAT',
+            'slug' => 'laboratorium-material-metalurgi',
+            'location' => 'Gedung D Lantai 2',
+            'description' => 'Laboratorium material, metalurgi, dan pengujian bahan.',
+            'is_active' => true,
+        ]);
+
+        $lcnc = Laboratory::create([
+            'name' => 'Laboratorium CNC, CAD/CAM & Otomasi',
+            'code' => 'LCNC',
+            'slug' => 'laboratorium-cnc-cadcam-otomasi',
+            'location' => 'Gedung D Lantai 2',
+            'description' => 'Laboratorium pemesinan CNC, desain CAD/CAM, dan otomasi.',
+            'is_active' => true,
+        ]);
+
+        $lfab = Laboratory::create([
+            'name' => 'Laboratorium Pengelasan & Fabrikasi',
+            'code' => 'LFAB',
+            'slug' => 'laboratorium-pengelasan-fabrikasi',
+            'location' => 'Bengkel Fabrikasi',
+            'description' => 'Laboratorium pengelasan dan fabrikasi logam.',
+            'is_active' => true,
+        ]);
 
         User::create([
-            'name' => 'Admin',
-            'identity_number' => '198501012010011001',
-            'email' => 'admin@unwahas.ac.id',
+            'name' => 'Dr. Ahmad Surya, M.T.',
+            'identity_number' => '197505102003121002',
+            'email' => 'kepalalab@unwahas.ac.id',
             'password' => bcrypt('password'),
             'phone_number' => '081234567801',
-            'role' => 'admin',
+            'role' => 'kepala_lab',
+            'identity_type' => 'pegawai',
+            'institution' => 'Fakultas Teknik Unwahas',
+        ]);
+
+        User::create([
+            'name' => 'Rina Wulandari',
+            'identity_number' => '199003152015032001',
+            'email' => 'laboran.lpp@unwahas.ac.id',
+            'password' => bcrypt('password'),
+            'phone_number' => '081234567811',
+            'role' => 'laboran',
+            'laboratory_id' => $lpp->id,
+            'identity_type' => 'pegawai',
+            'institution' => 'Fakultas Teknik Unwahas',
+        ]);
+
+        User::create([
+            'name' => 'Bagus Prakoso',
+            'identity_number' => '199110202016042002',
+            'email' => 'laboran.lke@unwahas.ac.id',
+            'password' => bcrypt('password'),
+            'phone_number' => '081234567812',
+            'role' => 'laboran',
+            'laboratory_id' => $lke->id,
+            'identity_type' => 'pegawai',
+            'institution' => 'Fakultas Teknik Unwahas',
+        ]);
+
+        User::create([
+            'name' => 'Siti Nurhaliza',
+            'identity_number' => '199205122017012003',
+            'email' => 'laboran.lmat@unwahas.ac.id',
+            'password' => bcrypt('password'),
+            'phone_number' => '081234567813',
+            'role' => 'laboran',
+            'laboratory_id' => $lmat->id,
+            'identity_type' => 'pegawai',
+            'institution' => 'Fakultas Teknik Unwahas',
+        ]);
+
+        User::create([
+            'name' => 'Ahmad Fauzi',
+            'identity_number' => '199307182018012004',
+            'email' => 'laboran.lcnc@unwahas.ac.id',
+            'password' => bcrypt('password'),
+            'phone_number' => '081234567814',
+            'role' => 'laboran',
+            'laboratory_id' => $lcnc->id,
+            'identity_type' => 'pegawai',
+            'institution' => 'Fakultas Teknik Unwahas',
+        ]);
+
+        User::create([
+            'name' => 'Dewi Lestari',
+            'identity_number' => '199401252019022005',
+            'email' => 'laboran.lfab@unwahas.ac.id',
+            'password' => bcrypt('password'),
+            'phone_number' => '081234567815',
+            'role' => 'laboran',
+            'laboratory_id' => $lfab->id,
+            'identity_type' => 'pegawai',
+            'institution' => 'Fakultas Teknik Unwahas',
         ]);
 
         User::create([
@@ -36,7 +153,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'dimas@std.unwahas.ac.id',
             'password' => bcrypt('password'),
             'phone_number' => '081234567802',
-            'role' => 'student',
+            'role' => 'klien',
+            'identity_type' => 'mahasiswa',
+            'institution' => 'Teknik Mesin S1',
         ]);
 
         User::create([
@@ -45,29 +164,49 @@ class DatabaseSeeder extends Seeder
             'email' => 'nabila@std.unwahas.ac.id',
             'password' => bcrypt('password'),
             'phone_number' => '081234567803',
-            'role' => 'student',
+            'role' => 'klien',
+            'identity_type' => 'mahasiswa',
+            'institution' => 'Teknik Mesin S1',
         ]);
 
         $alatUkurPresisi = Category::create([
             'name' => 'Alat Ukur Presisi',
+            'code' => 'UK',
             'slug' => 'alat-ukur-presisi',
             'description' => 'Peralatan ukur dimensi dan toleransi mekanik presisi tinggi.',
         ]);
 
         $mesinPerkakas = Category::create([
             'name' => 'Mesin Perkakas',
+            'code' => 'MS',
             'slug' => 'mesin-perkakas',
             'description' => 'Mesin fabrikasi dan pemesinan logam konvensional.',
         ]);
 
-        $alatLasFabrikasi = Category::create([
-            'name' => 'Alat Las & Fabrikasi',
-            'slug' => 'alat-las-fabrikasi',
+        $elektronika = Category::create([
+            'name' => 'Elektronika',
+            'code' => 'EL',
+            'slug' => 'elektronika',
+            'description' => 'Peralatan elektronika, instrumentasi, dan pengukuran listrik.',
+        ]);
+
+        $fabrikasiLas = Category::create([
+            'name' => 'Fabrikasi & Las',
+            'code' => 'LS',
+            'slug' => 'fabrikasi-las',
             'description' => 'Peralatan pengelasan busur listrik dan fabrikasi logam.',
+        ]);
+
+        $ujiMaterial = Category::create([
+            'name' => 'Uji Material',
+            'code' => 'MT',
+            'slug' => 'uji-material',
+            'description' => 'Peralatan pengujian sifat material, kekerasan, dan ketahanan bahan.',
         ]);
 
         Tool::create([
             'category_id' => $alatUkurPresisi->id,
+            'laboratory_id' => $lpp->id,
             'code' => 'LAB-MESIN-001',
             'name' => 'Jangka Sorong Digital Mitutoyo',
             'slug' => 'jangka-sorong-digital-mitutoyo',
@@ -80,6 +219,7 @@ class DatabaseSeeder extends Seeder
 
         Tool::create([
             'category_id' => $alatUkurPresisi->id,
+            'laboratory_id' => $lpp->id,
             'code' => 'LAB-MESIN-002',
             'name' => 'Mikrometer Luar (Outside Micrometer)',
             'slug' => 'mikrometer-luar-0-25mm',
@@ -92,6 +232,7 @@ class DatabaseSeeder extends Seeder
 
         Tool::create([
             'category_id' => $mesinPerkakas->id,
+            'laboratory_id' => $lpp->id,
             'code' => 'LAB-MESIN-003',
             'name' => 'Mesin Bubut Konvensional Colchester',
             'slug' => 'mesin-bubut-konvensional-colchester',
@@ -104,6 +245,7 @@ class DatabaseSeeder extends Seeder
 
         Tool::create([
             'category_id' => $mesinPerkakas->id,
+            'laboratory_id' => $lcnc->id,
             'code' => 'LAB-MESIN-004',
             'name' => 'Mesin Frais Universal',
             'slug' => 'mesin-frais-universal',
@@ -115,7 +257,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Tool::create([
-            'category_id' => $alatLasFabrikasi->id,
+            'category_id' => $fabrikasiLas->id,
+            'laboratory_id' => $lfab->id,
             'code' => 'LAB-MESIN-005',
             'name' => 'Mesin Las SMAW Inverter 200A',
             'slug' => 'mesin-las-smaw-inverter-200a',

@@ -26,13 +26,10 @@ class StoreLoanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_type' => ['required', 'in:mahasiswa,umum'],
-            'affiliation_type' => ['nullable', 'in:instansi,individu'],
-            'borrower_name' => ['required', 'string', 'max:255'],
-            'borrower_phone' => ['required', 'string', 'max:30'],
-            'borrower_identity' => ['required', 'string', 'min:8', 'max:30'],
-            'institution' => ['required', 'string', 'max:150'],
-            'identity_card' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+            'laboratory_id' => ['required', 'exists:laboratories,id'],
+            'loan_letter' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+            'phone_number' => ['nullable', 'string', 'max:20'],
+            'identity_card_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
             'start_date' => ['required', 'date', 'after_or_equal:today'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date', 'before_or_equal:'.$this->resolveMaximumEndDate()],
             'purpose' => ['required', 'string', 'max:1000'],
@@ -43,7 +40,7 @@ class StoreLoanRequest extends FormRequest
     }
 
     /**
-     * Configure the validator instance to check the dynamic stock availability.
+     * Configure the validator instance to check the tool-laboratory match and the dynamic stock availability.
      */
     public function withValidator(Validator $validator): void
     {
@@ -51,6 +48,12 @@ class StoreLoanRequest extends FormRequest
             $items = $this->input('items');
 
             if (! is_array($items)) {
+                return;
+            }
+
+            $laboratoryId = $this->integer('laboratory_id');
+
+            if ($laboratoryId <= 0) {
                 return;
             }
 
@@ -67,6 +70,15 @@ class StoreLoanRequest extends FormRequest
                 $tool = $tools->get($item['tool_id'] ?? null);
 
                 if (! $tool instanceof Tool) {
+                    continue;
+                }
+
+                if ($tool->laboratory_id !== $laboratoryId) {
+                    $validator->errors()->add(
+                        "items.{$index}.tool_id",
+                        "Alat {$tool->name} bukan milik laboratorium tujuan yang dipilih."
+                    );
+
                     continue;
                 }
 

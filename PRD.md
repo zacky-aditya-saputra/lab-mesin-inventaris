@@ -1,4 +1,4 @@
-# SPESIFIKASI KEBUTUHAN SISTEM (SOFTWARE REQUIREMENTS SPECIFICATION)
+<!-- # SPESIFIKASI KEBUTUHAN SISTEM (SOFTWARE REQUIREMENTS SPECIFICATION)
 ## Sistem Layanan Pengelolaan, Peminjaman Alat, dan E-Catalog Berbasis Web
 ### Laboratorium Teknik Mesin, Universitas Wahid Hasyim (Unwahas)
 
@@ -301,4 +301,245 @@ Mengingat proyek dikerjakan oleh 2 (dua) orang mahasiswa magang dalam jangka wak
 
 ---
 
-*Dokumen ini disusun sebagai bagian dari perencanaan sistem pada tahap Analisa Kebutuhan (Requirement Analysis) dalam metodologi Waterfall — Telah disesuaikan berdasarkan Change Request (CR-01: Perluasan Cakupan Klien & Dokumen Identitas).*
+*Dokumen ini disusun sebagai bagian dari perencanaan sistem pada tahap Analisa Kebutuhan (Requirement Analysis) dalam metodologi Waterfall — Telah disesuaikan berdasarkan Change Request (CR-01: Perluasan Cakupan Klien & Dokumen Identitas).* -->
+
+<!-- # PRD v2.0 — Sistem Layanan Pengelolaan, Peminjaman Alat & E-Catalog Berbasis Web -->
+
+**Project**: Lab Mesin Inventory — Laboratorium Teknik Mesin Unwahas  
+**Stack**: Laravel 13 · PHP 8.4 · SQLite · Blade + Alpine.js · Tailwind CSS  
+**Tanggal**: 15 September 2026  
+**Status**: ✅ Disetujui untuk Implementasi
+
+---
+
+## 1. Latar Belakang & Tujuan
+
+Sistem ini merupakan revisi besar dari versi sebelumnya (single-lab, 2 role: `admin`/`student`). Versi 2.0 mengubah arsitektur menjadi platform terpadu untuk **seluruh Laboratorium Teknik Mesin** di Fakultas Teknik Universitas Wahid Hasyim, dengan pemisahan hak akses yang jelas, otomasi data peminjam, tata kelola persuratan resmi, dan fondasi pencatatan log aktivitas mahasiswa.
+
+### Tujuan Utama
+1. Menyediakan **E-Catalog Multi-Lab** — setiap laboratorium memiliki katalog alat terpisah.
+2. Memperkenalkan **3 role pengguna**: Klien (Mahasiswa/Umum), Laboran (1 lab spesifik), Kepala Lab (supervisi seluruh lab).
+3. **Otomasi data identitas** — identitas peminjam (NIM/NIK, No HP, KTM/KTP) diisi sekali saat registrasi, otomatis terpakai di setiap pengajuan peminjaman.
+4. **Kewajiban Surat Peminjaman** — setiap pengajuan pinjaman alat wajib melampirkan Surat Peminjaman resmi.
+5. **Profil Akun** terintegrasi — pengelolaan identitas dan dokumen KTM/KTP terpusat.
+6. Fondasi **Log Aktivitas Mahasiswa** — siap dikembangkan saat rincian final tersedia.
+
+---
+
+## 2. Arsitektur Role & Wewenang
+
+### 2.1. Klien (`klien`)
+- **Siapa**: Mahasiswa Unwahas dan Masyarakat/Umum yang meminjam alat laboratorium.
+- **Cakupan**: Seluruh laboratorium (publik, *read* katalog).
+- **Wewenang**:
+  - Mendaftar akun dengan identitas lengkap + upload KTM/KTP.
+  - Mengelola profil dan memperbarui dokumen identitas.
+  - Melihat E-Catalog semua lab mesin, memfilter per lab.
+  - Mengajukan peminjaman alat per 1 lab per tiket, dengan upload Surat Peminjaman wajib.
+  - Melihat riwayat dan status tiket peminjaman.
+
+### 2.2. Laboran (`laboran`)
+- **Siapa**: Dosen/tenaga lab yang ditugaskan mengampu **1 laboratorium spesifik**.
+- **Cakupan**: Hanya laboratorium yang ditugaskan (terikat via `laboratory_id` di tabel `users`).
+- **Wewenang**:
+  - Mengelola master data alat & kategori di lab yang diampunya.
+  - Memeriksa berkas (KTM/KTP profil & Surat Peminjaman) pada tiket peminjaman lab tersebut.
+  - Menyetujui/menolak (*approve/reject*) tiket peminjaman.
+  - Melakukan serah terima fisik (*handover*).
+  - Mencatat pengembalian dan kondisi alat (*return*: Baik/Rusak/Hilang).
+
+### 2.3. Kepala Lab (`kepala_lab`)
+- **Siapa**: Ketua/Kepala Lab yang membawahi seluruh laboratorium mesin.
+- **Cakupan**: **Semua laboratorium mesin** (`laboratory_id` = null/semua).
+- **Wewenang**:
+  - Semua wewenang Laboran, tetapi lintas lab (tidak dibatasi 1 lab).
+  - Dashboard eksekutif: statistik peminjaman, alat rusak/hilang, overdue lintas lab.
+  - Memantau rekap log aktivitas mahasiswa.
+  - Mencetak laporan periodik.
+  - Membuat akun Laboran dan mengassign-nya ke lab tertentu (opsional, fase berikutnya).
+
+---
+
+## 3. Entitas Baru: Laboratorium (`laboratories`)
+
+Setiap Laboratorium Teknik Mesin yang beroperasi di Fakultas Teknik Unwahas direpresentasikan sebagai entitas mandiri.
+
+### Skema Tabel `laboratories`
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `id` | bigint PK | Auto-increment |
+| `name` | string(150) | Nama lengkap lab, e.g. "Laboratorium Proses Produksi" |
+| `code` | string(10) unique | Kode singkat, e.g. `LPP`, `LKE`, `LMAT`, `LCNC`, `LFAB` |
+| `slug` | string(180) unique | URL-safe identifier |
+| `location` | string(255) nullable | Lokasi fisik, e.g. "Gedung D Lantai 1" |
+| `description` | text nullable | Deskripsi singkat fungsi lab |
+| `is_active` | boolean default true | Status operasional lab |
+| `timestamps` | — | `created_at`, `updated_at` |
+
+### Data Awal (Seeder)
+
+| Kode | Nama Laboratorium |
+|---|---|
+| `LPP` | Laboratorium Proses Produksi |
+| `LKE` | Laboratorium Konversi Energi & Otomotif |
+| `LMAT` | Laboratorium Material & Metalurgi |
+| `LCNC` | Laboratorium CNC, CAD/CAM & Otomasi |
+| `LFAB` | Laboratorium Pengelasan & Fabrikasi |
+
+---
+
+## 4. Perubahan Skema Database
+
+### 4.1. Tabel `users` — Kolom Baru
+
+| Kolom Baru | Tipe | Keterangan |
+|---|---|---|
+| `role` | string(20) default `'klien'` | Mengubah `'student'` → `'klien'`, `'admin'` → `'kepala_lab'`. Nilai valid: `klien`, `laboran`, `kepala_lab`. |
+| `laboratory_id` | foreignId nullable | FK ke `laboratories`. Wajib diisi untuk role `laboran`. Null untuk `klien` dan `kepala_lab`. |
+| `identity_type` | string(20) default `'mahasiswa'` | Jenis peminjam: `'mahasiswa'` atau `'umum'`. |
+| `institution` | string(255) nullable | Program Studi (mahasiswa) atau Nama Instansi/Domisili (umum). |
+| `identity_card_path` | string(255) nullable | Path file KTM/KTP yang diunggah saat registrasi/profil. |
+
+### 4.2. Tabel `tools` — Kolom Baru
+
+| Kolom Baru | Tipe | Keterangan |
+|---|---|---|
+| `laboratory_id` | foreignId | FK ke `laboratories`, `restrictOnDelete`. Setiap alat terikat ke 1 lab. |
+
+### 4.3. Tabel `loan_requests` — Kolom Baru
+
+| Kolom Baru | Tipe | Keterangan |
+|---|---|---|
+| `laboratory_id` | foreignId | FK ke `laboratories`. 1 tiket peminjaman = 1 lab tujuan. |
+| `loan_letter_path` | string(255) | Path Surat Peminjaman resmi (wajib upload saat peminjaman). |
+
+### 4.4. Tabel Baru: `student_activity_logs` (Fondasi)
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `id` | bigint PK | Auto-increment |
+| `user_id` | foreignId | FK ke `users` |
+| `laboratory_id` | foreignId | FK ke `laboratories` |
+| `activity_date` | date | Tanggal kegiatan |
+| `time_in` | time | Jam masuk lab |
+| `time_out` | time nullable | Jam keluar lab |
+| `activity_type` | string(50) | `'Praktikum'`, `'Penelitian'`, `'Tugas Proyek'`, `'Latihan Mandiri'` |
+| `title` | string(255) | Judul kegiatan / topik |
+| `description` | text nullable | Uraian aktivitas & alat yang dioperasikan |
+| `status` | string(20) default `'PENDING'` | `'PENDING'`, `'VERIFIED'` |
+| `verified_by` | foreignId nullable | FK ke `users` (laboran yang memvalidasi) |
+| `timestamps` | — | `created_at`, `updated_at` |
+
+---
+
+## 5. User Flow Utama
+
+### 5.1. Flow Registrasi Klien
+1. Buka halaman Daftar.
+2. Isi: Nama, Email, Password, Konfirmasi Password.
+3. Pilih jenis identitas: **Mahasiswa** atau **Umum**.
+4. Isi NIM (jika mahasiswa) atau NIK 16 digit (jika umum).
+5. Isi No. WhatsApp.
+6. Isi Program Studi/Fakultas (mahasiswa) atau Instansi/Domisili (umum).
+7. Upload berkas KTM (mahasiswa) atau KTP (umum) — JPG/PNG/PDF, maks 2MB.
+8. Submit → akun terbuat dengan role `klien`.
+9. Redirect ke halaman Katalog.
+
+### 5.2. Flow Profil Akun
+1. Klik menu **Profil Akun**.
+2. Melihat dan mengedit biodata (Nama, Email, No HP, NIM/NIK, Prodi/Instansi).
+3. Melihat preview dokumen KTM/KTP aktif, dengan opsi **Perbarui Dokumen**.
+4. Tab Keamanan: Ubah password.
+
+### 5.3. Flow Pengajuan Peminjaman (Klien)
+1. **Step 1 — Data Peminjam** *(otomatis dari profil)*:
+   - Nama, NIM/NIK, No HP, Prodi/Instansi, preview KTM/KTP ditampilkan read-only dari profil.
+   - Peminjam tidak perlu mengisi ulang. Jika data belum lengkap, diarahkan ke Profil.
+2. **Step 2 — Pilih Lab & Alat**:
+   - Pilih laboratorium tujuan peminjaman (dropdown lab aktif).
+   - Daftar alat otomatis terfilter sesuai lab yang dipilih.
+   - Tambahkan alat beserta jumlah yang diminta.
+3. **Step 3 — Jadwal, Keperluan & Surat Peminjaman**:
+   - Input tanggal mulai dan tanggal rencana kembali (maks +14 hari).
+   - Input deskripsi keperluan peminjaman.
+   - **Wajib upload Surat Peminjaman** (PDF/JPG/PNG, maks 2MB).
+   - Centang pernyataan tanggung jawab.
+   - Submit → tiket PENDING terbuat.
+
+### 5.4. Flow Verifikasi Tiket (Laboran)
+1. Login → otomatis ke dashboard lab yang diampu.
+2. Daftar tiket masuk (PENDING) terfilter ke lab laboran tersebut.
+3. Klik tiket → halaman Review:
+   - Melihat identitas peminjam + preview KTM/KTP (dari profil).
+   - Melihat preview **Surat Peminjaman** yang dilampirkan.
+   - Melihat daftar alat yang diminta beserta stok tersedia.
+4. Aksi: Approve (tetapkan qty disetujui per item) / Reject (dengan catatan).
+5. Handover: Konfirmasi serah terima fisik → status ON_LOAN.
+6. Return: Catat kondisi pengembalian (Baik/Rusak/Hilang) → status RETURNED.
+
+### 5.5. Flow Supervisi (Kepala Lab)
+1. Login → dashboard eksekutif menampilkan ringkasan **seluruh lab mesin**.
+2. Dapat memfilter tiket/alat per laboratorium atau melihat semua.
+3. Statistik: total peminjaman aktif, overdue, alat rusak/hilang per lab.
+4. Dapat melakukan semua aksi operasional yang dilakukan Laboran, tanpa batasan lab.
+
+---
+
+## 6. Daftar Perubahan File
+
+### Database & Model
+- `[NEW]` Migration: `create_laboratories_table`
+- `[NEW]` Migration: `update_users_tools_loans_for_multi_lab` (menambahkan kolom baru ke `users`, `tools`, `loan_requests`)
+- `[NEW]` Migration: `create_student_activity_logs_table`
+- `[NEW]` Model: `Laboratory`
+- `[NEW]` Model: `StudentActivityLog`
+- `[MODIFY]` Model: `User` — relasi `laboratory()`, fillable & cast fields baru, helper `isKlien()`, `isLaboran()`, `isKepalaLab()`
+- `[MODIFY]` Model: `Tool` — relasi `laboratory()`, fillable `laboratory_id`
+- `[MODIFY]` Model: `LoanRequest` — relasi `laboratory()`, fillable `laboratory_id`, `loan_letter_path`
+- `[MODIFY]` `DatabaseSeeder` — seed laboratories, laboran per lab, kepala lab, alat per lab
+
+### Auth, Profil & Middleware
+- `[MODIFY]` `RegisteredUserController` — validasi identitas lengkap + upload KTM/KTP
+- `[MODIFY]` `ProfileController` & `ProfileUpdateRequest` — kelola biodata + dokumen identitas
+- `[MODIFY]` `RoleMiddleware` — dukungan `klien`, `laboran`, `kepala_lab`
+- `[MODIFY]` `routes/web.php` — penyesuaian seluruh rute role
+
+### Controller & Request
+- `[MODIFY]` `CatalogController` — filter multi-lab
+- `[MODIFY]` `LoanController` (klien) — otomasi profil + upload surat peminjaman
+- `[MODIFY]` `StoreLoanRequest` — validasi `loan_letter` + `laboratory_id`
+- `[MODIFY]` `Admin\LoanController` — scoping lab laboran vs kepala lab
+- `[MODIFY]` `Admin\ToolController` — scoping lab
+- `[MODIFY]` `Admin\DashboardController` — ringkasan per lab vs semua lab
+
+### Views
+- `[MODIFY]` `auth/register.blade.php` — form registrasi lengkap + upload KTM/KTP
+- `[MODIFY]` `profile/edit.blade.php` & partials — profil akun komprehensif
+- `[MODIFY]` `catalog/index.blade.php` — filter per laboratorium
+- `[MODIFY]` `catalog/show.blade.php` — info lab & lokasi
+- `[MODIFY]` `loans/create.blade.php` — auto-fill identitas, pilih lab, upload surat
+- `[MODIFY]` `admin/loans/review.blade.php` — preview KTM/KTP + Surat Peminjaman berdampingan
+- `[MODIFY]` `layouts/catalog.blade.php` — navigasi dinamis role klien/laboran/kepala_lab
+- `[MODIFY]` `layouts/admin.blade.php` — sidebar adaptif per role, nama lab di header
+
+---
+
+## 7. Acceptance Criteria
+
+| # | Kriteria | Verified By |
+|---|---|---|
+| AC-1 | Klien baru dapat mendaftar dengan identitas lengkap + upload KTM/KTP, dan tersimpan di profil. | Feature Test |
+| AC-2 | Profil akun menampilkan biodata, preview KTM/KTP, dan opsi perbarui dokumen. | Feature Test |
+| AC-3 | Katalog menampilkan filter laboratorium; alat terfilter akurat per lab. | Feature Test |
+| AC-4 | Detail alat (`catalog/show`) menampilkan nama lab & lokasi. | Feature Test |
+| AC-5 | Form peminjaman Step 1 menampilkan data profil read-only (auto-fill). | Feature Test |
+| AC-6 | Form peminjaman Step 2 menyaring alat berdasarkan lab yang dipilih. | Feature Test |
+| AC-7 | Form peminjaman Step 3 memvalidasi upload Surat Peminjaman sebagai field wajib. | Feature Test |
+| AC-8 | Laboran hanya melihat alat dan tiket dari lab yang diampunya. | Feature Test |
+| AC-9 | Kepala Lab melihat alat dan tiket dari seluruh lab mesin. | Feature Test |
+| AC-10 | Halaman Review menampilkan preview KTM/KTP dan Surat Peminjaman berdampingan. | Manual QA |
+| AC-11 | Navigasi/sidebar menyesuaikan menu berdasarkan role. | Manual QA |
+| AC-12 | Tabel `student_activity_logs` terbuat dan model `StudentActivityLog` siap digunakan. | Migration |
+| AC-13 | Migrasi data role lama (`student` → `klien`, `admin` → `kepala_lab`) berjalan tanpa error. | Migration |
+| AC-14 | Seeder menghasilkan 5 lab, 1 kepala lab, 5 laboran (1 per lab), 2 klien, dan alat terdistribusi per lab. | Seeder |

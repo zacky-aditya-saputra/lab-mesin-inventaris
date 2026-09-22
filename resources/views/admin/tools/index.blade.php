@@ -47,6 +47,21 @@
                         @endforeach
                     @endif
                 </select>
+                @if (auth()->user()->isKepalaLab())
+                    <form method="GET" action="{{ route('admin.tools.index') }}" class="w-full sm:w-auto">
+                        <label class="block font-caption-xs text-caption-xs text-on-surface-variant mb-1">Filter Laboratorium</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-base">science</span>
+                            <select name="laboratory_id" onchange="this.form.submit()"
+                                    class="w-full sm:w-64 h-10 pl-9 pr-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-sm font-body-md text-body-md text-on-surface transition-shadow">
+                                <option value="">Semua Laboratorium</option>
+                                @foreach($laboratories as $lab)
+                                    <option value="{{ $lab->id }}" {{ request('laboratory_id') == $lab->id ? 'selected' : '' }}>{{ $lab->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
+                @endif
             </div>
             <div class="font-caption-xs text-caption-xs text-on-surface-variant whitespace-nowrap">
                 Menampilkan {{ $tools->count() }} dari {{ $tools->total() ?? $tools->count() }} alat
@@ -61,6 +76,7 @@
                         <th class="px-6 py-3.5 font-semibold w-16">Item</th>
                         <th class="px-6 py-3.5 font-semibold">Nama Alat</th>
                         <th class="px-6 py-3.5 font-semibold">Kategori</th>
+                        <th class="px-6 py-3.5 font-semibold">Laboratorium</th>
                         <th class="px-6 py-3.5 font-semibold">Kode Inv.</th>
                         <th class="px-6 py-3.5 font-semibold text-right">Total Stok</th>
                         <th class="px-6 py-3.5 font-semibold text-right">Tersedia</th>
@@ -93,6 +109,13 @@
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-badge-xs text-badge-xs border border-slate-200">
                                     {{ $tool->category->name ?? 'Tanpa Kategori' }}
+                                </span>
+                            </td>
+                            <!-- Laboratory -->
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-badge-xs text-badge-xs font-medium">
+                                    <span class="material-symbols-outlined text-xs">science</span>
+                                    {{ $tool->laboratory?->name ?? '-' }}
                                 </span>
                             </td>
                             <!-- Inventory Code -->
@@ -142,7 +165,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="py-12 text-center text-on-surface-variant">
+                            <td colspan="9" class="py-12 text-center text-on-surface-variant">
                                 <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mx-auto mb-3">
                                     <span class="material-symbols-outlined text-2xl text-outline">inventory_2</span>
                                 </div>

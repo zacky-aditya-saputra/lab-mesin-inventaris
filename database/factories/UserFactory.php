@@ -49,7 +49,7 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role' => 'admin',
+            'role' => 'kepala_lab',
         ]);
     }
 
@@ -59,7 +59,38 @@ class UserFactory extends Factory
     public function student(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role' => 'student',
+            'role' => 'klien',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a klien (external student).
+     */
+    public function klien(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'klien',
+            'identity_type' => 'mahasiswa',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a laboran.
+     */
+    public function laboran(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'laboran',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a kepala lab.
+     */
+    public function kepalaLab(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'kepala_lab',
         ]);
     }
 }

@@ -32,6 +32,7 @@ class CategoryController extends Controller
     {
         Category::create([
             'name' => $request->name,
+            'code' => Str::upper((string) $request->code),
             'slug' => Str::slug($request->name),
             'description' => $request->description,
         ]);
@@ -46,6 +47,7 @@ class CategoryController extends Controller
     {
         $category->update([
             'name' => $request->name,
+            'code' => Str::upper((string) $request->code),
             'slug' => Str::slug($request->name),
             'description' => $request->description,
         ]);
@@ -54,12 +56,12 @@ class CategoryController extends Controller
     }
 
     /**
-     * Remove the specified category from storage.
+     * Remove the specified category from storage (guarded: a category holding tools cannot be deleted).
      */
     public function destroy(Category $category): RedirectResponse
     {
-        if ($category->tools()->exists()) {
-            return back()->with('error', 'Kategori tidak dapat dihapus karena masih memiliki alat terkait.');
+        if ($category->hasTools()) {
+            return back()->with('error', 'Kategori tidak dapat dihapus karena masih memuat alat inventaris. Pindahkan atau hapus alatnya terlebih dahulu.');
         }
 
         $category->delete();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Laboratory;
 use App\Models\LoanRequest;
 use App\Services\LoanStatusService;
 use Illuminate\Http\RedirectResponse;
@@ -14,17 +15,25 @@ use Illuminate\View\View;
 class LoanController extends Controller
 {
     /**
-     * Display the loan ticket queue, optionally filtered by status.
+     * Display the loan ticket queue, optionally filtered by status and laboratory.
      */
     public function index(Request $request): View
     {
+        $user = auth()->user();
+
         $loans = LoanRequest::query()
-            ->with(['user', 'items.tool'])
+            ->with(['user', 'items.tool', 'laboratory'])
+            ->when($user->isLaboran(), fn ($query) => $query->where('laboratory_id', $user->laboratory_id))
+            ->when($user->isKepalaLab() && $request->filled('laboratory_id'), fn ($query) => $query->where('laboratory_id', $request->integer('laboratory_id')))
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('admin.loans.index', compact('loans'));
+        return view('admin.loans.index', [
+            'loans' => $loans,
+            'laboratories' => Laboratory::query()->orderBy('name')->get(['id', 'name']),
+        ]);
     }
 
     /**
@@ -32,7 +41,9 @@ class LoanController extends Controller
      */
     public function review(LoanRequest $loanRequest): View
     {
-        $loanRequest->load(['user', 'items.tool', 'logs.user']);
+        $this->authorizeLaboratoryScope($loanRequest);
+
+        $loanRequest->load(['user', 'items.tool', 'logs.user', 'laboratory']);
 
         return view('admin.loans.review', ['loan' => $loanRequest]);
     }
@@ -42,6 +53,8 @@ class LoanController extends Controller
      */
     public function updateStatus(Request $request, LoanRequest $loanRequest, LoanStatusService $service): RedirectResponse
     {
+        $this->authorizeLaboratoryScope($loanRequest);
+
         return match ($request->input('action')) {
             'approve' => $this->approveLoan($request, $loanRequest, $service),
             'reject' => $this->rejectLoan($request, $loanRequest, $service),
@@ -57,6 +70,8 @@ class LoanController extends Controller
      */
     public function returnLoan(Request $request, LoanRequest $loanRequest, LoanStatusService $service): RedirectResponse
     {
+        $this->authorizeLaboratoryScope($loanRequest);
+
         $validated = $request->validate([
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'integer', 'distinct', 'exists:loan_items,id'],
@@ -106,5 +121,17 @@ class LoanController extends Controller
         $service->handover($loanRequest, $request->user());
 
         return back()->with('success', 'Serah terima fisik dikonfirmasi. Status tiket kini ON_LOAN.');
+    }
+
+    /**
+     * Ensure laborans may only manage tickets belonging to their own laboratory.
+     */
+    private function authorizeLaboratoryScope(LoanRequest $loanRequest): void
+    {
+        $user = auth()->user();
+
+        if ($user->isLaboran() && $loanRequest->laboratory_id !== $user->laboratory_id) {
+            abort(403, 'Anda tidak memiliki wewenang atas tiket laboratorium ini.');
+        }
     }
 }

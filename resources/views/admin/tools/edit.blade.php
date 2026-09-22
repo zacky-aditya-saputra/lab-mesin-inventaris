@@ -21,6 +21,36 @@
             @csrf
             @method('PUT')
 
+            <!-- Laboratorium Tujuan -->
+            @if (auth()->user()->isLaboran())
+                <input type="hidden" name="laboratory_id" value="{{ auth()->user()->laboratory_id }}"/>
+                <div class="p-4 rounded-xl bg-primary-container/40 border border-outline-variant flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">science</span>
+                    <div>
+                        <span class="block font-caption-xs text-caption-xs text-on-surface-variant">Laboratorium</span>
+                        <span class="font-label-md text-label-md text-on-surface font-semibold">{{ auth()->user()->laboratory?->name ?? '-' }}</span>
+                        <span class="block font-caption-xs text-caption-xs text-on-surface-variant mt-0.5">Otomatis sesuai laboratorium yang Anda ampu.</span>
+                    </div>
+                </div>
+            @else
+                <div>
+                    <label for="laboratory_id" class="block font-label-md text-label-md text-on-surface mb-1.5">
+                        Laboratorium Tujuan <span class="text-error">*</span>
+                    </label>
+                    <select id="laboratory_id" name="laboratory_id" required
+                            class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md">
+                        @foreach ($laboratories as $lab)
+                            <option value="{{ $lab->id }}" {{ old('laboratory_id', $tool->laboratory_id) == $lab->id ? 'selected' : '' }}>
+                                {{ $lab->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('laboratory_id')
+                        <p class="mt-1 font-caption-xs text-caption-xs text-error">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Kategori -->
                 <div>
@@ -99,7 +129,7 @@
                     </label>
                 </div>
 
-                <!-- Unggah Foto Alat -->
+                <!-- Unggah Foto Alat (dengan Auto-Compression via HTML5 Canvas) -->
                 <div class="md:col-span-2"
                      x-data="{
                          initialUrl: '{{ $tool->image_path ? asset('storage/' . $tool->image_path) : '' }}',
@@ -107,9 +137,12 @@
                          isExistingImage: {{ $tool->image_path ? 'true' : 'false' }},
                          fileName: '{{ $tool->image_path ? basename($tool->image_path) : '' }}',
                          fileSize: '',
+                         compressionInfo: '',
+                         isCompressing: false,
                          errorMessage: '',
                          handleImageChange(event) {
                              this.errorMessage = '';
+                             this.compressionInfo = '';
                              const file = event.target.files[0];
                              if (!file) {
                                  this.clearImage();
@@ -121,15 +154,65 @@
                                  event.target.value = '';
                                  return;
                              }
-                             if (file.size > 2 * 1024 * 1024) {
-                                 this.errorMessage = 'Ukuran gambar melebihi batas maksimal 2MB.';
-                                 this.clearImage();
-                                 event.target.value = '';
+                             if (file.size > 1024 * 1024) {
+                                 this.compressImage(file);
                                  return;
                              }
+                             this.applyPreview(file, '');
+                         },
+                         compressImage(file) {
+                             this.isCompressing = true;
+                             const reader = new FileReader();
+                             reader.onload = (e) => {
+                                 const image = new Image();
+                                 image.onload = () => {
+                                     const maxDimension = 1280;
+                                     let width = image.naturalWidth;
+                                     let height = image.naturalHeight;
+                                     if (width > maxDimension || height > maxDimension) {
+                                         const scale = Math.min(maxDimension / width, maxDimension / height);
+                                         width = Math.round(width * scale);
+                                         height = Math.round(height * scale);
+                                     }
+                                     const canvas = document.createElement('canvas');
+                                     canvas.width = width;
+                                     canvas.height = height;
+                                     const context = canvas.getContext('2d');
+                                     context.fillStyle = '#FFFFFF';
+                                     context.fillRect(0, 0, width, height);
+                                     context.drawImage(image, 0, 0, width, height);
+                                     canvas.toBlob((blob) => {
+                                         this.isCompressing = false;
+                                         if (!blob) {
+                                             this.errorMessage = 'Gagal mengompres gambar. Silakan coba file lain.';
+                                             this.clearImage();
+                                             event.target.value = '';
+                                             return;
+                                         }
+                                         const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+                                         const dataTransfer = new DataTransfer();
+                                         dataTransfer.items.add(compressedFile);
+                                         document.getElementById('image').files = dataTransfer.files;
+                                         const originalSizeMb = (file.size / (1024 * 1024)).toFixed(2);
+                                         const newSizeKb = (blob.size / 1024).toFixed(1);
+                                         this.applyPreview(compressedFile, 'Foto asli ' + originalSizeMb + ' MB berhasil dikompres otomatis menjadi ' + newSizeKb + ' KB');
+                                     }, 'image/jpeg', 0.8);
+                                 };
+                                 image.onerror = () => {
+                                     this.isCompressing = false;
+                                     this.errorMessage = 'Gagal memuat gambar. File mungkin rusak.';
+                                     this.clearImage();
+                                     event.target.value = '';
+                                 };
+                                 image.src = e.target.result;
+                             };
+                             reader.readAsDataURL(file);
+                         },
+                         applyPreview(file, compressionInfo) {
                              this.isExistingImage = false;
                              this.fileName = file.name;
                              this.fileSize = (file.size / 1024).toFixed(1) + ' KB';
+                             this.compressionInfo = compressionInfo;
                              const reader = new FileReader();
                              reader.onload = (e) => { this.previewUrl = e.target.result; };
                              reader.readAsDataURL(file);
@@ -137,6 +220,7 @@
                          clearImage() {
                              const input = document.getElementById('image');
                              if (input) input.value = '';
+                             this.compressionInfo = '';
                              if (this.initialUrl) {
                                  this.previewUrl = this.initialUrl;
                                  this.isExistingImage = true;
@@ -168,12 +252,17 @@
                         <img :src="previewUrl" :alt="fileName || '{{ $tool->name }}'" class="h-36 w-36 object-contain rounded-lg border border-outline-variant bg-surface-container flex-shrink-0" />
                         <div class="flex-1 min-w-0 text-center sm:text-left flex flex-col justify-between h-full py-1">
                             <div>
-                                <div class="flex items-center justify-center sm:justify-start gap-2 mb-1.5">
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
                                     <span x-show="isExistingImage" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-badge-xs font-medium bg-surface-container-high text-on-surface-variant border border-outline-variant">
                                         Foto Saat Ini
                                     </span>
                                     <span x-show="!isExistingImage" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-badge-xs font-medium bg-primary/10 text-primary border border-primary/20">
                                         Foto Baru Terpilih
+                                    </span>
+                                    <span x-show="compressionInfo" x-cloak
+                                          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-badge-xs font-medium bg-status-success-bg text-status-success-text border border-status-success-text/20">
+                                        <span class="material-symbols-outlined text-xs">compress</span>
+                                        <span x-text="compressionInfo"></span>
                                     </span>
                                 </div>
                                 <p class="font-label-md text-label-md text-on-surface truncate font-semibold" x-text="fileName || '{{ $tool->image_path ? basename($tool->image_path) : '' }}'"></p>
@@ -214,7 +303,11 @@
                             <p class="font-body-md text-body-md text-on-surface text-center mb-1">
                                 <span class="font-semibold text-primary">Klik untuk memilih gambar baru</span> atau seret ke sini
                             </p>
-                            <p class="font-caption-xs text-caption-xs text-on-surface-variant">JPG, PNG, WebP (Maksimal 2MB)</p>
+                            <p class="font-caption-xs text-caption-xs text-on-surface-variant" x-show="!isCompressing">JPG, PNG, WebP — foto di atas 1 MB dikompres otomatis</p>
+                            <p class="font-caption-xs text-caption-xs text-primary font-medium flex items-center gap-1" x-show="isCompressing" x-cloak>
+                                <span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                                Mengompres foto...
+                            </p>
                             <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/jpg" @change="handleImageChange($event)" class="absolute inset-0 opacity-0 cursor-pointer"/>
                         </div>
                         <template x-if="initialUrl">

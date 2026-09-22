@@ -26,8 +26,15 @@ class CategoryFactory extends Factory
             'Alat Listrik & Elektronika',
         ]);
 
+        $code = collect(explode(' ', $name))
+            ->map(fn (string $word) => Str::substr(preg_replace('/[^A-Za-z]/', '', $word) ?? '', 0, 1))
+            ->filter()
+            ->take(3)
+            ->implode('');
+
         return [
             'name' => $name,
+            'code' => $code,
             'slug' => Str::slug($name),
             'description' => fake()->sentence(),
         ];

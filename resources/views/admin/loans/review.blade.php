@@ -9,6 +9,10 @@
             Kembali ke Daftar Tiket
         </a>
         <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-badge-xs text-badge-xs font-semibold">
+                <span class="material-symbols-outlined text-xs">science</span>
+                {{ $loan->laboratory?->name ?? '-' }}
+            </span>
             <span class="font-mono font-bold text-lg text-primary">{{ $loan->ticket_number }}</span>
             @php
                 $statusClasses = [
@@ -27,19 +31,15 @@
         </div>
     </div>
 
-    <!-- Borrower Info & Identity Document Preview Grid -->
+    <!-- Borrower Info -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Borrower Details Card -->
-        <div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm space-y-4">
-            @php
-                preg_match('/^\[(.+?)\]\s*/', (string) $loan->purpose, $clientTagMatches);
-                $clientTag = $clientTagMatches[1] ?? null;
-            @endphp
+        <div class="md:col-span-3 bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm space-y-4">
             <h3 class="font-title-sm text-title-sm text-on-surface font-bold border-b border-outline-variant pb-3 flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary">badge</span>
                 Informasi Peminjam
             </h3>
-            
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-body-md text-body-md">
                 <div>
                     <span class="text-on-surface-variant text-caption-xs font-medium">Nama Lengkap</span>
@@ -51,7 +51,7 @@
                 </div>
                 <div>
                     <span class="text-on-surface-variant text-caption-xs font-medium">Asal / Instansi / Domisili</span>
-                    <p class="font-semibold text-on-surface">{{ $clientTag ?? '-' }}</p>
+                    <p class="font-semibold text-on-surface">{{ $loan->user->institution ?? '-' }}</p>
                 </div>
                 <div>
                     <span class="text-on-surface-variant text-caption-xs font-medium">Email</span>
@@ -59,12 +59,22 @@
                 </div>
                 <div>
                     <span class="text-on-surface-variant text-caption-xs font-medium">No. HP / WhatsApp</span>
-                    <p class="text-on-surface">
+                    <p class="text-on-surface flex items-center gap-2 flex-wrap">
                         @if($loan->user->phone_number)
-                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $loan->user->phone_number) }}" target="_blank" 
+                            @php
+                                $whatsappNumber = preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', (string) $loan->user->phone_number));
+                                $whatsappMessage = 'Halo '.$loan->user->name.', mengenai pengajuan alat tiket '.$loan->ticket_number.' di Laboratorium Mesin.';
+                            @endphp
+                            <a href="https://wa.me/{{ $whatsappNumber }}" target="_blank" rel="noopener"
                                class="text-status-success-text font-medium hover:underline inline-flex items-center gap-1">
                                 <span class="material-symbols-outlined text-xs">chat</span>
                                 {{ $loan->user->phone_number }}
+                            </a>
+                            <a href="https://wa.me/{{ $whatsappNumber }}?text={{ urlencode($whatsappMessage) }}" target="_blank" rel="noopener"
+                               title="Hubungi peminjam via WhatsApp Web"
+                               class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-status-success-bg text-status-success-text font-badge-xs text-badge-xs font-semibold hover:opacity-80 transition-opacity">
+                                <span class="material-symbols-outlined text-sm">chat</span>
+                                WhatsApp Web
                             </a>
                         @else
                             -
@@ -84,35 +94,86 @@
                     <p class="text-on-surface mt-1 bg-surface-container-low p-3 rounded-lg border border-outline-variant">{{ $loan->purpose }}</p>
                 </div>
             </div>
-        </div>
+    </div>
 
-        <!-- Identity Document (KTM / KTP) Preview Card -->
+    <!-- Supporting Documents Preview Grid (2 Kolom Berdampingan) -->
+    @php
+        $isImageDocument = fn (?string $path): bool => $path !== null
+            && in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png']);
+    @endphp
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Kolom 1: Berkas Identitas Profil (KTM / KTP) -->
         <div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm flex flex-col justify-between">
             <div>
                 <h3 class="font-title-sm text-title-sm text-on-surface font-bold border-b border-outline-variant pb-3 flex items-center gap-2 mb-4">
                     <span class="material-symbols-outlined text-primary">credit_card</span>
                     Berkas Identitas (KTM / KTP)
                 </h3>
-                @if($loan->identity_card_path)
+                @if ($loan->identity_card_path && $isImageDocument($loan->identity_card_path))
                     <div class="aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant bg-surface-container flex items-center justify-center relative group">
-                        <img src="{{ asset('storage/' . $loan->identity_card_path) }}" alt="Dokumen Identitas Peminjam" class="w-full h-full object-cover">
-                        <a href="{{ asset('storage/' . $loan->identity_card_path) }}" target="_blank" 
+                        <img src="{{ asset('storage/'.$loan->identity_card_path) }}" alt="Dokumen Identitas Peminjam" class="w-full h-full object-cover">
+                        <a href="{{ asset('storage/'.$loan->identity_card_path) }}" target="_blank"
                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-label-md text-label-md gap-1">
                             <span class="material-symbols-outlined text-base">fullscreen</span>
                             Lihat Dokumen Asli
                         </a>
                     </div>
+                @elseif ($loan->identity_card_path)
+                    <a href="{{ asset('storage/'.$loan->identity_card_path) }}" target="_blank" rel="noopener"
+                       class="aspect-[4/3] rounded-lg border border-outline-variant bg-surface-container flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors group">
+                        <span class="material-symbols-outlined text-5xl text-error" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
+                        <span class="font-label-md text-label-md text-on-surface font-semibold truncate max-w-[200px]">{{ basename($loan->identity_card_path) }}</span>
+                        <span class="font-caption-xs text-caption-xs text-primary flex items-center gap-1">Buka Dokumen PDF <span class="material-symbols-outlined text-sm">open_in_new</span></span>
+                    </a>
                 @else
-                    <div class="p-8 text-center text-on-surface-variant border-2 border-dashed border-outline-variant rounded-lg">
+                    <div class="p-8 text-center text-on-surface-variant border-2 border-dashed border-outline-variant rounded-lg aspect-[4/3] flex flex-col items-center justify-center">
                         <span class="material-symbols-outlined text-4xl text-outline mb-2">image_not_supported</span>
                         <p class="font-caption-xs text-caption-xs">Tidak ada berkas identitas terlampir.</p>
                     </div>
                 @endif
             </div>
-            @if($loan->identity_card_path)
-                <a href="{{ asset('storage/' . $loan->identity_card_path) }}" target="_blank" 
+            @if ($loan->identity_card_path)
+                <a href="{{ asset('storage/'.$loan->identity_card_path) }}" target="_blank"
                    class="mt-4 w-full py-2 bg-surface-container-high hover:bg-surface-dim text-on-surface font-label-md text-label-md rounded-lg text-center border border-outline-variant transition-colors block">
                     Buka Berkas Penuh
+                </a>
+            @endif
+        </div>
+
+        <!-- Kolom 2: Surat Peminjaman Resmi -->
+        <div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm flex flex-col justify-between">
+            <div>
+                <h3 class="font-title-sm text-title-sm text-on-surface font-bold border-b border-outline-variant pb-3 flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-primary">description</span>
+                    Surat Peminjaman Resmi
+                </h3>
+                @if ($loan->loan_letter_path && $isImageDocument($loan->loan_letter_path))
+                    <div class="aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant bg-surface-container flex items-center justify-center relative group">
+                        <img src="{{ asset('storage/'.$loan->loan_letter_path) }}" alt="Surat Peminjaman Resmi" class="w-full h-full object-cover">
+                        <a href="{{ asset('storage/'.$loan->loan_letter_path) }}" target="_blank"
+                           class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-label-md text-label-md gap-1">
+                            <span class="material-symbols-outlined text-base">fullscreen</span>
+                            Lihat Dokumen Asli
+                        </a>
+                    </div>
+                @elseif ($loan->loan_letter_path)
+                    <a href="{{ asset('storage/'.$loan->loan_letter_path) }}" target="_blank" rel="noopener"
+                       class="aspect-[4/3] rounded-lg border border-outline-variant bg-surface-container flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors group">
+                        <span class="material-symbols-outlined text-5xl text-primary" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
+                        <span class="font-label-md text-label-md text-on-surface font-semibold truncate max-w-[200px]">{{ basename($loan->loan_letter_path) }}</span>
+                        <span class="font-caption-xs text-caption-xs text-primary flex items-center gap-1">Buka Dokumen PDF <span class="material-symbols-outlined text-sm">open_in_new</span></span>
+                    </a>
+                @else
+                    <div class="p-8 text-center text-on-surface-variant border-2 border-dashed border-outline-variant rounded-lg aspect-[4/3] flex flex-col items-center justify-center">
+                        <span class="material-symbols-outlined text-4xl text-outline mb-2">draft</span>
+                        <p class="font-caption-xs text-caption-xs">Tidak ada surat peminjaman terlampir.</p>
+                    </div>
+                @endif
+            </div>
+            @if ($loan->loan_letter_path)
+                <a href="{{ asset('storage/'.$loan->loan_letter_path) }}" target="_blank"
+                   class="mt-4 w-full py-2 bg-surface-container-high hover:bg-surface-dim text-on-surface font-label-md text-label-md rounded-lg text-center border border-outline-variant transition-colors block">
+                    Buka Surat Penuh
                 </a>
             @endif
         </div>

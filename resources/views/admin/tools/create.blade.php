@@ -17,8 +17,72 @@
             <p class="font-body-md text-body-md text-on-surface-variant">Lengkapi data teknis, kategori, kuantitas stok, dan foto alat laboratorium.</p>
         </div>
 
-        <form action="{{ route('admin.tools.store') }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 space-y-6">
+        <form action="{{ route('admin.tools.store') }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 space-y-6"
+              x-data="{
+                  laboratoryId: @js(auth()->user()->isLaboran() ? auth()->user()->laboratory_id : old('laboratory_id', '')),
+                  categoryId: @js(old('category_id', '')),
+                  isGeneratingCode: false,
+                  setLaboratory(event) {
+                      this.laboratoryId = event.target.value;
+                      this.autoGenerateCode();
+                  },
+                  setCategory(event) {
+                      this.categoryId = event.target.value;
+                      this.autoGenerateCode();
+                  },
+                  async autoGenerateCode() {
+                      if (!this.laboratoryId || !this.categoryId) return;
+                      const codeInput = document.getElementById('code');
+                      if (!codeInput) return;
+                      this.isGeneratingCode = true;
+                      try {
+                          const params = new URLSearchParams({ laboratory_id: this.laboratoryId, category_id: this.categoryId });
+                          const response = await fetch('{{ route('admin.tools.generate-code') }}?' + params.toString());
+                          if (!response.ok) return;
+                          const data = await response.json();
+                          if (data.code) {
+                              codeInput.value = data.code;
+                              codeInput.dispatchEvent(new Event('input', { bubbles: true }));
+                          }
+                      } catch (error) {
+                          console.error('Gagal men-generate kode alat:', error);
+                      } finally {
+                          this.isGeneratingCode = false;
+                      }
+                  }
+              }">
             @csrf
+
+            <!-- Laboratorium Tujuan -->
+            @if (auth()->user()->isLaboran())
+                <input type="hidden" name="laboratory_id" value="{{ auth()->user()->laboratory_id }}"/>
+                <div class="p-4 rounded-xl bg-primary-container/40 border border-outline-variant flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">science</span>
+                    <div>
+                        <span class="block font-caption-xs text-caption-xs text-on-surface-variant">Laboratorium</span>
+                        <span class="font-label-md text-label-md text-on-surface font-semibold">{{ auth()->user()->laboratory?->name ?? '-' }}</span>
+                        <span class="block font-caption-xs text-caption-xs text-on-surface-variant mt-0.5">Otomatis sesuai laboratorium yang Anda ampu.</span>
+                    </div>
+                </div>
+            @else
+                <div>
+                    <label for="laboratory_id" class="block font-label-md text-label-md text-on-surface mb-1.5">
+                        Laboratorium Tujuan <span class="text-error">*</span>
+                    </label>
+                    <select id="laboratory_id" name="laboratory_id" required @change="setLaboratory($event)"
+                            class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md">
+                        <option value="" disabled {{ old('laboratory_id') ? '' : 'selected' }}>Pilih Laboratorium</option>
+                        @foreach ($laboratories as $lab)
+                            <option value="{{ $lab->id }}" {{ old('laboratory_id') == $lab->id ? 'selected' : '' }}>
+                                {{ $lab->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('laboratory_id')
+                        <p class="mt-1 font-caption-xs text-caption-xs text-error">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Kategori -->
@@ -26,7 +90,7 @@
                     <label for="category_id" class="block font-label-md text-label-md text-on-surface mb-1.5">
                         Kategori Alat <span class="text-error">*</span>
                     </label>
-                    <select id="category_id" name="category_id" required
+                    <select id="category_id" name="category_id" required @change="setCategory($event)"
                             class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md">
                         <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Pilih Kategori</option>
                         @foreach ($categories as $category)
@@ -42,12 +106,22 @@
 
                 <!-- Kode Alat -->
                 <div>
-                    <label for="code" class="block font-label-md text-label-md text-on-surface mb-1.5">
-                        Kode Inventaris <span class="text-error">*</span>
-                    </label>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label for="code" class="block font-label-md text-label-md text-on-surface">
+                            Kode Inventaris <span class="text-error">*</span>
+                        </label>
+                        <span x-show="isGeneratingCode" x-cloak
+                              class="inline-flex items-center gap-1 font-caption-xs text-caption-xs text-primary">
+                            <span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                            Men-generate kode...
+                        </span>
+                    </div>
                     <input id="code" name="code" type="text" value="{{ old('code') }}" required
-                           placeholder="Contoh: OPT-001, MEK-042"
+                           placeholder="Contoh: LABTM1-UK-0926-001"
                            class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md uppercase font-mono"/>
+                    <p class="mt-1 font-caption-xs text-caption-xs text-on-surface-variant">
+                        Kode di-generate otomatis sesuai format LABTM{Lab}-{Kategori}-{BulanTahun}-{NoUrut}. Masih dapat disunting manual.
+                    </p>
                     @error('code')
                         <p class="mt-1 font-caption-xs text-caption-xs text-error">{{ $message }}</p>
                     @enderror
@@ -101,15 +175,18 @@
                     </label>
                 </div>
 
-                <!-- Unggah Foto Alat -->
-                <div class="md:col-span-2" 
+                <!-- Unggah Foto Alat (dengan Auto-Compression via HTML5 Canvas) -->
+                <div class="md:col-span-2"
                      x-data="{
                          previewUrl: null,
                          fileName: '',
                          fileSize: '',
+                         compressionInfo: '',
+                         isCompressing: false,
                          errorMessage: '',
                          handleImageChange(event) {
                              this.errorMessage = '';
+                             this.compressionInfo = '';
                              const file = event.target.files[0];
                              if (!file) {
                                  this.clearImage();
@@ -121,14 +198,64 @@
                                  event.target.value = '';
                                  return;
                              }
-                             if (file.size > 2 * 1024 * 1024) {
-                                 this.errorMessage = 'Ukuran gambar melebihi batas maksimal 2MB.';
-                                 this.clearImage();
-                                 event.target.value = '';
+                             if (file.size > 1024 * 1024) {
+                                 this.compressImage(file);
                                  return;
                              }
+                             this.applyPreview(file, '');
+                         },
+                         compressImage(file) {
+                             this.isCompressing = true;
+                             const reader = new FileReader();
+                             reader.onload = (e) => {
+                                 const image = new Image();
+                                 image.onload = () => {
+                                     const maxDimension = 1280;
+                                     let width = image.naturalWidth;
+                                     let height = image.naturalHeight;
+                                     if (width > maxDimension || height > maxDimension) {
+                                         const scale = Math.min(maxDimension / width, maxDimension / height);
+                                         width = Math.round(width * scale);
+                                         height = Math.round(height * scale);
+                                     }
+                                     const canvas = document.createElement('canvas');
+                                     canvas.width = width;
+                                     canvas.height = height;
+                                     const context = canvas.getContext('2d');
+                                     context.fillStyle = '#FFFFFF';
+                                     context.fillRect(0, 0, width, height);
+                                     context.drawImage(image, 0, 0, width, height);
+                                     canvas.toBlob((blob) => {
+                                         this.isCompressing = false;
+                                         if (!blob) {
+                                             this.errorMessage = 'Gagal mengompres gambar. Silakan coba file lain.';
+                                             this.clearImage();
+                                             event.target.value = '';
+                                             return;
+                                         }
+                                         const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+                                         const dataTransfer = new DataTransfer();
+                                         dataTransfer.items.add(compressedFile);
+                                         document.getElementById('image').files = dataTransfer.files;
+                                         const originalSizeMb = (file.size / (1024 * 1024)).toFixed(2);
+                                         const newSizeKb = (blob.size / 1024).toFixed(1);
+                                         this.applyPreview(compressedFile, 'Foto asli ' + originalSizeMb + ' MB berhasil dikompres otomatis menjadi ' + newSizeKb + ' KB');
+                                     }, 'image/jpeg', 0.8);
+                                 };
+                                 image.onerror = () => {
+                                     this.isCompressing = false;
+                                     this.errorMessage = 'Gagal memuat gambar. File mungkin rusak.';
+                                     this.clearImage();
+                                     event.target.value = '';
+                                 };
+                                 image.src = e.target.result;
+                             };
+                             reader.readAsDataURL(file);
+                         },
+                         applyPreview(file, compressionInfo) {
                              this.fileName = file.name;
                              this.fileSize = (file.size / 1024).toFixed(1) + ' KB';
+                             this.compressionInfo = compressionInfo;
                              const reader = new FileReader();
                              reader.onload = (e) => { this.previewUrl = e.target.result; };
                              reader.readAsDataURL(file);
@@ -137,6 +264,7 @@
                              this.previewUrl = null;
                              this.fileName = '';
                              this.fileSize = '';
+                             this.compressionInfo = '';
                              const input = document.getElementById('image');
                              if (input) input.value = '';
                          }
@@ -159,9 +287,14 @@
                         <img :src="previewUrl" :alt="fileName" class="h-36 w-36 object-contain rounded-lg border border-outline-variant bg-surface-container flex-shrink-0" />
                         <div class="flex-1 min-w-0 text-center sm:text-left flex flex-col justify-between h-full py-1">
                             <div>
-                                <div class="flex items-center justify-center sm:justify-start gap-2 mb-1.5">
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-badge-xs font-medium bg-primary/10 text-primary border border-primary/20">
                                         Foto Baru Terpilih
+                                    </span>
+                                    <span x-show="compressionInfo" x-cloak
+                                          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-badge-xs font-medium bg-status-success-bg text-status-success-text border border-status-success-text/20">
+                                        <span class="material-symbols-outlined text-xs">compress</span>
+                                        <span x-text="compressionInfo"></span>
                                     </span>
                                 </div>
                                 <p class="font-label-md text-label-md text-on-surface truncate font-semibold" x-text="fileName"></p>
@@ -184,7 +317,11 @@
                         <p class="font-body-md text-body-md text-on-surface text-center mb-1">
                             <span class="font-semibold text-primary">Klik untuk memilih gambar</span> atau seret ke sini
                         </p>
-                        <p class="font-caption-xs text-caption-xs text-on-surface-variant">JPG, PNG, WebP (Maksimal 2MB)</p>
+                        <p class="font-caption-xs text-caption-xs text-on-surface-variant" x-show="!isCompressing">JPG, PNG, WebP — foto di atas 1 MB dikompres otomatis</p>
+                        <p class="font-caption-xs text-caption-xs text-primary font-medium flex items-center gap-1" x-show="isCompressing" x-cloak>
+                            <span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                            Mengompres foto...
+                        </p>
                         <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/jpg" @change="handleImageChange($event)" class="absolute inset-0 opacity-0 cursor-pointer"/>
                     </div>
                     @error('image')

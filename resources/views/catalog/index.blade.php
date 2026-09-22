@@ -11,44 +11,82 @@
         <header class="text-center mb-10 mt-4">
             <h1 class="font-headline-lg text-headline-lg text-on-surface mb-3 font-bold">Katalog Alat Laboratorium</h1>
             <p class="font-body-md text-body-md text-on-surface-variant max-w-xl mx-auto mb-6">
-                Laboratorium Proses Produksi Teknik Mesin Universitas Wahid Hasyim. Temukan spesifikasi alat dan ketersediaan stok secara real-time.
+                Fakultas Teknik Universitas Wahid Hasyim. Temukan spesifikasi alat dan ketersediaan stok 5 laboratorium secara real-time.
             </p>
-            <div class="max-w-2xl mx-auto relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
-                <input class="w-full pl-12 pr-4 py-3.5 rounded-xl border-outline-variant bg-surface-container-lowest focus:ring-primary focus:border-primary shadow-sm transition-all font-body-md text-body-md" 
-                       placeholder="Cari nama alat, kode inventaris, atau kategori..." 
-                       type="text" 
-                       x-model="searchQuery"/>
-            </div>
         </header>
 
-        <!-- Category Filter Pills -->
-        <div class="flex flex-wrap justify-center gap-2.5 mb-10">
-            <template :key="category" x-for="category in categories">
-                <button :class="activeCategory === category 
-                                ? 'bg-primary text-on-primary font-semibold shadow-sm' 
-                                : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest transition-colors'" 
-                        @click="activeCategory = category" 
-                        class="px-4 py-2 rounded-full font-label-md text-label-md border border-outline-variant transition-colors" 
-                        x-text="category">
-                </button>
-            </template>
+        <!-- Toolbar Pencarian & Filter Terpadu -->
+        <div class="max-w-4xl mx-auto space-y-4 mb-10">
+            <!-- Baris 1: Pencarian & Dropdown Laboratorium -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <!-- Live Search Bar -->
+                <div class="relative flex-1">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                    <input type="text" x-model="searchQuery"
+                           placeholder="Cari nama alat, spesifikasi, atau kode inventaris..."
+                           class="w-full pl-11 pr-10 py-3 rounded-xl border border-slate-300/90 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-xs transition-all placeholder:text-slate-400"/>
+                    <button type="button" x-show="searchQuery" @click="searchQuery = ''" x-cloak
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-full transition-colors"
+                            aria-label="Bersihkan pencarian">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                </div>
+
+                <!-- Dropdown Filter Laboratorium -->
+                <div class="sm:w-72 flex-shrink-0">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-600 text-lg">science</span>
+                        <select onchange="window.location.href = this.value;"
+                                aria-label="Filter Laboratorium"
+                                class="w-full pl-10 pr-9 py-3 rounded-xl border border-slate-300/90 bg-white text-sm font-medium
+                                       text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs transition-all appearance-none cursor-pointer">
+                            <option value="{{ route('catalog.index') }}" {{ !$selectedLabSlug ? 'selected' : '' }}>
+                                🏛️ Semua Laboratorium ({{ $laboratories->count() }} Lab)
+                            </option>
+                            @foreach ($laboratories as $lab)
+                                <option value="{{ route('catalog.index', ['lab' => $lab->slug]) }}" {{ $selectedLabSlug === $lab->slug ? 'selected' : '' }}>
+                                    🔬 {{ $lab->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">expand_more</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baris 2: Kategori Horizontal Scroll -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                <template :key="category" x-for="category in categories">
+                    <button type="button" @click="activeCategory = category"
+                            :class="activeCategory === category
+                                    ? 'bg-slate-900 text-white font-semibold shadow-xs border-slate-900'
+                                    : 'bg-white text-slate-600 hover:bg-slate-50 border-slate-200'"
+                            class="px-4 py-2 rounded-full text-xs font-medium border whitespace-nowrap transition-all duration-150 cursor-pointer">
+                        <span x-text="category"></span>
+                    </button>
+                </template>
+            </div>
         </div>
 
         <!-- Tool Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="filteredTools.length > 0">
             <template :key="tool.id" x-for="tool in filteredTools">
-                <div @click="openDetail(tool)"
-                     class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md hover:border-primary/50 transition-all overflow-hidden flex flex-col cursor-pointer group">
-                    <div class="relative h-48 w-full bg-surface-container flex items-center justify-center overflow-hidden">
+                 <div @click="openDetail(tool)"
+                      class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:border-blue-400/60 hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col cursor-pointer group">
+                    <div class="relative h-48 w-full bg-surface-container flex items-center justify-center overflow-hidden border-b border-slate-100">
                         <template x-if="tool.image">
-                            <img :src="tool.image" :alt="tool.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                            <img :src="tool.image" :alt="tool.name"
+                                     @@error="$el.style.display='none'; $el.nextElementSibling.classList.remove('hidden')"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
                         </template>
-                        <template x-if="!tool.image">
-                            <div class="flex flex-col items-center justify-center text-outline">
-                                <span class="material-symbols-outlined text-5xl">precision_manufacturing</span>
+                        <!-- Fallback Technical Illustration -->
+                        <div :class="tool.image ? 'hidden' : 'flex'"
+                             class="flex-col items-center justify-center text-slate-400 p-4 text-center select-none">
+                            <div class="w-14 h-14 rounded-2xl bg-white/80 border border-slate-200/80 shadow-xs flex items-center justify-center mb-2">
+                                <span class="material-symbols-outlined text-3xl text-blue-600/80">precision_manufacturing</span>
                             </div>
-                        </template>
+                            <span class="text-[11px] font-mono font-medium text-slate-500 uppercase tracking-wider" x-text="tool.code"></span>
+                        </div>
                     </div>
 
                     <div class="p-padding-card flex-grow flex flex-col justify-between">
@@ -57,6 +95,15 @@
                                 <span class="font-caption-xs text-caption-xs text-secondary px-2.5 py-1 bg-secondary-container rounded font-mono font-semibold" x-text="tool.code"></span>
                                 <span class="font-caption-xs text-caption-xs text-on-surface-variant font-medium" x-text="tool.category"></span>
                             </div>
+
+                            <!-- Laboratory Origin Badge -->
+                            <div class="mb-2" x-show="tool.laboratory" style="display: none;">
+                                <span class="inline-flex items-center gap-1 font-caption-xs text-caption-xs text-on-primary-container bg-primary-container px-2 py-0.5 rounded-full font-medium">
+                                    <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">science</span>
+                                    <span x-text="tool.laboratory"></span>
+                                </span>
+                            </div>
+
                             <h3 class="font-title-sm text-title-sm text-on-surface mb-2 group-hover:text-primary transition-colors line-clamp-1" x-text="tool.name"></h3>
                             <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-4 text-xs" x-text="tool.specification || 'Tidak ada deskripsi singkat.'"></p>
                         </div>
@@ -131,13 +178,18 @@
                     <div class="flex flex-col gap-4">
                         <div class="aspect-square rounded-xl border border-outline-variant bg-surface-container flex items-center justify-center overflow-hidden p-4 relative group">
                             <template x-if="selectedTool?.image">
-                                <img :src="selectedTool.image" :alt="selectedTool.name" class="w-full h-full object-contain mix-blend-multiply"/>
+                                <img :src="selectedTool.image" :alt="selectedTool.name"
+                                 @@error="$el.style.display='none'; $el.nextElementSibling.classList.remove('hidden')"
+                                     class="w-full h-full object-contain mix-blend-multiply"/>
                             </template>
-                            <template x-if="!selectedTool?.image">
-                                <div class="flex flex-col items-center justify-center text-outline">
-                                    <span class="material-symbols-outlined text-6xl">precision_manufacturing</span>
+                            <!-- Fallback Technical Illustration -->
+                            <div :class="selectedTool?.image ? 'hidden' : 'flex'"
+                                 class="flex-col items-center justify-center text-slate-400 select-none">
+                                <div class="w-16 h-16 rounded-2xl bg-white/80 border border-slate-200/80 shadow-xs flex items-center justify-center mb-2">
+                                    <span class="material-symbols-outlined text-4xl text-blue-600/80">precision_manufacturing</span>
                                 </div>
-                            </template>
+                                <span class="text-[11px] font-mono font-medium text-slate-500 uppercase tracking-wider" x-text="selectedTool?.code"></span>
+                            </div>
                         </div>
                     </div>
 
@@ -182,8 +234,8 @@
                                     class="px-5 py-2.5 rounded-lg font-label-md text-label-md text-secondary bg-surface-container hover:bg-surface-container-highest transition-colors border border-outline-variant">
                                 Tutup
                             </button>
-                            <a :href="'{{ route('loans.create') }}?tool_id=' + (selectedTool?.id || '')" 
-                               class="px-5 py-2.5 rounded-lg font-label-md text-label-md text-on-primary bg-primary hover:bg-primary-container transition-colors shadow-sm flex items-center gap-2">
+                            <a :href="'{{ route('loans.create') }}?tool_id=' + (selectedTool?.id || '')"
+                               class="px-5 py-2.5 rounded-lg font-label-md text-label-md text-white bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 shadow-sm hover:shadow ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer flex items-center gap-2">
                                 <span class="material-symbols-outlined text-base">add_shopping_cart</span>
                                 Ajukan Peminjaman
                             </a>

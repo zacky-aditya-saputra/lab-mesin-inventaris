@@ -1,410 +1,275 @@
-# Design System & UI Specification: Sistem Inventaris & E-Catalog Lab Mesin
+# Design System & UI Specification: Sistem Inventaris & E-Catalog Multi-Lab Mesin
+## Fakultas Teknik — Universitas Wahid Hasyim Semarang
 
-> Dokumen ini adalah acuan baku implementasi antarmuka bagi tim frontend menggunakan **Laravel Blade + Tailwind CSS + Alpine.js**, diturunkan dari PRD/SRS "Sistem Layanan Pengelolaan, Peminjaman Alat, dan E-Catalog Berbasis Web" (Lab Proses Produksi Teknik Mesin Unwahas). Tidak menggunakan Filament atau admin generator pihak ketiga — seluruh komponen di bawah ini dibangun manual.
-
----
-
-## 1. Design Principles & Theme
-
-**Filosofi desain:** modern, bersih (clean), dan **utiliter** — antarmuka harus terasa seperti alat kerja teknik, bukan produk konsumer yang playful. Prioritas utama adalah keterbacaan data (spesifikasi alat, status stok, status tiket) di atas dekorasi visual.
-
-Prinsip yang dipegang:
-
-1. **Mobile-first & responsif.** Mahasiswa mengakses e-catalog dan form pengajuan dominan dari HP; admin/laboran cenderung memakai desktop di ruang lab — kedua konteks harus setara nyamannya.
-2. **Data-dense tapi tidak sesak.** Dashboard admin menampilkan banyak data tabular (inventaris, tiket) — gunakan whitespace dan pengelompokan visual (card, section divider) alih-alih memadatkan semuanya dalam satu blok.
-3. **Status selalu terlihat jelas.** Karena inti sistem adalah *state machine* tiket peminjaman, warna dan label status harus konsisten dan mudah dipindai mata (scannable) di semua halaman — katalog, riwayat mahasiswa, maupun dashboard admin.
-4. **Aksi destruktif dibuat sengaja sulit disenggol.** Tombol tolak (reject), hapus, atau tandai hilang/rusak harus visually distinct (warna merah/rose) dan selalu meminta konfirmasi sebelum dieksekusi.
-
-**Tone & manner:** Berdasarkan referensi visual yang dilampirkan (dashboard bertema violet/indigo dengan sidebar gelap, kartu metrik, dan tabel bergaris), kami mengadopsi *struktur layout*-nya (sidebar admin gelap, kartu ringkasan metrik di atas tabel, baris tabel bergaris/striped, badge berwarna) tetapi menggeser palet dasar ke arah **slate + blue** yang lebih netral-teknis, agar terasa seperti software inventaris teknik dan bukan platform edukasi konsumer. Warna indigo dari referensi tetap dipertahankan sebagai salah satu warna semantik status (`ON_LOAN`), bukan sebagai warna brand utama, untuk menghindari tabrakan makna warna.
+> **Dokumen Panduan Desain Resmi**:  
+> Dokumen ini adalah acuan baku implementasi antarmuka untuk **Laravel Blade + Tailwind CSS + Alpine.js**. Seluruh instruksi dalam dokumen ini dirancang agar dapat dibaca dan dieksekusi secara presisi oleh developer maupun AI coding agent (seperti OpenCode CLI). Sistem dibangun secara mandiri tanpa dependensi admin generator pihak ketiga (seperti Filament) guna menjaga performa tinggi, kendali penuh atas kode, dan estetika kriya perangkat lunak (*software craftsmanship*).
 
 ---
 
-## 2. Design Tokens & Visual Hierarchy
+## 1. Filosofi Desain & Prinsip "Anti-AI-Slop"
 
-### 2.1 Color Palette
+Antarmuka sistem ini tidak boleh terlihat seperti template web generik atau hasil generate AI murahan (*AI slop*) yang identik dengan tombol biru flat saturated, elemen kaku seragam, teks terpotong canggung, dan tata letak tanpa hierarki. Sistem ini adalah **perangkat lunak teknik industri (Engineering-Grade Lab Management System)** yang mengedepankan presisi data, ergonomi pengguna, dan keanggunan utiliter.
 
-| Peran | Warna | HEX | Tailwind Class (bg / text) |
-|---|---|---|---|
-| Primary (CTA utama, link aktif, tombol approve) | Blue 600 | `#2563EB` | `bg-blue-600` / `text-blue-600` |
-| Primary Hover | Blue 700 | `#1D4ED8` | `hover:bg-blue-700` |
-| Secondary (aksi sekunder, ikon netral) | Slate 600 | `#475569` | `bg-slate-600` / `text-slate-600` |
-| Sidebar Admin (gelap, terinspirasi referensi) | Slate 900 | `#0F172A` | `bg-slate-900` |
-| Neutral Text — Heading | Slate 900 | `#0F172A` | `text-slate-900` |
-| Neutral Text — Body | Slate 600 | `#475569` | `text-slate-600` |
-| Neutral Text — Muted/Subtext | Slate 400 | `#94A3B8` | `text-slate-400` |
-| Surface / Background App | Slate 50 | `#F8FAFC` | `bg-slate-50` |
-| Surface / Card | White | `#FFFFFF` | `bg-white` |
-| Border Default | Slate 200 | `#E2E8F0` | `border-slate-200` |
-| Border Focus (input aktif) | Blue 500 | `#3B82F6` | `focus:border-blue-500` |
-
-**Semantic Status Colors — Status Tiket Peminjaman**
-
-| Status | Warna | Tailwind (badge) | Catatan |
-|---|---|---|---|
-| `PENDING` | Amber | `bg-amber-100 text-amber-800 border border-amber-200` | Menunggu verifikasi admin |
-| `APPROVED` | Sky | `bg-sky-100 text-sky-800 border border-sky-200` | Disetujui penuh, stok sudah direservasi |
-| `PARTIALLY_APPROVED` | Orange | `bg-orange-100 text-orange-800 border border-orange-200` | Dibedakan dari PENDING agar admin tidak salah baca |
-| `REJECTED` | Rose | `bg-rose-100 text-rose-800 border border-rose-200` | Ditolak |
-| `ON_LOAN` | Indigo | `bg-indigo-100 text-indigo-800 border border-indigo-200` | Alat sedang di tangan peminjam |
-| `OVERDUE` | Rose (solid, lebih tegas) | `bg-rose-600 text-white` | Sengaja dibuat solid (bukan pastel) agar mencolok di dashboard admin |
-| `RETURNED` | Emerald | `bg-emerald-100 text-emerald-800 border border-emerald-200` | Selesai, kondisi Baik |
-| `RETURNED` (kondisi Rusak/Hilang) | Emerald outline + ikon peringatan | `bg-emerald-50 text-emerald-700 border border-amber-300` + ikon `⚠` | Tetap RETURNED secara status, tapi diberi penanda kondisi akhir |
-
-**Semantic Status Colors — Ketersediaan Stok (E-Catalog)**
-
-| Label | Kondisi | Tailwind |
-|---|---|---|
-| Tersedia | `available_stock` > 3 | `bg-emerald-100 text-emerald-800` |
-| Stok Terbatas | `available_stock` 1-3 | `bg-amber-100 text-amber-800` |
-| Tidak Tersedia | `available_stock` = 0 | `bg-slate-200 text-slate-500` |
-| Maintenance / Nonaktif | `is_active` = false | `bg-slate-800 text-white` |
-
-### 2.2 Typography
-
-- **Font family:** `font-sans` (stack Tailwind default — Inter/System UI). Tidak perlu font kustom agar loading ringan dan konsisten lintas device.
-
-| Elemen | Class Tailwind | Kegunaan |
-|---|---|---|
-| H1 | `text-3xl font-bold text-slate-900` | Judul halaman utama (misal "Katalog Alat Laboratorium") |
-| H2 | `text-2xl font-semibold text-slate-900` | Judul section (misal "Detail Spesifikasi") |
-| H3 | `text-lg font-semibold text-slate-900` | Judul card / sub-section |
-| H4 | `text-base font-semibold text-slate-800` | Label grup form |
-| Body | `text-sm text-slate-600` | Paragraf, deskripsi alat |
-| Subtext / Caption | `text-xs text-slate-400` | Keterangan tambahan, timestamp |
-| Badge Text | `text-xs font-medium` | Selalu dipasangkan dengan class badge di atas |
-| Label Form | `text-sm font-medium text-slate-700` | Label input |
-
-### 2.3 Elevation, Radius & Spacing
-
-| Token | Nilai | Class | Kegunaan |
-|---|---|---|---|
-| Radius Card | 12px | `rounded-xl` | Card katalog, card metrik admin |
-| Radius Button/Input | 8px | `rounded-lg` | Tombol, input field |
-| Radius Badge/Pill | full | `rounded-full` | Badge status |
-| Shadow Card (default) | halus | `shadow-sm` | Card di grid katalog |
-| Shadow Card (hover) | sedang | `hover:shadow-md transition-shadow` | Efek hover kartu alat |
-| Shadow Modal | kuat | `shadow-xl` | Modal, dropdown menu |
-| Padding Card | — | `p-4 md:p-6` | Konsisten di semua card |
-| Gap Grid Katalog | — | `gap-4 md:gap-6` | Spacing antar kartu alat |
-| Container Max Width | — | `max-w-7xl mx-auto px-4` | Pembungkus halaman publik |
+### 5 Pilar Utama Kriya Desain (Craftsmanship):
+1. **Kedalaman Visual Berlapis (*Layered Depth & Tactile Feel*)**:  
+   Hindari tombol flat saturasi tinggi tanpa dimensi. Gunakan kombinasi halus antara gradien mikro (*subtle vertical gradient*), bayangan lembut (*soft multi-layer shadows*), dan garis tepi dalam (*inner highlight ring* `ring-1 ring-inset ring-white/20`) untuk menciptakan kesan tombol fisik yang berbobot dan memuaskan saat ditekan (`active:scale-[0.98]`).
+2. **Kerapian Tipografi & Eliminasi *Awkward Wrapping***:  
+   Setiap kontainer judul halaman harus dilindungi dengan `min-w-0 flex-1` dan `break-words sm:whitespace-normal` agar judul seperti *"Daftar Klien Lab / Peminjam"* tidak pernah terhimpit secara vertikal menjadi satu kata per baris.
+3. **Filter Terstruktur vs Clunky Pills**:  
+   Untuk data dengan banyak pilihan (seperti 4 kelompok laboratorium utama teknik mesin), **wajib menggunakan dropdown selector kustom atau menu terpadu yang elegan**, bukan deretan *pill buttons* yang membungkus canggung ke baris kedua. Kategori sekunder disajikan dalam baris chip horizontal dengan *horizontal smooth scrolling* (`overflow-x-auto no-scrollbar`) agar tetap rapi di semua resolusi layar.
+4. **Navigasi Terintegrasi & Bersih (Zero Redundancy)**:  
+   Navbar tidak boleh menampilkan tombol dobel (misal tautan "Kelola Lab" di tengah sekaligus tombol besar "Dashboard Admin" di kanan). Semua aksi akun pengguna (Role, Profil, Dashboard, Logout) disatukan ke dalam **User Avatar Dropdown Menu** yang rapi dengan efek *glassmorphism* (`backdrop-blur-md bg-white/85`).
+5. **Penanganan Visual Sempurna (*Graceful Fallbacks*)**:  
+   Tidak boleh ada ikon gambar rusak (*broken image icon*) atau teks alt mentah yang merusak estetika kartu alat. Setiap aset visual yang gagal dimuat atau belum memiliki foto wajib menampilkan ilustrasi placeholder teknik (*blueprint engineering SVG placeholder*) yang proporsional.
 
 ---
 
-## 3. Core Component Library
+## 2. Design Tokens & Palet Warna
 
-### 3.1 Buttons & Action Triggers
+### 2.1 Palet Warna Utama & Netral
+| Peran | Nama Token | Nilai HEX | Tailwind Utility Classes | Deskripsi & Konteks Penggunaan |
+|---|---|---|---|---|
+| **Primary Brand** | Industrial Blue | `#1D4ED8` (Blue 700) / `#2563EB` (Blue 600) | `bg-blue-600 hover:bg-blue-700 text-white` | Aksi utama (CTA), tombol submit, link aktif |
+| **Primary Inset** | Top Highlight | `rgba(255,255,255,0.2)` | `ring-1 ring-inset ring-white/20` | Garis pantulan cahaya mikro pada bagian atas tombol |
+| **Secondary Neutral**| Slate Surface | `#F8FAFC` (Slate 50) | `bg-slate-50 border-slate-200 text-slate-700` | Kartu sekunder, latar form, input inactive |
+| **Dark Sidebar** | Deep Industrial Slate | `#0F172A` (Slate 900) | `bg-slate-900 border-slate-800 text-slate-200` | Sidebar navigasi admin dengan aksen pencahayaan |
+| **Active Nav Accent**| Electric Cyan/Blue | `#3B82F6` (Blue 500) | `border-l-4 border-blue-500 bg-slate-800/80` | Penanda tegas menu sidebar aktif |
+| **Card Border** | Subtle Hairline | `#E2E8F0` (Slate 200) | `border border-slate-200/80` | Garis batas tipis berkelas pada kartu data |
+| **Text Primary** | Deep Charcoal | `#0F172A` (Slate 900) | `text-slate-900 font-semibold` | Judul, label penting, data metrik |
+| **Text Secondary** | Muted Slate | `#475569` (Slate 600) | `text-slate-600` | Paragraf penjelasan, spesifikasi alat |
+| **Text Tertiary** | Caption Slate | `#94A3B8` (Slate 400) | `text-slate-400 text-xs` | Timestamp, metadata, petunjuk form |
 
+### 2.2 Semantic Status Tokens (Tiket & Stok)
+* `PENDING`: `bg-amber-50 text-amber-700 border border-amber-200/80` (Ikon: `schedule`)
+* `APPROVED`: `bg-sky-50 text-sky-700 border border-sky-200/80` (Ikon: `check_circle`)
+* `PARTIALLY_APPROVED`: `bg-orange-50 text-orange-700 border border-orange-200/80` (Ikon: `rule`)
+* `ON_LOAN`: `bg-indigo-50 text-indigo-700 border border-indigo-200/80` (Ikon: `assignment`)
+* `OVERDUE`: `bg-rose-600 text-white shadow-sm font-semibold` (Ikon: `warning`) — *Sengaja solid agar mencolok untuk peringatan darurat*
+* `RETURNED`: `bg-emerald-50 text-emerald-700 border border-emerald-200/80` (Ikon: `task_alt`)
+* `REJECTED`: `bg-rose-50 text-rose-700 border border-rose-200/80` (Ikon: `cancel`)
+
+---
+
+## 3. Komponen Inti "Anti-AI-Slop"
+
+### 3.1 Tombol Utama (*Primary Button*)
+Tombol utama menggabungkan gradien vertikal halus, bayangan terukur, dan efek pegas mikro saat diklik:
 ```html
-<!-- Primary Button -->
-<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium
-               hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-               disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-  Ajukan Peminjaman
-</button>
-
-<!-- Secondary / Outline Button -->
-<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-300 bg-white
-               text-slate-700 text-sm font-medium hover:bg-slate-50
-               focus:outline-none focus:ring-2 focus:ring-slate-300">
-  Batal
-</button>
-
-<!-- Danger / Reject Button -->
-<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-rose-600 text-white text-sm font-medium
-               hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2">
-  Tolak Tiket
-</button>
-
-<!-- Icon Button (aksi tabel: edit/delete) -->
-<button class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 transition-colors"
-        aria-label="Edit alat">
-  <svg class="w-4 h-4" ...></svg>
+<button type="submit" 
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
+               bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 
+               text-white text-sm font-medium tracking-tight shadow-sm hover:shadow 
+               ring-1 ring-inset ring-white/20 active:scale-[0.98] focus:outline-none 
+               focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-150 cursor-pointer">
+    <span class="material-symbols-outlined text-base">check</span>
+    <span>Simpan Perubahan</span>
 </button>
 ```
 
-### 3.2 Badges & Status Pills
-
+### 3.2 Tombol Sekunder / Garis Tepi (*Secondary / Outline Button*)
 ```html
-<!-- Badge status tiket (dinamis via Blade @php/match) -->
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium
-             bg-amber-100 text-amber-800 border border-amber-200">
-  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-  Menunggu Verifikasi
-</span>
-
-<!-- Badge stok tersedia -->
-<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-  Tersedia · 5 unit
-</span>
+<button type="button" 
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
+               bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium tracking-tight 
+               border border-slate-300/80 hover:border-slate-400 shadow-xs active:bg-slate-100 
+               active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-slate-300 
+               transition-all duration-150 cursor-pointer">
+    <span>Batal</span>
+</button>
 ```
 
-Rekomendasi: buat sebagai **Blade component** `<x-status-badge :status="$loan->status" />` yang me-*resolve* class warna dari sebuah array mapping di helper/config, bukan di-copy manual tiap halaman — agar konsisten dan mudah diubah satu tempat saja.
-
-### 3.3 Form Controls
-
+### 3.3 Tombol Bahaya / Destruktif (*Danger Button*)
 ```html
-<!-- Text Input -->
-<div>
-  <label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Lengkap</label>
-  <input type="text" name="name"
-         class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                placeholder:text-slate-400"
-         placeholder="Sesuai KTM">
-  <p class="mt-1 text-xs text-rose-600" x-show="errors.name">{{ $errors->first('name') }}</p>
-</div>
-
-<!-- Dropdown Select (Kategori) -->
-<select class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white
-               focus:outline-none focus:ring-2 focus:ring-blue-500">
-  <option value="">Semua Kategori</option>
-  <option value="alat-ukur-presisi">Alat Ukur Presisi</option>
-</select>
-
-<!-- Date Range Picker (Alpine.js, dua native date input dikunci silang) -->
-<div x-data="{ start: '', end: '' }" class="grid grid-cols-2 gap-3">
-  <div>
-    <label class="block text-sm font-medium text-slate-700 mb-1.5">Tanggal Pinjam</label>
-    <input type="date" x-model="start" :min="new Date().toISOString().split('T')[0]"
-           class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm">
-  </div>
-  <div>
-    <label class="block text-sm font-medium text-slate-700 mb-1.5">Tanggal Kembali</label>
-    <input type="date" x-model="end" :min="start"
-           class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm">
-  </div>
-</div>
-
-<!-- File Upload — drag & drop + kamera HP (untuk KTM) -->
-<div x-data="{ fileName: '', dragging: false }"
-     @dragover.prevent="dragging = true" @dragleave.prevent="dragging = false"
-     @drop.prevent="dragging = false; fileName = $event.dataTransfer.files[0]?.name"
-     :class="dragging ? 'border-blue-500 bg-blue-50' : 'border-slate-300 bg-slate-50'"
-     class="rounded-xl border-2 border-dashed p-6 text-center transition-colors">
-  <input type="file" name="identity_card" accept="image/*,application/pdf" capture="environment"
-         class="hidden" x-ref="fileInput" @change="fileName = $event.target.files[0]?.name">
-  <p class="text-sm text-slate-600 mb-2">Seret berkas ke sini, atau</p>
-  <button type="button" @click="$refs.fileInput.click()"
-          class="text-sm font-medium text-blue-600 hover:underline">Pilih Berkas / Ambil Foto KTM</button>
-  <p class="mt-2 text-xs text-slate-400" x-show="fileName" x-text="fileName"></p>
-  <p class="mt-1 text-xs text-slate-400">Format JPG, PNG, atau PDF — maks. 2MB</p>
-</div>
-<!-- atribut capture="environment" memicu kamera belakang HP secara langsung pada browser mobile -->
-
-<!-- Input Number Kuantitas (dengan stepper) -->
-<div x-data="{ qty: 1, max: 5 }" class="inline-flex items-center border border-slate-300 rounded-lg">
-  <button type="button" @click="qty = Math.max(1, qty - 1)"
-          class="px-3 py-2 text-slate-500 hover:bg-slate-50">−</button>
-  <input type="number" x-model.number="qty" :max="max" min="1"
-         class="w-12 text-center text-sm border-x border-slate-300 py-2 focus:outline-none">
-  <button type="button" @click="qty = Math.min(max, qty + 1)"
-          class="px-3 py-2 text-slate-500 hover:bg-slate-50">+</button>
-</div>
+<button type="button" 
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
+               bg-gradient-to-b from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 
+               text-white text-sm font-medium tracking-tight shadow-sm hover:shadow 
+               ring-1 ring-inset ring-white/20 active:scale-[0.98] focus:outline-none 
+               focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 transition-all duration-150 cursor-pointer">
+    <span class="material-symbols-outlined text-base">delete</span>
+    <span>Hapus Data</span>
+</button>
 ```
 
-### 3.4 Data Cards — Katalog Alat
+### 3.4 Tombol Pintas WhatsApp Klien (*WhatsApp Micro-Action*)
+Bukan tombol hijau mencolok mentah, melainkan tombol terukur dengan border aksen dan interaksi mikro:
+```html
+<a href="{{ $waUrl }}" target="_blank" rel="noopener"
+   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg 
+          bg-emerald-50/80 hover:bg-emerald-100/90 text-emerald-800 border border-emerald-300/70 
+          font-medium text-xs shadow-xs hover:shadow-sm active:scale-95 transition-all duration-150">
+    <span class="material-symbols-outlined text-[16px] text-emerald-600">chat</span>
+    <span>{{ $client->phone_number }}</span>
+</a>
+```
+
+---
+
+## 4. Spesifikasi Perombakan Antarmuka Utama
+
+### 4.1 Modul E-Katalog Publik (`/katalog`)
+
+#### A. Toolbar Pencarian & Filter Laboratorium (Dropdown Elegan)
+* **Kebutuhan**: Menghilangkan 6 pill button bertumpuk yang berantakan. Menggantinya dengan toolbar terpadu.
+* **Struktur Toolbar**:
+  1. Baris atas: Kotak pencarian (*Search input*) dipasangkan berdampingan dengan **Dropdown Selector Laboratorium**.
+  2. Dropdown Lab memiliki ikon laboratorium (`science`), chevron halus, border `border-slate-300`, dan saat dipilih langsung me-redirect atau memicu filter lab yang bersangkutan.
+  3. Baris bawah: Deretan chip Kategori yang dapat digeser secara horizontal (*horizontal scroll* `overflow-x-auto no-scrollbar`) dengan indikator aktif yang kontras (`bg-slate-900 text-white` saat aktif vs `bg-white border-slate-200 text-slate-600` saat inaktif).
 
 ```html
-<div class="group rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-  <div class="relative aspect-[4/3] bg-slate-100">
-    <img src="{{ asset('storage/'.$tool->image_path) }}" alt="{{ $tool->name }}"
-         class="w-full h-full object-cover">
-    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-medium bg-white/90 text-slate-700 shadow-sm">
-      {{ $tool->category->name }}
-    </span>
-  </div>
-  <div class="p-4">
-    <h3 class="text-sm font-semibold text-slate-900 line-clamp-1">{{ $tool->name }}</h3>
-    <p class="mt-1 text-xs text-slate-500">Kode: {{ $tool->code }}</p>
-    <div class="mt-3 flex items-center justify-between">
-      <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-        Tersedia · {{ $tool->available_stock }}
-      </span>
-      <button @click="$dispatch('open-tool-modal', { toolId: {{ $tool->id }} })"
-              class="text-xs font-medium text-blue-600 hover:underline">Lihat Detail</button>
+<!-- Toolbar Filter Terpadu -->
+<div class="max-w-4xl mx-auto space-y-4 mb-8">
+    <!-- Baris 1: Pencarian & Dropdown Laboratorium -->
+    <div class="flex flex-col sm:flex-row gap-3">
+        <!-- Live Search Bar -->
+        <div class="relative flex-1">
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+            <input type="text" x-model="searchQuery"
+                   placeholder="Cari nama alat, spesifikasi, atau kode inventaris..." 
+                   class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300/90 bg-white 
+                          focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-xs 
+                          transition-all placeholder:text-slate-400" />
+            <button x-show="searchQuery" @click="searchQuery = ''" 
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+
+        <!-- Dropdown Filter Laboratorium -->
+        <div class="sm:w-72 flex-shrink-0">
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-600 text-lg">science</span>
+                <select onchange="window.location.href = this.value;"
+                        class="w-full pl-10 pr-9 py-3 rounded-xl border border-slate-300/90 bg-white text-sm font-medium 
+                               text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs transition-all appearance-none cursor-pointer">
+                    <option value="{{ route('catalog.index') }}" {{ !$selectedLabSlug ? 'selected' : '' }}>
+                        🏛️ Semua Laboratorium (4 Lab Utama)
+                    </option>
+                    @foreach ($laboratories as $lab)
+                        <option value="{{ route('catalog.index', ['lab' => $lab->slug]) }}" {{ $selectedLabSlug === $lab->slug ? 'selected' : '' }}>
+                            🔬 {{ $lab->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">expand_more</span>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <!-- Baris 2: Kategori Horizontal Scrollbar -->
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+        <template :key="category" x-for="category in categories">
+            <button @click="activeCategory = category"
+                    :class="activeCategory === category 
+                            ? 'bg-slate-900 text-white font-semibold shadow-xs border-slate-900' 
+                            : 'bg-white text-slate-600 hover:bg-slate-100/80 border-slate-200/90 hover:border-slate-300'"
+                    class="px-4 py-2 rounded-full text-xs font-medium border whitespace-nowrap transition-all duration-150 cursor-pointer">
+                <span x-text="category"></span>
+            </button>
+        </template>
+    </div>
 </div>
 ```
 
-### 3.5 Modals & Drawers
-
+#### B. Kartu Alat (*Tool Card*) & Engineering Placeholder
+Jika gambar alat tidak tersedia atau mengalami gagal muat (*404 error*), tampilkan placeholder SVG diagram teknis yang elegan, bukan teks broken alt:
 ```html
-<!-- Modal Detail Spesifikasi Alat -->
-<div x-data="{ open: false, toolId: null }"
-     @open-tool-modal.window="toolId = $event.detail.toolId; open = true"
-     x-show="open" x-cloak
-     class="fixed inset-0 z-50 flex items-center justify-center p-4">
-  <div x-show="open" x-transition.opacity @click="open = false"
-       class="absolute inset-0 bg-slate-900/60"></div>
-
-  <div x-show="open"
-       x-transition:enter="transition ease-out duration-200"
-       x-transition:enter-start="opacity-0 scale-95"
-       x-transition:enter-end="opacity-100 scale-100"
-       class="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
-    <div class="flex items-center justify-between p-5 border-b border-slate-200">
-      <h2 class="text-lg font-semibold text-slate-900">Detail Spesifikasi Alat</h2>
-      <button @click="open = false" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500">✕</button>
+<div class="relative h-48 w-full bg-slate-100 flex items-center justify-center overflow-hidden border-b border-slate-100">
+    <template x-if="tool.image">
+        <img :src="tool.image" :alt="tool.name" 
+             @error="$el.style.display='none'; $el.nextElementSibling.classList.remove('hidden')"
+             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+    </template>
+    <!-- Fallback Technical Illustration -->
+    <div :class="tool.image ? 'hidden' : 'flex'" 
+         class="flex-col items-center justify-center text-slate-400 p-4 text-center select-none">
+        <div class="w-14 h-14 rounded-2xl bg-white/80 border border-slate-200/80 shadow-xs flex items-center justify-center mb-2">
+            <span class="material-symbols-outlined text-3xl text-blue-600/80">precision_manufacturing</span>
+        </div>
+        <span class="text-[11px] font-mono font-medium text-slate-500 uppercase tracking-wider" x-text="tool.code"></span>
     </div>
-    <div class="p-5">
-      <!-- Konten dimuat dinamis (fetch berdasarkan toolId) atau di-render server via Blade @foreach dengan x-show -->
-    </div>
-  </div>
-</div>
-```
-
-Pola yang sama (`x-show` + `x-transition` + event `$dispatch`/`.window`) dipakai untuk **drawer konfirmasi approval tiket** di admin, hanya arah transisinya digeser dari kanan (`translate-x-full` → `translate-x-0`) agar terasa seperti panel samping, bukan modal tengah.
-
-### 3.6 Data Tables (Admin)
-
-```html
-<div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-  <table class="min-w-full divide-y divide-slate-200 text-sm">
-    <thead class="bg-slate-50">
-      <tr>
-        <th class="px-4 py-3 text-left font-medium text-slate-500">No. Tiket</th>
-        <th class="px-4 py-3 text-left font-medium text-slate-500">Peminjam</th>
-        <th class="px-4 py-3 text-left font-medium text-slate-500">Status</th>
-        <th class="px-4 py-3 text-right font-medium text-slate-500">Aksi</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-slate-100">
-      @foreach ($loans as $i => $loan)
-      <tr class="{{ $i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50' }} hover:bg-blue-50/40 transition-colors">
-        <td class="px-4 py-3 font-medium text-slate-800">{{ $loan->ticket_number }}</td>
-        <td class="px-4 py-3 text-slate-600">{{ $loan->user->name }}</td>
-        <td class="px-4 py-3"><x-status-badge :status="$loan->status" /></td>
-        <td class="px-4 py-3 text-right space-x-1">
-          <button class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600">👁</button>
-        </td>
-      </tr>
-      @endforeach
-    </tbody>
-  </table>
-  <div class="flex items-center justify-between px-4 py-3 border-t border-slate-200 text-xs text-slate-500">
-    {{ $loans->links() }} <!-- Pagination bawaan Laravel, style di-override via config Tailwind pagination view -->
-  </div>
 </div>
 ```
 
 ---
 
-## 4. Screen Breakdown & Layout Specifications
+### 4.2 Topbar Navigasi Publik & User Dropdown (`layouts/catalog.blade.php`)
 
-### 4.1 Halaman E-Catalog Publik
-
-- **Navbar publik:** `sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200`, berisi logo lab + tombol "Masuk" (login).
-- **Hero/Search section:** judul singkat + input live search besar (`x-data="{ q: '' }"`, `x-model.debounce.400ms="q"`, `@input="fetchTools()"`).
-- **Filter kategori:** baris chip horizontal, scrollable di mobile (`flex gap-2 overflow-x-auto pb-2`), setiap chip toggle `bg-blue-600 text-white` saat aktif vs `bg-white border border-slate-300 text-slate-600` saat tidak aktif.
-- **Grid katalog:** `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6` — 1 kolom di HP, 2 di tablet, 3 di desktop, sesuai pola card pada 3.4.
-- **Mobile:** search & filter tetap di atas tapi menyusun vertikal, filter kategori jadi horizontal-scroll chip (bukan dropdown, agar tap-friendly).
-
-### 4.2 Modal Detail Spesifikasi Alat
-
-Layout dua kolom di desktop (`grid md:grid-cols-2 gap-6`), satu kolom di mobile:
-- **Kolom kiri:** galeri foto (gambar utama + thumbnail strip kecil di bawahnya bila ada >1 foto).
-- **Kolom kanan:** tabel spesifikasi teknis (`<dl>` dengan `dt`/`dd` dipasangkan, bukan tabel HTML biasa, agar lebih ringan di-skim), lalu indikator ketersediaan yang membedakan dua angka secara eksplisit:
-  ```html
-  <div class="grid grid-cols-2 gap-3 mt-4">
-    <div class="rounded-lg bg-slate-50 p-3">
-      <p class="text-xs text-slate-400">Stok Fisik Total</p>
-      <p class="text-lg font-semibold text-slate-900">{{ $tool->total_stock }}</p>
-    </div>
-    <div class="rounded-lg bg-emerald-50 p-3">
-      <p class="text-xs text-emerald-600">Tersedia untuk Diajukan</p>
-      <p class="text-lg font-semibold text-emerald-700">{{ $tool->available_stock }}</p>
-    </div>
-  </div>
-  ```
-  Pemisahan ini penting secara UX agar mahasiswa memahami bahwa `total_stock` ≠ `available_stock` (sebagian sudah direservasi tiket lain yang APPROVED/ON_LOAN).
-- Tombol "Ajukan Peminjaman" di footer modal, disabled (`opacity-50 cursor-not-allowed`) jika `available_stock == 0`.
-
-### 4.3 Formulir Pengajuan Peminjaman (Multi-Step)
-
-Dikelola dengan satu `x-data` di elemen pembungkus (`{ step: 1, form: {...} }`), setiap step adalah `<div x-show="step === n">` — data tidak hilang saat berpindah step karena tetap dalam satu component tree Alpine.
-
-- **Step Indicator** (di atas form): 3 bulatan bernomor terhubung garis, bulatan aktif `bg-blue-600 text-white`, terlewati `bg-emerald-500 text-white`, belum tercapai `bg-slate-200 text-slate-400`.
-- **Step 1 — Identitas & Unggah KTM:** Nama Lengkap, No. HP, Instansi, komponen upload KTM (3.3).
-- **Step 2 — Pilihan Alat & Kuantitas:** list alat terpilih dengan komponen stepper kuantitas (3.3), tombol "+ Tambah Alat Lain" membuka pencarian alat singkat (reuse live search) untuk menambah baris baru secara dinamis (`x-for` di atas array `form.items`).
-- **Step 3 — Rentang Tanggal & Keperluan:** date range picker (3.3) + textarea keperluan, lalu ringkasan akhir (recap semua alat & tanggal) sebelum tombol submit final.
-- Navigasi: tombol "Lanjut" divalidasi per-step di sisi klien (Alpine) sebagai *quick feedback*, namun **validasi final tetap wajib di server** (Form Request Laravel) sebelum data disimpan — validasi klien hanya kenyamanan, bukan pengganti keamanan.
-
-### 4.4 Dashboard & Manajemen Inventaris Admin
-
-- **Sidebar** (`w-64 bg-slate-900 text-slate-300`, fixed di desktop, jadi off-canvas drawer di mobile lewat `x-show`/`translate-x`): menu Dashboard, Katalog Alat, Kategori, Tiket Masuk, Riwayat Transaksi.
-- **Kartu ringkasan metrik** di atas dashboard (`grid grid-cols-2 lg:grid-cols-4 gap-4`): Total Alat, Tiket Aktif (PENDING+APPROVED+ON_LOAN), Tiket Overdue (warna aksen rose agar mencolok), Alat Nonaktif/Maintenance.
-- **Tabel master inventaris** (CRUD) memakai pola 3.6, dengan tombol "+ Tambah Alat" primary di kanan atas tabel.
-- **Halaman validasi/approval tiket:** tabel tiket PENDING, klik baris membuka **drawer** (bukan modal — karena berisi banyak informasi: detail pengaju, KTM, daftar item per alat) dengan aksi approve/reject **per item** (checkbox/toggle per baris alat di dalam tiket), sesuai aturan partial approval pada PRD.
-
-### 4.5 Mobile Navigation
-
-- **Sisi mahasiswa/publik:** bottom navigation bar (`fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 flex justify-around py-2`, hanya tampil `md:hidden`) berisi: Katalog, Riwayat Pengajuan, Profil — memudahkan navigasi jempol tanpa harus scroll ke navbar atas.
-- **Sisi admin:** tidak memakai bottom nav (dashboard admin diasumsikan lebih sering diakses desktop di ruang lab); sebagai gantinya sidebar berubah jadi off-canvas drawer yang dibuka lewat tombol hamburger di topbar mobile.
+* **Konsep**: Menghilangkan tombol dobel yang canggung di header publik dan menggantinya dengan bilah navigasi *glassmorphism* modern serta satu **Avatar Dropdown Interaktif**.
+* **Elemen Menu Dropdown Pengguna**:
+  - Kartu identitas singkat: Nama Pengguna, Email, dan Badge Peran (`Kepala Lab`, `Laboran Lab X`, `Mahasiswa`).
+  - Menu Navigasi:
+    - Jika Admin/Laboran: *Dashboard Manajemen Lab* (dengan ikon dashboard) dan *Katalog Publik*.
+    - Jika Klien: *Ajukan Peminjaman* dan *Riwayat Tiket Saya*.
+    - Semua Role: *Pengaturan Profil Akun*.
+  - Pemisah visual (*Divider*).
+  - Tombol **Keluar (Logout)** yang memicu modal konfirmasi ramah (*"Apakah Anda yakin ingin mengakhiri sesi?"*).
 
 ---
 
-## 5. Micro-interactions & State Management (Alpine.js)
+### 4.3 Direktori Klien Lab & Perbaikan Tabel Admin (`admin/clients/index.blade.php`)
 
-| Interaksi | Implementasi |
-|---|---|
-| Toggle modal/drawer | `x-data="{ open: false }"`, dipicu `@click="open = true"`, ditutup via overlay click, tombol ✕, atau `@keydown.escape.window="open = false"` |
-| Live text filter (katalog) | `x-model.debounce.400ms="query"` dikombinasikan `@input` yang memanggil `fetch()` ke endpoint pencarian, hasil di-render ulang lewat `x-for` atau swap partial HTML |
-| Filter kategori (chip toggle) | State `selectedCategory` di root `x-data`, setiap chip `@click="selectedCategory = 'kategori-x'"`, class dinamis via `:class` |
-| Tab switching (mis. tab "Semua/Aktif/Selesai" di riwayat mahasiswa) | `x-data="{ tab: 'semua' }"`, konten tiap tab `x-show="tab === '...'"`, tombol tab `:class="tab === '...' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500'"` |
-| Validasi form instan (sisi klien) | `x-data` menyimpan object `errors`, dicek `@input`/`@blur` per field sebelum submit, ditampilkan lewat `x-show="errors.field"` — **tetap didampingi validasi server** |
-| Multi-step form | Satu `x-data` root menyimpan `step` dan seluruh `form` object; berpindah step tidak reload halaman dan tidak kehilangan data |
-| Konfirmasi aksi destruktif | `x-data="{ confirming: false }"`, klik tombol hapus/tolak pertama kali hanya mengubah tombol jadi "Yakin?" (`x-show="!confirming"` vs `x-show="confirming"`), klik kedua baru submit — alternatif ringan dari modal konfirmasi terpisah untuk aksi kecil di dalam tabel |
+#### A. Perbaikan Header Halaman (Mencegah Judul Terhimpit)
+Gunakan pembungkus `flex flex-col lg:flex-row lg:items-center justify-between gap-4` dengan `flex-1 min-w-0` pada kontainer judul:
+```html
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+    <div class="flex-1 min-w-0">
+        <h2 class="text-xl font-bold text-slate-900 tracking-tight">Daftar Klien & Peminjam</h2>
+        <p class="text-sm text-slate-500 mt-0.5">Direktori peminjam alat, kontak WhatsApp, dan riwayat transaksi peminjaman.</p>
+    </div>
+    @if (auth()->user()->isKepalaLab())
+        <form method="GET" action="{{ route('admin.clients.index') }}" class="flex items-center gap-2.5 flex-shrink-0">
+            <div class="relative">
+                <select name="laboratory_id"
+                        class="pl-3.5 pr-8 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 
+                               focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs appearance-none cursor-pointer">
+                    <option value="">🏛️ Semua Laboratorium</option>
+                    @foreach ($laboratories as $laboratory)
+                        <option value="{{ $laboratory->id }}" @selected(request('laboratory_id') == $laboratory->id)>
+                            🔬 {{ $laboratory->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-base">expand_more</span>
+            </div>
+            <button type="submit"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium shadow-xs transition-colors">
+                <span class="material-symbols-outlined text-base">filter_alt</span>
+                <span>Filter</span>
+            </button>
+        </form>
+    @endif
+</div>
+```
+
+#### B. Perbaikan Layout Tabel Responsif (Mencegah Horizontal Scrollbar Berlebih)
+- Tetapkan proporsi lebar kolom secara terencana (`w-1/3`, `w-44`, `w-auto`).
+- Berikan padding seimbang (`px-4 py-3.5`).
+- Seluruh baris memiliki transisi hover yang halus (`hover:bg-slate-50/70 transition-colors`).
 
 ---
 
-## 6. Directory & File Blueprint (Laravel Blade Structure)
+### 4.4 Sidebar & Topbar Dashboard Admin (`layouts/admin.blade.php`)
 
-```
-resources/views/
-├── layouts/
-│   ├── app.blade.php              # Layout dasar (head, Vite, slot)
-│   ├── guest.blade.php            # Layout publik/e-catalog (navbar + bottom nav mobile)
-│   └── admin.blade.php            # Layout dashboard admin (sidebar + topbar)
-│
-├── components/                    # Blade components reusable
-│   ├── status-badge.blade.php     # <x-status-badge :status="" />
-│   ├── stock-badge.blade.php      # <x-stock-badge :tool="" />
-│   ├── button.blade.php           # <x-button variant="primary|outline|danger" />
-│   ├── modal.blade.php            # <x-modal name="" /> generik (slot konten)
-│   ├── data-table.blade.php       # wrapper tabel + pagination styling
-│   └── form/
-│       ├── input.blade.php
-│       ├── select.blade.php
-│       ├── date-range.blade.php
-│       └── file-upload.blade.php
-│
-├── catalog/                       # Modul Frontend/Mahasiswa - E-Catalog
-│   ├── index.blade.php            # Halaman katalog publik + live search + filter
-│   └── partials/
-│       └── tool-card.blade.php
-│
-├── loans/                         # Modul Frontend/Mahasiswa - Peminjaman
-│   ├── create.blade.php           # Form multi-step pengajuan
-│   ├── history.blade.php          # Riwayat & status pengajuan mahasiswa (FR-A-11)
-│   └── partials/
-│       └── loan-item-row.blade.php
-│
-└── admin/                         # Modul Backend/Admin Dashboard
-    ├── dashboard.blade.php        # Kartu metrik ringkasan
-    ├── categories/
-    │   ├── index.blade.php
-    │   └── form.blade.php
-    ├── tools/
-    │   ├── index.blade.php
-    │   └── form.blade.php
-    ├── loan-requests/
-    │   ├── index.blade.php        # Daftar tiket masuk (PENDING dkk.)
-    │   └── show.blade.php         # Detail tiket + drawer approval per item
-    └── reports/
-        └── index.blade.php        # Laporan & riwayat transaksi (FR-B-09)
-```
+1. **Sidebar Modern**:
+   - Latar belakang: Slate 900 gelap elegan (`#0F172A`).
+   - Indikator Menu Aktif: Garis aksen biru terang di sisi kiri (`border-l-4 border-blue-500 bg-slate-800/80 text-white font-semibold`), bukan blok ungu/biru mencolok.
+   - Menu Tidak Aktif: Teks `text-slate-400 hover:text-white hover:bg-slate-800/50`.
+   - Badge tiket: Kapsul merah lembut dengan angka kontras (`bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded-full text-xs font-semibold`).
+2. **Topbar Admin**:
+   - Bersih dengan tinggi `h-16 border-b border-slate-200 bg-white/95 backdrop-blur-md px-6`.
+   - Widget Tanggal/Waktu: Menggunakan badge lembut abu-abu dengan ikon jam (`schedule`), bukan teks mentah yang terpojok.
+   - Tombol Notifikasi: Ikon lonceng dengan *animated pulse dot* jika ada pesan baru yang belum dibaca.
 
-**Catatan struktural:**
-- Folder `components/` menampung seluruh elemen dari BAB 3 dokumen ini — hindari menulis ulang class Tailwind badge/button secara manual di tiap halaman.
-- Folder `catalog/` dan `loans/` adalah tanggung jawab utama sisi frontend publik (Faiq); folder `admin/` adalah tanggung jawab utama dashboard admin, namun tetap memakai komponen yang sama dari `components/` agar konsisten visual antara sisi publik dan admin.
+---
+
+## 5. Checklist Verifikasi Standar Kualitas (Quality Gate)
+
+Sebelum dinyatakan selesai dan lolos verifikasi, seluruh komponen berikut harus memenuhi standar:
+- [x] **Filter Lab Katalog**: Menggunakan dropdown responsif terpadu; tidak ada pill buttons yang membungkus canggung.
+- [x] **Navigasi Publik**: Tidak ada tombol redundan; avatar dropdown menyatukan seluruh kontrol profil & akses admin.
+- [x] **Tombol "Anti-AI-Slop"**: Menggunakan gradien halus, inner ring highlight, bayangan terukur, dan efek active press `active:scale-[0.98]`.
+- [x] **Admin Klien Page**: Judul halaman tidak mengalami *awkward vertical wrap*; tabel pas dan proporsional di layar desktop standar tanpa scrollbar horizontal sempit.
+- [x] **Image Fallback**: Tidak menampilkan broken image icon jika file foto alat tidak ada di storage; menampilkan SVG technical blueprint.
+- [x] **Uji Bebas Regresi**: Seluruh 103 pengujian otomatis (*Pest test suite*) wajib **100% Lulus (Pass)** tanpa error.
+- [x] **Aset Frontend Terkompilasi**: Eksekusi `npm run build` berhasil tanpa warning atau syntax error.

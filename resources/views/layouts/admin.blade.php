@@ -32,68 +32,100 @@
 
     <!-- Sidebar Navigation -->
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
-           class="fixed inset-y-0 left-0 z-50 w-64 bg-sidebar-dark text-on-primary flex flex-col flex-shrink-0 transition-transform duration-300 ease-in-out md:static md:translate-x-0 h-full">
+           class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 text-slate-200 flex flex-col flex-shrink-0 transition-transform duration-300 ease-in-out md:static md:translate-x-0 h-full">
         <!-- Brand -->
         <div class="h-16 flex items-center justify-between px-6 border-b border-white/10 flex-shrink-0">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-primary-fixed text-2xl" style="font-variation-settings: 'FILL' 1;">science</span>
-                <span class="font-headline-sm text-headline-sm text-primary-fixed font-bold tracking-tight">LabCatalog</span>
+                <span class="material-symbols-outlined text-blue-400 text-2xl" style="font-variation-settings: 'FILL' 1;">science</span>
+                <span class="font-headline-sm text-headline-sm text-white font-bold tracking-tight">LabCatalog</span>
             </a>
-            <button @click="sidebarOpen = false" class="md:hidden text-secondary-fixed-dim hover:text-white">
+            <button @click="sidebarOpen = false" class="md:hidden text-slate-400 hover:text-white">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
 
+        <!-- Lab Scope Info -->
+        <div class="px-6 py-3 border-b border-white/10 flex items-center gap-2 flex-shrink-0">
+            <span class="material-symbols-outlined text-blue-400 text-base" style="font-variation-settings: 'FILL' 1;">science</span>
+            <span class="font-caption-xs text-caption-xs text-slate-400 truncate">
+                @if (auth()->user()->isLaboran())
+                    Lab: {{ auth()->user()->laboratory?->name ?? '-' }}
+                @else
+                    Seluruh Laboratorium Mesin
+                @endif
+            </span>
+        </div>
+
         <!-- Menu -->
+        @php
+            $activeMenuClass = 'border-l-4 border-blue-500 bg-slate-800/80 text-white font-medium shadow-xs';
+            $inactiveMenuClass = 'border-l-4 border-transparent text-slate-400 hover:text-white hover:bg-slate-800/50';
+        @endphp
         <nav class="flex-1 py-6 px-4 space-y-1.5 overflow-y-auto">
             <!-- Dashboard -->
             <a href="{{ route('admin.dashboard') }}" 
-               class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->routeIs('admin.dashboard') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
-                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.dashboard') ? 'opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.dashboard') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>dashboard</span>
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.dashboard') ? $activeMenuClass : $inactiveMenuClass }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.dashboard') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.dashboard') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>dashboard</span>
                 <span class="font-label-md text-label-md">Dashboard</span>
             </a>
 
             <!-- Kategori Alat -->
             <a href="{{ route('admin.categories.index') }}" 
-               class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->routeIs('admin.categories.*') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
-                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.categories.*') ? 'opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.categories.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>category</span>
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.categories.*') ? $activeMenuClass : $inactiveMenuClass }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.categories.*') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.categories.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>category</span>
                 <span class="font-label-md text-label-md">Kategori Alat</span>
             </a>
 
             <!-- Data Alat -->
             <a href="{{ route('admin.tools.index') }}" 
-               class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->routeIs('admin.tools.*') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
-                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.tools.*') ? 'opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.tools.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>inventory_2</span>
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.tools.*') ? $activeMenuClass : $inactiveMenuClass }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.tools.*') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.tools.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>inventory_2</span>
                 <span class="font-label-md text-label-md">Data Alat</span>
             </a>
 
             <!-- Tiket Masuk -->
             <a href="{{ route('admin.loans.index') }}" 
-               class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
-                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? 'opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>confirmation_number</span>
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? $activeMenuClass : $inactiveMenuClass }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.loans.index', 'admin.loans.review') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>confirmation_number</span>
                 <span class="font-label-md text-label-md">Tiket Masuk</span>
                 @if(isset($pendingCount) && $pendingCount > 0)
-                    <span class="ml-auto bg-error text-on-error font-badge-xs text-badge-xs py-0.5 px-2 rounded-full">{{ $pendingCount }}</span>
+                    <span class="ml-auto bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded-full text-xs font-semibold">{{ $pendingCount }}</span>
                 @endif
+            </a>
+
+            <!-- Klien Lab / Data Peminjam -->
+            <a href="{{ route('admin.clients.index') }}"
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.clients.*') ? $activeMenuClass : $inactiveMenuClass }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.clients.*') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.clients.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>group</span>
+                <span class="font-label-md text-label-md">Klien Lab</span>
             </a>
 
             <!-- Monitoring Overdue -->
             <a href="{{ route('admin.loans.index', ['status' => 'OVERDUE']) }}" 
-               class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->fullUrlIs('*status=OVERDUE*') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->fullUrlIs('*status=OVERDUE*') ? $activeMenuClass : $inactiveMenuClass }}">
                 <span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">warning</span>
                 <span class="font-label-md text-label-md">Monitoring Overdue</span>
             </a>
 
             <!-- Laporan & Riwayat -->
             <a href="{{ route('admin.loans.index', ['view' => 'reports']) }}" 
-               class="flex items-center px-3 py-2.5 rounded-lg transition-colors group {{ request()->fullUrlIs('*view=reports*') ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-secondary-fixed-dim hover:bg-white/5 hover:text-white' }}">
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->fullUrlIs('*view=reports*') ? $activeMenuClass : $inactiveMenuClass }}">
                 <span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">history</span>
                 <span class="font-label-md text-label-md">Laporan &amp; Riwayat</span>
             </a>
 
+            @if (auth()->user()->isKepalaLab())
+                <!-- Manajemen Laboran (khusus kepala lab) -->
+                <a href="{{ route('admin.laborans.index') }}"
+                   class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.laborans.*') ? $activeMenuClass : $inactiveMenuClass }}">
+                    <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.laborans.*') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.laborans.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>manage_accounts</span>
+                    <span class="font-label-md text-label-md">Manajemen Laboran</span>
+                </a>
+            @endif
+
             <div class="pt-4 border-t border-white/10 mt-4">
                 <a href="{{ route('catalog.index') }}" target="_blank"
-                   class="flex items-center px-3 py-2.5 rounded-lg text-secondary-fixed-dim hover:bg-white/5 hover:text-white transition-colors group">
+                   class="flex items-center px-3 py-2.5 rounded-r-lg border-l-4 border-transparent text-slate-400 hover:bg-slate-800/50 hover:text-white transition-colors group">
                     <span class="material-symbols-outlined mr-3 text-xl opacity-70 group-hover:opacity-100">open_in_new</span>
                     <span class="font-label-md text-label-md">Lihat Katalog Publik</span>
                 </a>
@@ -103,18 +135,20 @@
         <!-- User Profile & Logout -->
         <div class="p-4 border-t border-white/10 flex-shrink-0">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3 overflow-hidden">
-                    <div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-sm flex-shrink-0">
+                <a href="{{ route('profile.edit') }}" class="flex items-center space-x-3 overflow-hidden group p-1 -m-1 rounded-lg hover:bg-white/5 transition-colors" title="Buka Profil Akun">
+                    <div class="w-9 h-9 rounded-full bg-blue-500/15 border border-blue-400/30 flex items-center justify-center text-blue-300 font-bold text-sm flex-shrink-0">
                         {{ strtoupper(substr(auth()->user()->name ?? 'AD', 0, 2)) }}
                     </div>
                     <div class="truncate">
-                        <p class="font-label-md text-label-md text-white truncate">{{ auth()->user()->name ?? 'Admin Lab' }}</p>
-                        <p class="font-caption-xs text-caption-xs text-secondary-fixed-dim truncate">{{ auth()->user()->email ?? 'admin@lab.edu' }}</p>
+                        <p class="font-label-md text-label-md text-white truncate group-hover:text-blue-300 transition-colors">{{ auth()->user()->name ?? 'Admin Lab' }}</p>
+                        <p class="font-caption-xs text-caption-xs text-slate-400 truncate flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[12px]">edit</span> Ubah Profil
+                        </p>
                     </div>
-                </div>
-                <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
+                </a>
+                <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Apakah Anda yakin ingin keluar dari sistem?');" class="flex-shrink-0">
                     @csrf
-                    <button type="submit" class="p-1.5 text-secondary-fixed-dim hover:text-error hover:bg-white/5 rounded-md transition-colors" title="Keluar">
+                    <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-white/5 rounded-md transition-colors" title="Keluar">
                         <span class="material-symbols-outlined text-xl">logout</span>
                     </button>
                 </form>
@@ -125,20 +159,26 @@
     <!-- Main Content Area -->
     <main class="flex-1 flex flex-col h-full bg-surface overflow-hidden">
         <!-- Top Header -->
-        <header class="h-16 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-10 shadow-sm">
-            <div class="flex items-center gap-3">
+        <header class="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-6 flex-shrink-0 z-10">
+            <div class="flex items-center gap-3 min-w-0">
                 <button @click="sidebarOpen = true" class="md:hidden text-on-surface-variant p-1 rounded-md hover:bg-surface-container">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div>
-                    <h1 class="font-headline-md text-headline-md text-on-surface">{{ $pageTitle ?? $title ?? 'Admin Dashboard' }}</h1>
+                <div class="min-w-0">
+                    <h1 class="font-headline-md text-headline-md text-on-surface truncate">{{ $pageTitle ?? $title ?? 'Admin Dashboard' }}</h1>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-4">
-                <div class="text-right hidden sm:block text-on-surface-variant font-caption-xs text-caption-xs">
-                    <span>{{ now()->translatedFormat('l, d M Y') }}</span><br/>
-                    <span class="font-label-md text-label-md text-on-surface font-semibold">{{ now()->format('H:i') }} WIB</span>
+            <div class="flex items-center gap-3 md:gap-4 flex-shrink-0">
+                <x-notification-bell />
+
+                <!-- Widget Tanggal & Waktu -->
+                <div class="hidden sm:flex items-center gap-2 rounded-lg bg-slate-100 border border-slate-200/80 px-3 py-1.5 shadow-xs">
+                    <span class="material-symbols-outlined text-base text-slate-400">calendar_today</span>
+                    <span class="text-xs text-slate-500 whitespace-nowrap">{{ now()->translatedFormat('l, d M Y') }}</span>
+                    <span class="w-px h-4 bg-slate-300"></span>
+                    <span class="material-symbols-outlined text-base text-slate-400">schedule</span>
+                    <span class="text-xs font-semibold text-slate-800 whitespace-nowrap">{{ now()->format('H:i') }} WIB</span>
                 </div>
                 
                 @isset($headerActions)

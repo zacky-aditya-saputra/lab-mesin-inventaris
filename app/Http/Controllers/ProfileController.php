@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -26,7 +27,23 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $data = $request->safe()->except(['identity_card_file', 'role', 'laboratory_id', 'identity_type']);
+
+        if ($request->user()->isLaboran() || $request->user()->isKepalaLab()) {
+            $data['identity_type'] = 'pegawai';
+        } elseif ($request->filled('identity_type')) {
+            $data['identity_type'] = $request->input('identity_type');
+        }
+
+        if ($request->hasFile('identity_card_file')) {
+            if ($request->user()->identity_card_path) {
+                Storage::disk('public')->delete($request->user()->identity_card_path);
+            }
+
+            $data['identity_card_path'] = $request->file('identity_card_file')->store('identity_cards', 'public');
+        }
+
+        $request->user()->fill($data);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;

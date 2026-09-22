@@ -7,9 +7,22 @@
     deleteModalOpen: false,
     editFormAction: '',
     deleteFormAction: '',
-    editCategory: { id: '', name: '', description: '' },
+    addForm: { name: '', code: '' },
+    editCategory: { id: '', name: '', code: '', description: '' },
     deleteCategory: { id: '', name: '' },
     searchQuery: '',
+    suggestCode(name) {
+        const words = (name || '').toUpperCase().split(/\s+/)
+            .map(word => word.replace(/[^A-Z]/g, ''))
+            .filter(word => word.length > 0);
+        if (words.length === 0) return '';
+        if (words.length >= 2) {
+            return words.slice(0, 3).map(word => word[0]).join('');
+        }
+        const letters = words[0];
+        const consonants = letters.replace(/[AEIOU]/g, '');
+        return (consonants.length >= 2 ? consonants : letters).slice(0, 3);
+    },
     openEditModal(category) {
         this.editCategory = { ...category };
         this.editFormAction = '{{ url('admin/categories') }}/' + category.id;
@@ -27,7 +40,7 @@
             <h2 class="font-headline-sm text-headline-sm text-on-surface">Daftar Kategori Alat</h2>
             <p class="font-body-md text-body-md text-on-surface-variant">Kelola klasifikasi dan kategori inventaris alat laboratorium.</p>
         </div>
-        <button @click="addModalOpen = true" 
+        <button @click="addForm = { name: '', code: '' }; addModalOpen = true"
                 class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-4 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">add</span>
             Tambah Kategori
@@ -65,7 +78,7 @@
                 <tbody class="font-body-md text-body-md divide-y divide-outline-variant">
                     @forelse ($categories as $index => $category)
                         <tr class="hover:bg-surface-container-low transition-colors group"
-                            x-show="!searchQuery || '{{ strtolower($category->name) }}'.includes(searchQuery.toLowerCase()) || '{{ strtolower($category->description ?? '') }}'.includes(searchQuery.toLowerCase())">
+                            x-show="!searchQuery || '{{ strtolower($category->name) }}'.includes(searchQuery.toLowerCase()) || '{{ strtolower($category->code ?? '') }}'.includes(searchQuery.toLowerCase()) || '{{ strtolower($category->description ?? '') }}'.includes(searchQuery.toLowerCase())">
                             <td class="py-3.5 px-6 text-on-surface-variant font-mono text-xs">
                                 {{ $categories->firstItem() + $index }}
                             </td>
@@ -73,6 +86,10 @@
                                 <div class="flex items-center gap-2">
                                     <span class="material-symbols-outlined text-primary text-xl">category</span>
                                     <span>{{ $category->name }}</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md font-badge-xs text-badge-xs font-mono bg-primary/10 text-primary border border-primary/20"
+                                          title="Kode singkatan kategori">
+                                        {{ $category->code_or_default }}
+                                    </span>
                                 </div>
                             </td>
                             <td class="py-3.5 px-6 text-on-surface-variant max-w-xs truncate">
@@ -86,7 +103,7 @@
                             <td class="py-3.5 px-6">
                                 <div class="flex justify-center space-x-1">
                                     <button type="button"
-                                            @click="openEditModal({ id: {{ $category->id }}, name: '{{ addslashes($category->name) }}', description: '{{ addslashes($category->description ?? '') }}' })"
+                                            @click="openEditModal({ id: {{ $category->id }}, name: '{{ addslashes($category->name) }}', code: '{{ addslashes($category->code ?? '') }}', description: '{{ addslashes($category->description ?? '') }}' })"
                                             class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded transition-colors" 
                                             title="Edit Kategori">
                                         <span class="material-symbols-outlined text-base">edit</span>
@@ -151,16 +168,33 @@
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="create_name">
                             Nama Kategori <span class="text-error">*</span>
                         </label>
-                        <input id="create_name" name="name" type="text" required
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" 
+                        <input id="create_name" name="name" type="text" required x-model="addForm.name"
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                                placeholder="Contoh: Alat Ukur Presisi"/>
+                    </div>
+                    <div>
+                        <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="create_code">
+                            Kode Singkatan Kategori <span class="text-error">*</span>
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input id="create_code" name="code" type="text" maxlength="10" required x-model="addForm.code"
+                                   :placeholder="suggestCode(addForm.name) ? suggestCode(addForm.name) : 'Contoh: UK'"
+                                   class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary uppercase font-mono"/>
+                            <button type="button" x-show="suggestCode(addForm.name) && addForm.code !== suggestCode(addForm.name)" x-cloak
+                                    @click="addForm.code = suggestCode(addForm.name)"
+                                    class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-2 rounded-md border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 font-caption-xs text-caption-xs transition-colors whitespace-nowrap">
+                                <span class="material-symbols-outlined text-sm">auto_awesome</span>
+                                Gunakan Saran: <span class="font-semibold font-mono" x-text="suggestCode(addForm.name)"></span>
+                            </button>
+                        </div>
+                        <p class="mt-1 font-caption-xs text-caption-xs text-on-surface-variant">Wajib diisi, huruf kapital, maksimal 10 karakter, dan harus unik. Gunakan saran otomatis jika bingung.</p>
                     </div>
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="create_description">
                             Deskripsi <span class="text-on-surface-variant font-normal">(Opsional)</span>
                         </label>
                         <textarea id="create_description" name="description" rows="3"
-                                  class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none" 
+                                  class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"
                                   placeholder="Tuliskan deskripsi singkat kategori ini..."></textarea>
                     </div>
                 </div>
@@ -209,6 +243,23 @@
                         </label>
                         <input id="edit_name" name="name" type="text" required x-model="editCategory.name"
                                class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+                    </div>
+                    <div>
+                        <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="edit_code">
+                            Kode Singkatan Kategori <span class="text-error">*</span>
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input id="edit_code" name="code" type="text" maxlength="10" required x-model="editCategory.code"
+                                   :placeholder="suggestCode(editCategory.name) ? suggestCode(editCategory.name) : 'Contoh: UK'"
+                                   class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary uppercase font-mono"/>
+                            <button type="button" x-show="suggestCode(editCategory.name) && editCategory.code !== suggestCode(editCategory.name)" x-cloak
+                                    @click="editCategory.code = suggestCode(editCategory.name)"
+                                    class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-2 rounded-md border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 font-caption-xs text-caption-xs transition-colors whitespace-nowrap">
+                                <span class="material-symbols-outlined text-sm">auto_awesome</span>
+                                Gunakan Saran: <span class="font-semibold font-mono" x-text="suggestCode(editCategory.name)"></span>
+                            </button>
+                        </div>
+                        <p class="mt-1 font-caption-xs text-caption-xs text-on-surface-variant">Wajib diisi, huruf kapital, maksimal 10 karakter, dan harus unik. Gunakan saran otomatis jika bingung.</p>
                     </div>
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="edit_description">

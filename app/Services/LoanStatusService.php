@@ -6,6 +6,7 @@ use App\Models\LoanLog;
 use App\Models\LoanRequest;
 use App\Models\Tool;
 use App\Models\User;
+use App\Notifications\LoanStatusChangedNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -72,7 +73,11 @@ class LoanStatusService
 
             $this->logTransition($loan, $admin, 'APPROVAL', 'PENDING', $newStatus, $adminNotes);
 
-            return $loan->refresh();
+            $refreshed = $loan->refresh();
+
+            $refreshed->user?->notify(new LoanStatusChangedNotification($refreshed));
+
+            return $refreshed;
         });
     }
 
@@ -87,7 +92,11 @@ class LoanStatusService
 
         $this->logTransition($loan, $admin, 'REJECTION', 'PENDING', 'REJECTED', $adminNotes);
 
-        return $loan->refresh();
+        $refreshed = $loan->refresh();
+
+        $refreshed->user?->notify(new LoanStatusChangedNotification($refreshed));
+
+        return $refreshed;
     }
 
     /**
@@ -103,7 +112,11 @@ class LoanStatusService
 
         $this->logTransition($loan, $admin, 'HANDOVER', $previousStatus, 'ON_LOAN', null);
 
-        return $loan->refresh();
+        $refreshed = $loan->refresh();
+
+        $refreshed->user?->notify(new LoanStatusChangedNotification($refreshed));
+
+        return $refreshed;
     }
 
     /**
@@ -152,7 +165,11 @@ class LoanStatusService
 
             $this->logTransition($loan, $admin, 'RETURN', $previousStatus, 'RETURNED', $adminNotes);
 
-            return $loan->refresh();
+            $refreshed = $loan->refresh();
+
+            $refreshed->user?->notify(new LoanStatusChangedNotification($refreshed));
+
+            return $refreshed;
         });
     }
 

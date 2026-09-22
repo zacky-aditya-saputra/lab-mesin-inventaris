@@ -31,6 +31,28 @@ class UpdateCategoryRequest extends FormRequest
                 Rule::unique('categories', 'name')->ignore($this->route('category')),
             ],
             'description' => ['nullable', 'string'],
+            'code' => [
+                'required',
+                'string',
+                'max:10',
+                'uppercase',
+                Rule::unique('categories', 'code')->ignore($this->route('category')),
+            ],
+        ];
+    }
+
+    /**
+     * Get the custom error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'code.required' => 'Kode singkatan kategori wajib diisi.',
+            'code.uppercase' => 'Kode singkatan kategori harus berupa huruf kapital.',
+            'code.unique' => 'Kode singkatan kategori sudah digunakan.',
+            'code.max' => 'Kode singkatan kategori maksimal 10 karakter.',
         ];
     }
 }

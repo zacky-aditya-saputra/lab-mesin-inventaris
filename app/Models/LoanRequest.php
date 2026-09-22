@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'ticket_number', 'start_date', 'end_date', 'purpose', 'identity_card_path', 'status', 'admin_notes'])]
+#[Fillable(['user_id', 'laboratory_id', 'ticket_number', 'start_date', 'end_date', 'purpose', 'identity_card_path', 'loan_letter_path', 'status', 'admin_notes'])]
 class LoanRequest extends Model
 {
     /**
@@ -26,6 +26,11 @@ class LoanRequest extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function laboratory(): BelongsTo
+    {
+        return $this->belongsTo(Laboratory::class);
     }
 
     public function items(): HasMany

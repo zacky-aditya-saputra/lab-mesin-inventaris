@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\LaboranController;
 use App\Http\Controllers\Admin\LoanController as AdminLoanController;
 use App\Http\Controllers\Admin\ToolController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
@@ -34,17 +37,23 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllRead'])
+        ->name('notifications.mark-all-read');
+
+    Route::post('notifications/{id}/mark-read', [NotificationController::class, 'markRead'])
+        ->name('notifications.mark-read');
 });
 
 require __DIR__.'/auth.php';
 
 /*
 |--------------------------------------------------------------------------
-| C. Student Protected Routes (middleware: auth + role:student)
+| C. Student Protected Routes (middleware: auth + role:klien,student)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:student'])->group(function (): void {
+Route::middleware(['auth', 'role:klien,student'])->group(function (): void {
     Route::get('/peminjaman/baru', [LoanController::class, 'create'])
         ->name('loans.create');
 
@@ -60,22 +69,32 @@ Route::middleware(['auth', 'role:student'])->group(function (): void {
 
 /*
 |--------------------------------------------------------------------------
-| D. Admin Protected Routes (middleware: auth + role:admin, prefix: admin)
+| D. Admin Protected Routes (middleware: auth + role:laboran,kepala_lab,admin, prefix: admin)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:admin'])
+Route::middleware(['auth', 'role:laboran,kepala_lab,admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function (): void {
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/tools/generate-code', [ToolController::class, 'generateCode'])
+            ->name('tools.generate-code');
+
         Route::resource('categories', CategoryController::class)
             ->only(['index', 'store', 'update', 'destroy']);
 
         Route::resource('tools', ToolController::class)
             ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+        Route::resource('laborans', LaboranController::class)
+            ->only(['index', 'store', 'update', 'destroy'])
+            ->middleware('role:kepala_lab');
+
+        Route::get('/clients', [ClientController::class, 'index'])
+            ->name('clients.index');
 
         Route::get('/loans', [AdminLoanController::class, 'index'])
             ->name('loans.index');

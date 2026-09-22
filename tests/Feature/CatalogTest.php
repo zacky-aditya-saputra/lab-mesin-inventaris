@@ -2,6 +2,7 @@
 
 use App\Models\Category;
 use App\Models\Tool;
+use App\Models\User;
 
 test('catalog page is accessible by guests', function () {
     $this->get(route('catalog.index'))->assertOk();
@@ -54,4 +55,28 @@ test('catalog detail page returns 404 for inactive tools', function () {
 
 test('catalog detail page returns 404 when the tool slug does not exist', function () {
     $this->get(route('catalog.show', 'slug-tidak-ada'))->assertNotFound();
+});
+
+test('student sees loan history and request loan links in catalog navbar', function () {
+    $student = User::factory()->student()->create();
+
+    $this->actingAs($student)
+        ->get(route('catalog.index'))
+        ->assertOk()
+        ->assertSee('Riwayat Pengajuan')
+        ->assertSee(route('loans.history', [], false))
+        ->assertSee(route('loans.create', [], false))
+        ->assertDontSee('Kelola Lab (Dashboard)');
+});
+
+test('admin sees dashboard links instead of student loan links in catalog navbar', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('catalog.index'))
+        ->assertOk()
+        ->assertSee('Kelola Lab (Dashboard)')
+        ->assertSee(route('admin.dashboard', [], false))
+        ->assertDontSee('Riwayat Pengajuan')
+        ->assertDontSee(route('loans.history', [], false));
 });

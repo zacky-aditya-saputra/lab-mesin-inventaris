@@ -6,11 +6,14 @@
     selectedTab: '{{ request('status', 'all') }}',
     filterByTab(status) {
         this.selectedTab = status;
+        const params = new URLSearchParams(window.location.search);
         if (status === 'all') {
-            window.location.href = '{{ route('admin.loans.index') }}';
+            params.delete('status');
         } else {
-            window.location.href = '{{ route('admin.loans.index') }}?status=' + status;
+            params.set('status', status);
         }
+        const queryString = params.toString();
+        window.location.href = '{{ route('admin.loans.index') }}' + (queryString ? '?' + queryString : '');
     }
 }" class="space-y-6">
     <!-- Header Summary & Actions -->
@@ -81,6 +84,29 @@
                 </nav>
             </div>
 
+            <!-- Laboratory Filter (Kepala Lab only) -->
+            @if (auth()->user()->isKepalaLab())
+                <form method="GET" action="{{ route('admin.loans.index') }}" class="shrink-0">
+                    @if (request('status'))
+                        <input type="hidden" name="status" value="{{ request('status') }}"/>
+                    @endif
+                    @if (request('view'))
+                        <input type="hidden" name="view" value="{{ request('view') }}"/>
+                    @endif
+                    <label class="block font-caption-xs text-caption-xs text-on-surface-variant mb-1">Filter Laboratorium</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">science</span>
+                        <select name="laboratory_id" onchange="this.form.submit()"
+                                class="w-full sm:w-64 h-10 pl-9 pr-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md text-on-surface transition-colors">
+                            <option value="">Semua Laboratorium</option>
+                            @foreach ($laboratories as $lab)
+                                <option value="{{ $lab->id }}" {{ request('laboratory_id') == $lab->id ? 'selected' : '' }}>{{ $lab->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </form>
+            @endif
+
             <!-- Search Field -->
             <div class="flex items-center gap-3 w-full lg:w-auto shrink-0">
                 <div class="relative w-full lg:w-64">
@@ -100,6 +126,7 @@
                     <tr>
                         <th class="px-6 py-4 whitespace-nowrap" scope="col">No. Tiket</th>
                         <th class="px-6 py-4 whitespace-nowrap" scope="col">Nama Pengaju</th>
+                        <th class="px-6 py-4 whitespace-nowrap" scope="col">Laboratorium</th>
                         <th class="px-6 py-4 min-w-[200px]" scope="col">Ringkasan Alat</th>
                         <th class="px-6 py-4 whitespace-nowrap" scope="col">Tanggal Pengajuan</th>
                         <th class="px-6 py-4 whitespace-nowrap" scope="col">Rentang Pinjam</th>
@@ -119,6 +146,13 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="font-semibold text-on-surface">{{ $loan->user->name ?? '-' }}</div>
                                 <span class="text-on-surface-variant font-caption-xs text-caption-xs">NIM: {{ $loan->user->identity_number ?? '-' }}</span>
+                            </td>
+                            <!-- Laboratory -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-badge-xs text-badge-xs font-medium">
+                                    <span class="material-symbols-outlined text-xs">science</span>
+                                    {{ $loan->laboratory?->name ?? '-' }}
+                                </span>
                             </td>
                             <!-- Tool Summary -->
                             <td class="px-6 py-4 text-sm text-on-surface-variant">
@@ -167,7 +201,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-16 text-center text-on-surface-variant">
+                            <td colspan="8" class="py-16 text-center text-on-surface-variant">
                                 <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mx-auto mb-3">
                                     <span class="material-symbols-outlined text-2xl text-outline">confirmation_number</span>
                                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCategoryRequest extends FormRequest
 {
@@ -24,7 +25,23 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'unique:categories,name'],
+            'code' => ['required', 'string', 'max:10', 'uppercase', Rule::unique('categories', 'code')],
             'description' => ['nullable', 'string'],
+        ];
+    }
+
+    /**
+     * Get the custom error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'code.required' => 'Kode singkatan kategori wajib diisi.',
+            'code.uppercase' => 'Kode singkatan kategori harus berupa huruf kapital.',
+            'code.unique' => 'Kode singkatan kategori sudah digunakan.',
+            'code.max' => 'Kode singkatan kategori maksimal 10 karakter.',
         ];
     }
 }

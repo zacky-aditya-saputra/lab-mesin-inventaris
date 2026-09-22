@@ -16,6 +16,19 @@ class StoreToolRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     *
+     * Laborans always operate within their own laboratory, so the laboratory
+     * identifier is forced from their profile regardless of the submitted value.
+     */
+    protected function prepareForValidation(): void
+    {
+        if (auth()->user()?->isLaboran()) {
+            $this->merge(['laboratory_id' => auth()->user()->laboratory_id]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
@@ -23,6 +36,7 @@ class StoreToolRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'laboratory_id' => ['required', 'exists:laboratories,id'],
             'category_id' => ['required', 'exists:categories,id'],
             'code' => ['required', 'string', 'max:50', 'unique:tools,code'],
             'name' => ['required', 'string', 'max:255'],
