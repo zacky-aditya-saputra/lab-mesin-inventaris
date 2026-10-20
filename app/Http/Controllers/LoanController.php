@@ -8,6 +8,7 @@ use App\Models\LoanRequest;
 use App\Models\Tool;
 use App\Models\User;
 use App\Notifications\NewLoanRequestNotification;
+use App\Services\LoanStatusService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -65,10 +66,11 @@ class LoanController extends Controller
 
         if ($request->hasFile('identity_card_file')) {
             if (filled($user->identity_card_path)) {
+                Storage::disk('local')->delete($user->identity_card_path);
                 Storage::disk('public')->delete($user->identity_card_path);
             }
 
-            $user->identity_card_path = $request->file('identity_card_file')->store('identity_cards', 'public');
+            $user->identity_card_path = $request->file('identity_card_file')->store('identity_cards', 'local');
         }
 
         if ($user->isDirty()) {
@@ -81,13 +83,14 @@ class LoanController extends Controller
                 ->with('error', 'Dokumen identitas (KTM/KTP) belum terunggah di profil Anda. Silakan lengkapi profil terlebih dahulu.');
         }
 
-        $loanLetterPath = $request->file('loan_letter')->store('loan_letters', 'public');
+        $loanLetterPath = $request->file('loan_letter')->store('loan_letters', 'local');
+        $laboratory = Laboratory::query()->findOrFail((int) $request->input('laboratory_id'));
 
-        $loanRequest = DB::transaction(function () use ($request, $user, $loanLetterPath): LoanRequest {
+        $loanRequest = DB::transaction(function () use ($request, $user, $laboratory, $loanLetterPath): LoanRequest {
             $loanRequest = LoanRequest::query()->create([
                 'user_id' => $user->id,
-                'laboratory_id' => (int) $request->input('laboratory_id'),
-                'ticket_number' => $this->generateTicketNumber(),
+                'laboratory_id' => $laboratory->id,
+                'ticket_number' => $this->generateTicketNumber($laboratory),
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),
                 'purpose' => $request->input('purpose'),
@@ -149,12 +152,26 @@ class LoanController extends Controller
     }
 
     /**
-     * Generate a unique ticket number for a new loan request.
+     * Cancel a pending loan request owned by the authenticated client.
      */
-    private function generateTicketNumber(): string
+    public function cancel(LoanRequest $loan, LoanStatusService $service): RedirectResponse
+    {
+        abort_unless(auth()->id() === $loan->user_id, 403, 'Anda tidak berhak membatalkan tiket ini.');
+
+        $service->cancel($loan, auth()->user(), request()->input('reason'));
+
+        return redirect()
+            ->route('loans.history')
+            ->with('success', "Permohonan peminjaman dengan tiket {$loan->ticket_number} berhasil dibatalkan.");
+    }
+
+    /**
+     * Generate a unique ticket number for a new loan request (format: LOAN-{KODE_LAB}-{HEX}).
+     */
+    private function generateTicketNumber(Laboratory $laboratory): string
     {
         do {
-            $ticketNumber = 'LOAN-'.date('Ymd').'-'.strtoupper(Str::random(4));
+            $ticketNumber = 'LOAN-'.$laboratory->code.'-'.strtoupper(Str::random(6));
         } while (LoanRequest::query()->where('ticket_number', $ticketNumber)->exists());
 
         return $ticketNumber;

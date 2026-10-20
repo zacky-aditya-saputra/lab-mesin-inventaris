@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['user_id', 'laboratory_id', 'activity_date', 'time_in', 'time_out', 'activity_type', 'title', 'description', 'status', 'verified_by'])]
 class StudentActivityLog extends Model
 {
+    use HasFactory;
+
     /**
      * Get the attributes that should be cast.
      *

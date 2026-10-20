@@ -41,7 +41,7 @@
             <p class="font-body-md text-body-md text-on-surface-variant">Kelola klasifikasi dan kategori inventaris alat laboratorium.</p>
         </div>
         <button @click="addForm = { name: '', code: '' }; addModalOpen = true"
-                class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-4 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-on-primary font-label-md text-label-md px-4 py-2.5 rounded-lg shadow-xs hover:shadow-sm ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
             <span class="material-symbols-outlined text-sm">add</span>
             Tambah Kategori
         </button>
@@ -54,7 +54,7 @@
             <div class="relative w-full sm:w-72">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">search</span>
                 <input x-model="searchQuery" 
-                       class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow" 
+                       class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-shadow" 
                        placeholder="Cari kategori..." 
                        type="text"/>
             </div>
@@ -86,7 +86,7 @@
                                 <div class="flex items-center gap-2">
                                     <span class="material-symbols-outlined text-primary text-xl">category</span>
                                     <span>{{ $category->name }}</span>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md font-badge-xs text-badge-xs font-mono bg-primary/10 text-primary border border-primary/20"
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full font-badge-xs text-badge-xs font-mono bg-primary/10 text-primary border border-primary/20"
                                           title="Kode singkatan kategori">
                                         {{ $category->code_or_default }}
                                     </span>
@@ -104,13 +104,13 @@
                                 <div class="flex justify-center space-x-1">
                                     <button type="button"
                                             @click="openEditModal({ id: {{ $category->id }}, name: '{{ addslashes($category->name) }}', code: '{{ addslashes($category->code ?? '') }}', description: '{{ addslashes($category->description ?? '') }}' })"
-                                            class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded transition-colors" 
+                                            class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-lg transition-colors" 
                                             title="Edit Kategori">
                                         <span class="material-symbols-outlined text-base">edit</span>
                                     </button>
                                     <button type="button"
                                             @click="openDeleteModal({ id: {{ $category->id }}, name: '{{ addslashes($category->name) }}' })"
-                                            class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" 
+                                            class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition-colors" 
                                             title="Hapus Kategori">
                                         <span class="material-symbols-outlined text-base">delete</span>
                                     </button>
@@ -169,7 +169,7 @@
                             Nama Kategori <span class="text-error">*</span>
                         </label>
                         <input id="create_name" name="name" type="text" required x-model="addForm.name"
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                placeholder="Contoh: Alat Ukur Presisi"/>
                     </div>
                     <div>
@@ -179,10 +179,10 @@
                         <div class="flex items-center gap-2">
                             <input id="create_code" name="code" type="text" maxlength="10" required x-model="addForm.code"
                                    :placeholder="suggestCode(addForm.name) ? suggestCode(addForm.name) : 'Contoh: UK'"
-                                   class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary uppercase font-mono"/>
+                                   class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 uppercase font-mono"/>
                             <button type="button" x-show="suggestCode(addForm.name) && addForm.code !== suggestCode(addForm.name)" x-cloak
                                     @click="addForm.code = suggestCode(addForm.name)"
-                                    class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-2 rounded-md border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 font-caption-xs text-caption-xs transition-colors whitespace-nowrap">
+                                    class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-2 rounded-lg border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 font-caption-xs text-caption-xs shadow-xs active:scale-[0.98] transition-all duration-150 whitespace-nowrap cursor-pointer">
                                 <span class="material-symbols-outlined text-sm">auto_awesome</span>
                                 Gunakan Saran: <span class="font-semibold font-mono" x-text="suggestCode(addForm.name)"></span>
                             </button>
@@ -194,17 +194,17 @@
                             Deskripsi <span class="text-on-surface-variant font-normal">(Opsional)</span>
                         </label>
                         <textarea id="create_description" name="description" rows="3"
-                                  class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"
+                                  class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 resize-none"
                                   placeholder="Tuliskan deskripsi singkat kategori ini..."></textarea>
                     </div>
                 </div>
                 <div class="px-6 py-4 border-t border-outline-variant bg-surface-container-low flex justify-end space-x-3">
                     <button type="button" @click="addModalOpen = false"
-                            class="px-4 py-2 border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low rounded-md font-label-md text-label-md transition-colors">
+                            class="px-4 py-2 border border-slate-300/90 text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 rounded-lg font-label-md text-label-md shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Batal
                     </button>
                     <button type="submit" 
-                            class="px-4 py-2 bg-primary hover:bg-primary-container text-on-primary rounded-md font-label-md text-label-md shadow-sm transition-colors">
+                            class="px-4 py-2 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-on-primary rounded-lg font-label-md text-label-md shadow-xs ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Simpan Kategori
                     </button>
                 </div>
@@ -242,7 +242,7 @@
                             Nama Kategori <span class="text-error">*</span>
                         </label>
                         <input id="edit_name" name="name" type="text" required x-model="editCategory.name"
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"/>
                     </div>
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="edit_code">
@@ -251,10 +251,10 @@
                         <div class="flex items-center gap-2">
                             <input id="edit_code" name="code" type="text" maxlength="10" required x-model="editCategory.code"
                                    :placeholder="suggestCode(editCategory.name) ? suggestCode(editCategory.name) : 'Contoh: UK'"
-                                   class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary uppercase font-mono"/>
+                                   class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 uppercase font-mono"/>
                             <button type="button" x-show="suggestCode(editCategory.name) && editCategory.code !== suggestCode(editCategory.name)" x-cloak
                                     @click="editCategory.code = suggestCode(editCategory.name)"
-                                    class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-2 rounded-md border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 font-caption-xs text-caption-xs transition-colors whitespace-nowrap">
+                                    class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-2 rounded-lg border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 font-caption-xs text-caption-xs shadow-xs active:scale-[0.98] transition-all duration-150 whitespace-nowrap cursor-pointer">
                                 <span class="material-symbols-outlined text-sm">auto_awesome</span>
                                 Gunakan Saran: <span class="font-semibold font-mono" x-text="suggestCode(editCategory.name)"></span>
                             </button>
@@ -266,16 +266,16 @@
                             Deskripsi <span class="text-on-surface-variant font-normal">(Opsional)</span>
                         </label>
                         <textarea id="edit_description" name="description" rows="3" x-model="editCategory.description"
-                                  class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"></textarea>
+                                  class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
                     </div>
                 </div>
                 <div class="px-6 py-4 border-t border-outline-variant bg-surface-container-low flex justify-end space-x-3">
                     <button type="button" @click="editModalOpen = false"
-                            class="px-4 py-2 border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low rounded-md font-label-md text-label-md transition-colors">
+                            class="px-4 py-2 border border-slate-300/90 text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 rounded-lg font-label-md text-label-md shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Batal
                     </button>
                     <button type="submit" 
-                            class="px-4 py-2 bg-primary hover:bg-primary-container text-on-primary rounded-md font-label-md text-label-md shadow-sm transition-colors">
+                            class="px-4 py-2 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-on-primary rounded-lg font-label-md text-label-md shadow-xs ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Perbarui Kategori
                     </button>
                 </div>
@@ -309,11 +309,11 @@
                     @method('DELETE')
                     <div class="flex space-x-3 justify-center">
                         <button type="button" @click="deleteModalOpen = false"
-                                class="flex-1 px-4 py-2 border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low rounded-md font-label-md text-label-md transition-colors">
+                                class="flex-1 px-4 py-2 border border-slate-300/90 text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 rounded-lg font-label-md text-label-md shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                             Batal
                         </button>
                         <button type="submit" 
-                                class="flex-1 px-4 py-2 bg-error hover:bg-[#991b1b] text-on-error rounded-md font-label-md text-label-md shadow-sm transition-colors">
+                                class="flex-1 px-4 py-2 bg-gradient-to-b from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-on-error rounded-lg font-label-md text-label-md shadow-xs ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                             Hapus
                         </button>
                     </div>

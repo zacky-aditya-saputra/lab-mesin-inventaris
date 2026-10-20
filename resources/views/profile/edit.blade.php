@@ -10,7 +10,7 @@
     @php
         $identityCardExtension = $user->identity_card_path ? strtolower(pathinfo($user->identity_card_path, PATHINFO_EXTENSION)) : null;
         $identityCardIsImage = in_array($identityCardExtension, ['jpg', 'jpeg', 'png', 'webp']);
-        $identityCardUrl = $user->identity_card_path ? asset('storage/'.$user->identity_card_path) : null;
+        $identityCardUrl = $user->identity_card_path ? route('documents.identity', $user) : null;
     @endphp
 
     <!-- VIEW MODE: Kartu Identitas Digital (Read-Only) -->
@@ -18,14 +18,14 @@
         <!-- Header Kartu -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant pb-5 mb-6">
             <div>
-                <h2 class="font-title-md text-title-md text-on-surface font-bold flex items-center gap-2">
+                <h2 class="font-title-sm text-title-sm text-on-surface font-bold flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">badge</span>
                     Kartu Identitas Digital
                 </h2>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1">Ringkasan data identitas Anda yang tersimpan di sistem.</p>
             </div>
             @if (filled($user->identity_type))
-                <span class="self-start inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-badge-sm text-badge-sm font-semibold
+                <span class="self-start inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-badge-xs text-badge-xs font-semibold
                              {{ $user->identity_type === 'umum' ? 'bg-tertiary-container text-on-tertiary-container' : ($user->identity_type === 'pegawai' ? 'bg-secondary-container text-on-secondary-container' : 'bg-primary-container text-on-primary-container') }}">
                     <span class="material-symbols-outlined text-base">{{ $user->identity_type === 'umum' ? 'public' : ($user->identity_type === 'pegawai' ? 'badge' : 'school') }}</span>
                     {{ $user->identity_type === 'umum' ? 'Umum' : ($user->identity_type === 'pegawai' ? 'Staf/Pegawai Laboratorium' : 'Mahasiswa') }}

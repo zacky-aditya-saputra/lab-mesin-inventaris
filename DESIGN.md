@@ -1,275 +1,247 @@
-# Design System & UI Specification: Sistem Inventaris & E-Catalog Multi-Lab Mesin
-## Fakultas Teknik — Universitas Wahid Hasyim Semarang
+# Design System: LabCatalog Teknik Mesin Unwahas (Digital Atelier Adaptation)
 
-> **Dokumen Panduan Desain Resmi**:  
-> Dokumen ini adalah acuan baku implementasi antarmuka untuk **Laravel Blade + Tailwind CSS + Alpine.js**. Seluruh instruksi dalam dokumen ini dirancang agar dapat dibaca dan dieksekusi secara presisi oleh developer maupun AI coding agent (seperti OpenCode CLI). Sistem dibangun secara mandiri tanpa dependensi admin generator pihak ketiga (seperti Filament) guna menjaga performa tinggi, kendali penuh atas kode, dan estetika kriya perangkat lunak (*software craftsmanship*).
+Dokumen sistem desain antarmuka resmi untuk aplikasi **LabCatalog (Sistem E-Katalog & Inventaris Peralatan Laboratorium Fakultas Teknik Mesin Universitas Wahid Hasyim Semarang)**.
 
----
+Sistem desain ini mengadaptasi tata letak estetis **Digital Atelier** (referensi: *header 3-bagian simetris*, *sidebar kiri terintegrasi*, *banner cyan di kolom kanan*, dan *grid produk proporsional 4-kolom*), yang ditransformasikan menjadi **Laboratorium Teknik Mesin Modern & Industrial**.
 
-## 1. Filosofi Desain & Prinsip "Anti-AI-Slop"
-
-Antarmuka sistem ini tidak boleh terlihat seperti template web generik atau hasil generate AI murahan (*AI slop*) yang identik dengan tombol biru flat saturated, elemen kaku seragam, teks terpotong canggung, dan tata letak tanpa hierarki. Sistem ini adalah **perangkat lunak teknik industri (Engineering-Grade Lab Management System)** yang mengedepankan presisi data, ergonomi pengguna, dan keanggunan utiliter.
-
-### 5 Pilar Utama Kriya Desain (Craftsmanship):
-1. **Kedalaman Visual Berlapis (*Layered Depth & Tactile Feel*)**:  
-   Hindari tombol flat saturasi tinggi tanpa dimensi. Gunakan kombinasi halus antara gradien mikro (*subtle vertical gradient*), bayangan lembut (*soft multi-layer shadows*), dan garis tepi dalam (*inner highlight ring* `ring-1 ring-inset ring-white/20`) untuk menciptakan kesan tombol fisik yang berbobot dan memuaskan saat ditekan (`active:scale-[0.98]`).
-2. **Kerapian Tipografi & Eliminasi *Awkward Wrapping***:  
-   Setiap kontainer judul halaman harus dilindungi dengan `min-w-0 flex-1` dan `break-words sm:whitespace-normal` agar judul seperti *"Daftar Klien Lab / Peminjam"* tidak pernah terhimpit secara vertikal menjadi satu kata per baris.
-3. **Filter Terstruktur vs Clunky Pills**:  
-   Untuk data dengan banyak pilihan (seperti 4 kelompok laboratorium utama teknik mesin), **wajib menggunakan dropdown selector kustom atau menu terpadu yang elegan**, bukan deretan *pill buttons* yang membungkus canggung ke baris kedua. Kategori sekunder disajikan dalam baris chip horizontal dengan *horizontal smooth scrolling* (`overflow-x-auto no-scrollbar`) agar tetap rapi di semua resolusi layar.
-4. **Navigasi Terintegrasi & Bersih (Zero Redundancy)**:  
-   Navbar tidak boleh menampilkan tombol dobel (misal tautan "Kelola Lab" di tengah sekaligus tombol besar "Dashboard Admin" di kanan). Semua aksi akun pengguna (Role, Profil, Dashboard, Logout) disatukan ke dalam **User Avatar Dropdown Menu** yang rapi dengan efek *glassmorphism* (`backdrop-blur-md bg-white/85`).
-5. **Penanganan Visual Sempurna (*Graceful Fallbacks*)**:  
-   Tidak boleh ada ikon gambar rusak (*broken image icon*) atau teks alt mentah yang merusak estetika kartu alat. Setiap aset visual yang gagal dimuat atau belum memiliki foto wajib menampilkan ilustrasi placeholder teknik (*blueprint engineering SVG placeholder*) yang proporsional.
+> **Model Peminjaman Tunggal (Single-Item Loan Flow)**:
+> Sistem menggunakan alur peminjaman langsung per satu jenis alat (*single tool loan*). Fitur keranjang belanja ditiadakan agar mahasiswa fokus pada peralatan spesifik yang dibutuhkan per pengajuan, memudahkan verifikasi oleh laboran dan serah terima fisik di laboratorium.
 
 ---
 
-## 2. Design Tokens & Palet Warna
+## 1. Perbandingan Visual & Diagram Tata Letak (Exact Layout Blueprint)
 
-### 2.1 Palet Warna Utama & Netral
-| Peran | Nama Token | Nilai HEX | Tailwind Utility Classes | Deskripsi & Konteks Penggunaan |
-|---|---|---|---|---|
-| **Primary Brand** | Industrial Blue | `#1D4ED8` (Blue 700) / `#2563EB` (Blue 600) | `bg-blue-600 hover:bg-blue-700 text-white` | Aksi utama (CTA), tombol submit, link aktif |
-| **Primary Inset** | Top Highlight | `rgba(255,255,255,0.2)` | `ring-1 ring-inset ring-white/20` | Garis pantulan cahaya mikro pada bagian atas tombol |
-| **Secondary Neutral**| Slate Surface | `#F8FAFC` (Slate 50) | `bg-slate-50 border-slate-200 text-slate-700` | Kartu sekunder, latar form, input inactive |
-| **Dark Sidebar** | Deep Industrial Slate | `#0F172A` (Slate 900) | `bg-slate-900 border-slate-800 text-slate-200` | Sidebar navigasi admin dengan aksen pencahayaan |
-| **Active Nav Accent**| Electric Cyan/Blue | `#3B82F6` (Blue 500) | `border-l-4 border-blue-500 bg-slate-800/80` | Penanda tegas menu sidebar aktif |
-| **Card Border** | Subtle Hairline | `#E2E8F0` (Slate 200) | `border border-slate-200/80` | Garis batas tipis berkelas pada kartu data |
-| **Text Primary** | Deep Charcoal | `#0F172A` (Slate 900) | `text-slate-900 font-semibold` | Judul, label penting, data metrik |
-| **Text Secondary** | Muted Slate | `#475569` (Slate 600) | `text-slate-600` | Paragraf penjelasan, spesifikasi alat |
-| **Text Tertiary** | Caption Slate | `#94A3B8` (Slate 400) | `text-slate-400 text-xs` | Timestamp, metadata, petunjuk form |
+Mengacu langsung pada referensi visual, halaman katalog desktop memiliki struktur tata letak 2-kolom terpadu di bawah navigasi atas:
 
-### 2.2 Semantic Status Tokens (Tiket & Stok)
-* `PENDING`: `bg-amber-50 text-amber-700 border border-amber-200/80` (Ikon: `schedule`)
-* `APPROVED`: `bg-sky-50 text-sky-700 border border-sky-200/80` (Ikon: `check_circle`)
-* `PARTIALLY_APPROVED`: `bg-orange-50 text-orange-700 border border-orange-200/80` (Ikon: `rule`)
-* `ON_LOAN`: `bg-indigo-50 text-indigo-700 border border-indigo-200/80` (Ikon: `assignment`)
-* `OVERDUE`: `bg-rose-600 text-white shadow-sm font-semibold` (Ikon: `warning`) — *Sengaja solid agar mencolok untuk peringatan darurat*
-* `RETURNED`: `bg-emerald-50 text-emerald-700 border border-emerald-200/80` (Ikon: `task_alt`)
-* `REJECTED`: `bg-rose-50 text-rose-700 border border-rose-200/80` (Ikon: `cancel`)
-
----
-
-## 3. Komponen Inti "Anti-AI-Slop"
-
-### 3.1 Tombol Utama (*Primary Button*)
-Tombol utama menggabungkan gradien vertikal halus, bayangan terukur, dan efek pegas mikro saat diklik:
-```html
-<button type="submit" 
-        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
-               bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 
-               text-white text-sm font-medium tracking-tight shadow-sm hover:shadow 
-               ring-1 ring-inset ring-white/20 active:scale-[0.98] focus:outline-none 
-               focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-150 cursor-pointer">
-    <span class="material-symbols-outlined text-base">check</span>
-    <span>Simpan Perubahan</span>
-</button>
 ```
-
-### 3.2 Tombol Sekunder / Garis Tepi (*Secondary / Outline Button*)
-```html
-<button type="button" 
-        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
-               bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium tracking-tight 
-               border border-slate-300/80 hover:border-slate-400 shadow-xs active:bg-slate-100 
-               active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-slate-300 
-               transition-all duration-150 cursor-pointer">
-    <span>Batal</span>
-</button>
-```
-
-### 3.3 Tombol Bahaya / Destruktif (*Danger Button*)
-```html
-<button type="button" 
-        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
-               bg-gradient-to-b from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 
-               text-white text-sm font-medium tracking-tight shadow-sm hover:shadow 
-               ring-1 ring-inset ring-white/20 active:scale-[0.98] focus:outline-none 
-               focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 transition-all duration-150 cursor-pointer">
-    <span class="material-symbols-outlined text-base">delete</span>
-    <span>Hapus Data</span>
-</button>
-```
-
-### 3.4 Tombol Pintas WhatsApp Klien (*WhatsApp Micro-Action*)
-Bukan tombol hijau mencolok mentah, melainkan tombol terukur dengan border aksen dan interaksi mikro:
-```html
-<a href="{{ $waUrl }}" target="_blank" rel="noopener"
-   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg 
-          bg-emerald-50/80 hover:bg-emerald-100/90 text-emerald-800 border border-emerald-300/70 
-          font-medium text-xs shadow-xs hover:shadow-sm active:scale-95 transition-all duration-150">
-    <span class="material-symbols-outlined text-[16px] text-emerald-600">chat</span>
-    <span>{{ $client->phone_number }}</span>
-</a>
++----------------------------------------------------------------------------------------------------------+
+|  LabCatalog                  Katalog   Peminjaman Saya   Panduan SOP   Kontak Lab                🔍   👤   | <- 1. Top Navbar (3-Section)
++----------------------------------------------------------------------------------------------------------+
+|                                                                                                          |
+|  [KOLOM KIRI: SIDEBAR w-64]      [KOLOM KANAN: KONTEN UTAMA flex-1 min-w-0]                              |
+|                                                                                                          |
+|  Filters                         Koleksi Peralatan Laboratorium                                          |
+|  Refine your selection           Eksplorasi inventaris peralatan praktikum dan riset presisi ...         |
+|                                                                                                          |
+|  (🏷️ Kategori Alat      )        +---------------------------------------------------------------------+ | <- 3. Quick Guide Banner
+|                                  | [PANDUAN SINGKAT]                                                   | |    (Cyan Background)
+|  🔬 Laboratorium Pengampu        | CARI ALAT, CEK STOK & AJUKAN MANDIRI              +---------------+ | |
+|                                  | Pantau stok real-time, pilih alat, dan ajukan     | 3             | | |
+|  ⚙️ Kondisi & Kalibrasi          | langsung tanpa formulir kertas.                   | LANGKAH MUDAH | | |
+|                                  |                                                   | Cek & Pinjam  | | |
+|  📦 Ketersediaan Stok            | ALUR : [ 1. PILIH ALAT → 2. FORMULIR → 3. AMBIL ] +---------------+ | |
+|                                  +---------------------------------------------------------------------+ |
+|  Clear All                                                                                               |
+|                                  Menampilkan 14 dari 14 alat                                             |
+|                                                                                                          |
+|                                  +-------------+  +-------------+  +-------------+  +-------------+      | <- 4. Equipment Grid
+|                                  | [Foto 3:4]  |  | [Foto 3:4]  |  | [Foto 3:4]  |  | [Foto 3:4]  |      |    (4 Kolom)
+|                                  | [READY]     |  | [HABIS]     |  | [READY]     |  | [READY]     |      |
+|                                  | Nama Alat   |  | Nama Alat   |  | Nama Alat   |  | Nama Alat   |      |
+|                                  | Lab · Kode  |  | Lab · Kode  |  | Lab · Kode  |  | Lab · Kode  |      |
+|                                  | Stok: 3     |  | Stok: 0     |  | Stok: 2     |  | Stok: 5     |      |
+|                                  | [ Pinjam ]  |  | [ Habis ]   |  | [ Pinjam ]  |  | [ Pinjam ]  |      |
+|                                  +-------------+  +-------------+  +-------------+  +-------------+      |
++----------------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 4. Spesifikasi Perombakan Antarmuka Utama
+## 2. Navigasi Atas (Top Navigation Bar - 3 Sections)
 
-### 4.1 Modul E-Katalog Publik (`/katalog`)
+Navigasi atas membagi ruang secara seimbang menjadi 3 area (`flex items-center justify-between h-18 px-8 bg-white border-b border-slate-100 sticky top-0 z-50`):
 
-#### A. Toolbar Pencarian & Filter Laboratorium (Dropdown Elegan)
-* **Kebutuhan**: Menghilangkan 6 pill button bertumpuk yang berantakan. Menggantinya dengan toolbar terpadu.
-* **Struktur Toolbar**:
-  1. Baris atas: Kotak pencarian (*Search input*) dipasangkan berdampingan dengan **Dropdown Selector Laboratorium**.
-  2. Dropdown Lab memiliki ikon laboratorium (`science`), chevron halus, border `border-slate-300`, dan saat dipilih langsung me-redirect atau memicu filter lab yang bersangkutan.
-  3. Baris bawah: Deretan chip Kategori yang dapat digeser secara horizontal (*horizontal scroll* `overflow-x-auto no-scrollbar`) dengan indikator aktif yang kontras (`bg-slate-900 text-white` saat aktif vs `bg-white border-slate-200 text-slate-600` saat inaktif).
+### 2.1 Sisi Kiri (Brand Identity)
+* **Wordmark**: `LabCatalog` (atau logo lab Teknik Mesin Unwahas + teks `LabCatalog`).
+* **Tipografi**: `text-xl lg:text-2xl font-black text-slate-900 tracking-tight font-sans`.
+* **Karakter**: Bersih, tegas, tanpa pembungkus badge atau ornamen mencolok.
 
-```html
-<!-- Toolbar Filter Terpadu -->
-<div class="max-w-4xl mx-auto space-y-4 mb-8">
-    <!-- Baris 1: Pencarian & Dropdown Laboratorium -->
-    <div class="flex flex-col sm:flex-row gap-3">
-        <!-- Live Search Bar -->
-        <div class="relative flex-1">
-            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-            <input type="text" x-model="searchQuery"
-                   placeholder="Cari nama alat, spesifikasi, atau kode inventaris..." 
-                   class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300/90 bg-white 
-                          focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-xs 
-                          transition-all placeholder:text-slate-400" />
-            <button x-show="searchQuery" @click="searchQuery = ''" 
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
-                <span class="material-symbols-outlined text-sm">close</span>
-            </button>
-        </div>
+### 2.2 Sisi Tengah (Flush Bottom-Aligned Blue Container)
+Tautan navigasi berada di tengah bilah dalam kontainer persegi panjang berwarna biru terang (*vibrant blue* `bg-blue-600 rounded-t-2xl rounded-b-none px-5 lg:px-7 py-3 text-white shadow-xs`) yang menempel rapat tanpa celah (*flush / bottom-aligned* `-mb-px`) pada batas bawah navbar:
+* **Bentuk & Sudut**: Dua sudut atas membulat (`rounded-t-2xl`), sedangkan dua sudut bawah siku-siku/lurus (`rounded-b-none`) yang menyatu dan memotong lurus batas bawah navbar (*bottom border*).
+* **Menu Navigasi Horizontal**:
+  1. **Katalog**: `text-xs lg:text-sm font-semibold text-white` (dengan highlight aktif halus `bg-white/20 px-3 lg:px-3.5 py-1 rounded-lg`).
+  2. **Riwayat**: `text-xs lg:text-sm font-semibold text-white/90 hover:text-white`.
+  3. **Pengajuan**: `text-xs lg:text-sm font-semibold text-white/90 hover:text-white`.
+  4. **Logbook Kegiatan**: `text-xs lg:text-sm font-semibold text-white/90 hover:text-white`.
+  5. **Panduan**: `text-xs lg:text-sm font-semibold text-white/90 hover:text-white`.
+  6. **Info Kontak**: `text-xs lg:text-sm font-semibold text-white/90 hover:text-white`.
+* **Distribusi & Spasi**: `gap-2.5 lg:gap-5` terdistribusi merata dengan *padding* yang proporsional di dalam kontainer.
 
-        <!-- Dropdown Filter Laboratorium -->
-        <div class="sm:w-72 flex-shrink-0">
-            <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-600 text-lg">science</span>
-                <select onchange="window.location.href = this.value;"
-                        class="w-full pl-10 pr-9 py-3 rounded-xl border border-slate-300/90 bg-white text-sm font-medium 
-                               text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs transition-all appearance-none cursor-pointer">
-                    <option value="{{ route('catalog.index') }}" {{ !$selectedLabSlug ? 'selected' : '' }}>
-                        🏛️ Semua Laboratorium (4 Lab Utama)
-                    </option>
-                    @foreach ($laboratories as $lab)
-                        <option value="{{ route('catalog.index', ['lab' => $lab->slug]) }}" {{ $selectedLabSlug === $lab->slug ? 'selected' : '' }}>
-                            🔬 {{ $lab->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">expand_more</span>
-            </div>
-        </div>
-    </div>
+### 2.3 Sisi Kanan (Notifikasi & Akun Pengguna)
+* **Notifikasi**: Tombol lonceng bulat bersih (`x-notification-bell`).
+* **Profil Pengguna**: Wadah pill (`rounded-full border border-slate-200 bg-white py-1 pl-1 pr-3.5 shadow-xs`) memuat avatar lingkaran biru huruf inisial + nama tebal dan peran biru di bawahnya + chevron dropdown.
+*(Catatan: Ikon keranjang belanja ditiadakan demi kesederhanaan alur).*
 
-    <!-- Baris 2: Kategori Horizontal Scrollbar -->
-    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-        <template :key="category" x-for="category in categories">
-            <button @click="activeCategory = category"
-                    :class="activeCategory === category 
-                            ? 'bg-slate-900 text-white font-semibold shadow-xs border-slate-900' 
-                            : 'bg-white text-slate-600 hover:bg-slate-100/80 border-slate-200/90 hover:border-slate-300'"
-                    class="px-4 py-2 rounded-full text-xs font-medium border whitespace-nowrap transition-all duration-150 cursor-pointer">
-                <span x-text="category"></span>
-            </button>
-        </template>
-    </div>
-</div>
+---
+
+## 3. Kolom Kiri: Sidebar Filter (Filters & Refine)
+
+Berada di kolom kiri halaman desktop (`w-60 lg:w-64 shrink-0 pr-6 pt-6 sticky top-24`):
+
+### 3.1 Header Sidebar
+* **Judul**: `Filters` (`text-lg font-bold text-slate-900 tracking-tight`).
+* **Subjudul**: `Refine your selection` (`text-xs text-slate-400 mt-0.5 block`).
+
+### 3.2 Daftar Filter Vertikal
+Mengikuti format referensi (*icon + label*, dengan item aktif berbentuk pill halus):
+1. **Kategori Alat** (Item Terpilih / Aktif):
+   * Tampilan: Wadah pill melingkar lembut (`rounded-full bg-blue-50/80 border border-blue-100 px-4 py-2.5 flex items-center gap-3 text-blue-700 font-semibold text-xs shadow-xs`).
+   * Ikon: `category` (warna biru `#2563EB`).
+2. **Laboratorium Pengampu**:
+   * Tampilan: Baris interaktif bersih (`px-4 py-2.5 flex items-center gap-3 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer transition-colors`).
+   * Ikon: `science` atau `precision_manufacturing`.
+3. **Kondisi & Kalibrasi**:
+   * Tampilan: `px-4 py-2.5 flex items-center gap-3 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer`.
+   * Ikon: `verified` atau `tune`.
+4. **Status Ketersediaan**:
+   * Tampilan: `px-4 py-2.5 flex items-center gap-3 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer`.
+   * Ikon: `inventory_2`.
+
+### 3.3 Tombol Reset
+* **Clear All**: Teks bersih di bawah daftar filter (`text-blue-600 hover:text-blue-700 text-xs font-semibold cursor-pointer px-4 pt-4 block`).
+
+---
+
+## 4. Kolom Kanan: Konten Utama & Hero Quick Guide Banner
+
+Kolom kanan menampung judul halaman, hero banner cyan panduan ringkas, dan grid alat (`flex-1 min-w-0 pt-6`):
+
+### 4.1 Judul Halaman & Subjudul (Header Konten)
+* **Judul Utama**: `Koleksi Peralatan Laboratorium` (`text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight`).
+* **Deskripsi**: `Eksplorasi inventaris peralatan praktikum dan riset presisi lintas laboratorium Teknik Mesin Unwahas. Cek ketersediaan unit secara real-time sebelum mengajukan peminjaman mandiri.` (`text-sm text-slate-500 max-w-2xl mt-2 leading-relaxed`).
+
+### 4.2 Hero Quick Guide Banner (Cyan Rounded Banner)
+Banner berada **di dalam kolom kanan**, tepat di bawah judul koleksi dan di atas grid alat:
+* **Wadah Luar**:
+  * Warna: Cyan cerah menyegarkan (`bg-[#26D0ED]` atau `bg-gradient-to-r from-cyan-400 to-cyan-500`).
+  * Radius: `rounded-3xl` (24px).
+  * Spacing: `p-7 lg:p-9 mt-6 flex flex-col md:flex-row items-stretch justify-between gap-6 relative overflow-hidden shadow-sm`.
+* **Sisi Kiri Banner**:
+  * **Tag Subjudul**: Teks uppercase bersih (`text-[11px] font-bold uppercase tracking-wider text-slate-900/75`).
+    * Teks: `Panduan Singkat`.
+  * **Judul Besar**: `CARI ALAT, CEK STOK & AJUKAN MANDIRI` (`text-2xl lg:text-3xl font-extrabold text-slate-950 tracking-tight mt-1`).
+  * **Subjudul Ringkas**: `Pantau sisa stok siap pakai secara real-time, pilih alat yang dibutuhkan, dan ajukan peminjaman langsung tanpa formulir kertas.` (`text-sm lg:text-base font-medium text-slate-900/90 mt-1.5`).
+  * **Informasi Alur Ringkas**:
+    * Teks alami: `Pilih alat → Isi formulir → Ambil di lab` · `Stok terhubung langsung` (tanpa kapsul gelap atau tanda kurung buatan).
+* **Sisi Kanan Banner (Glass Card)**:
+  * Kartu persegi melengkung di dalam banner (`w-full md:w-56 shrink-0 rounded-2xl bg-white/25 backdrop-blur-md border border-white/40 p-6 flex flex-col items-center justify-center text-center shadow-xs`):
+    * Angka Besar: **3** (`font-mono text-4xl lg:text-5xl font-black text-slate-900`).
+    * Label: **LANGKAH MUDAH** (`text-[11px] font-bold tracking-wider uppercase text-slate-900/80 mt-1`).
+    * Sub-label: `Cek Stok & Pinjam`.
+* **Overlay Foto Otentik Gedung Teknik (Anti AI-Slop Campus Presence)**:
+  * Foto asli Gedung Fakultas Teknik Unwahas (`public/images/gedung-teknik.jpeg`) diposisikan sebagai backdrop overlay di dalam banner cyan:
+    * `absolute inset-0 pointer-events-none overflow-hidden z-0`.
+    * Gambar: `object-cover object-[center_60%] opacity-45 sm:opacity-50 mix-blend-multiply filter contrast-125 brightness-95`.
+    * Layer Gradien Proteksi: `bg-gradient-to-r from-[#26D0ED] via-[#26D0ED]/60 to-transparent` memastikan teks panduan di sisi kiri berkontras tajam (WCAG AA), sementara fasad arsitektur gedung penuh dan papan nama "FAKULTAS TEKNIK" tampil tegak dan jelas di tengah dan di latar belakang kartu kaca.
+
+---
+
+## 5. Grid Kartu Alat (Equipment Product Cards)
+
+Tepat di bawah banner cyan terdapat baris keterangan jumlah alat (`Menampilkan 14 dari 14 alat`) dan grid 4 kolom:
+
+### 5.1 Spesifikasi Kartu Desktop
+* **Grid**: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6`.
+* **Rasio Foto**: **Portrait Tinggi (3:4)** yang lega dan profesional.
+* **Wadah Kartu**:
+  * `rounded-2xl overflow-hidden bg-white border border-slate-200/80 shadow-xs hover:shadow-lg hover:shadow-blue-500/8 hover:-translate-y-1 transition-all duration-200 flex flex-col`.
+* **Media Container**:
+  * Rasio `aspect-[3/4]` dengan latar studio foto bersih (`bg-slate-100/80`).
+  * **Badge Pojok Kiri Atas**:
+    * Alat Ready: Kapsul Cyan (`bg-cyan-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs`) bertuliskan `READY STOCK`.
+    * Alat Habis: Kapsul Merah (`bg-rose-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md`) bertuliskan `STOK HABIS`.
+* **Konten Informasi Bawah**:
+  * **Nama Alat**: `font-bold text-slate-900 text-sm leading-snug line-clamp-1 mt-3 px-3.5`.
+  * **Sub-info**: `text-xs text-slate-500 font-mono px-3.5 mt-0.5` (contoh: `LPP · Gedung D Lt. 1`).
+  * **Telemetri & Aksi (Footer Kartu)**:
+    * `flex items-center justify-between px-3.5 pb-3.5 pt-2 border-t border-slate-100 mt-2`:
+      * Angka Stok: `font-mono text-xs font-bold text-emerald-600` (misal: `3 Unit`).
+      * Tombol Pill: `Pinjam Alat` (`px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-full shadow-xs active:scale-95 transition-all`) yang langsung mengarahkan pengguna ke formulir peminjaman alat tersebut.
+
+---
+
+## 6. Detail Spesifikasi Alat (Minimalist Floating Modal & Card)
+
+Mengadaptasi tata letak kartu minimalis modern (referensi kartu mengambang *rounded-3xl*, visual bersih di atas, tipografi bernapas, dan tombol pill empuk di bawah):
+
+```
++-----------------------------------------------------------+
+|                                                           |
+|             [ FOTO ALAT BERSIH & FOKUS ]                  |
+|             (Rasio Lebar, Latar Studio Netral)            |
+|                                                           |
++-----------------------------------------------------------+
+| Mesin Bubut Konvensional 1000mm                           |
+| Mesin Perkakas · Lab Proses Produksi · Gedung D Lt. 1     |
+|                                                           |
+| Peralatan fabrikasi presisi untuk pembubutan logam,       |
+| ulir drat, dan permesinan silindris praktikum mesin.      |
+|                                                           |
+| Spesifikasi Kunci:                                        |
+| • 3-Phase 380V / 2.2 kW  • Jarak Senter 1000mm            |
+|                                                           |
+| [ ▾ Lihat Spesifikasi Lengkap (Toleransi, RPM, Aksesoris) ]| <- Tombol Expand/Accordion
+|                                                           |
+| +-------------------------------------------------------+ |
+| | 3 Unit                       [  Ajukan Peminjaman  ]  | | <- Baris Telemetri & CTA
+| | Tersedia Siap Pakai                                   | |
+| +-------------------------------------------------------+ |
++-----------------------------------------------------------+
 ```
 
-#### B. Kartu Alat (*Tool Card*) & Engineering Placeholder
-Jika gambar alat tidak tersedia atau mengalami gagal muat (*404 error*), tampilkan placeholder SVG diagram teknis yang elegan, bukan teks broken alt:
-```html
-<div class="relative h-48 w-full bg-slate-100 flex items-center justify-center overflow-hidden border-b border-slate-100">
-    <template x-if="tool.image">
-        <img :src="tool.image" :alt="tool.name" 
-             @error="$el.style.display='none'; $el.nextElementSibling.classList.remove('hidden')"
-             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-    </template>
-    <!-- Fallback Technical Illustration -->
-    <div :class="tool.image ? 'hidden' : 'flex'" 
-         class="flex-col items-center justify-center text-slate-400 p-4 text-center select-none">
-        <div class="w-14 h-14 rounded-2xl bg-white/80 border border-slate-200/80 shadow-xs flex items-center justify-center mb-2">
-            <span class="material-symbols-outlined text-3xl text-blue-600/80">precision_manufacturing</span>
-        </div>
-        <span class="text-[11px] font-mono font-medium text-slate-500 uppercase tracking-wider" x-text="tool.code"></span>
-    </div>
-</div>
-```
+### 6.1 Karakteristik & Hierarki Antarmuka
+1. **Wadah Utama**: `max-w-md lg:max-w-lg rounded-3xl bg-white shadow-2xl overflow-hidden p-0 relative border border-slate-100`.
+2. **Visual Atas**: Foto alat tampil dominan memenuhi separuh atas kartu dengan sudut melengkung atas (`rounded-t-3xl`), latar belakang studio hangat/netral (`bg-slate-50`), tanpa stiker badge yang berisik.
+3. **Area Konten (Tengah)**:
+   * **Judul Alat**: `text-xl lg:text-2xl font-bold text-slate-900 tracking-tight mt-5 px-6`.
+   * **Atribut Tipis**: Teks biasa abu-abu lembut tanpa kapsul (`text-xs text-slate-400 font-medium px-6 mt-1 flex items-center gap-2`). Contoh: `Mesin Perkakas · Lab Proses Produksi · Gedung D Lt. 1`.
+   * **Deskripsi Singkat**: 1-2 baris penjelasan fungsi utama (`text-sm text-slate-600 leading-relaxed px-6 mt-3`).
+   * **Spesifikasi Inti & Tombol Selebihnya (Collapsible)**:
+     - Ditampilkan 2-3 spesifikasi utama saja agar kartu tetap bersih dan tidak sesak.
+     - **Tombol "Lihat Spesifikasi Lengkap"**: Tautan/tombol teks minimalis (`text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 mt-2.5 px-6 cursor-pointer`).
+     - Jika diklik, bagian bawah meluas menampilkan rincian lanjutan (rentang toleransi, kecepatan spindle, kelengkapan chuck & pahat) tanpa merusak kerapian awal kartu.
+4. **Footer Aksi Bawah (Sejajar & Seimbang)**:
+   * Terletak di dasar kartu (`flex items-center justify-between px-6 py-5 mt-4 border-t border-slate-100/80 bg-white`):
+     - **Sisi Kiri (Stok Telemetri)**:
+       * Angka besar tebal: `text-xl font-mono font-bold text-slate-900` (atau `text-emerald-600`) -> `3 Unit`.
+       * Keterangan kecil di bawah angka: `text-[11px] text-slate-400 font-medium` -> `Tersedia Siap Pakai`.
+     - **Sisi Kanan (Tombol Aksi Utama)**:
+       * Tombol pill lembut, empuk, dan elegan: `Ajukan Peminjaman` (`bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-6 py-3 rounded-full shadow-md shadow-blue-500/15 active:scale-95 transition-all cursor-pointer`).
+       * Mengarahkan langsung ke formulir peminjaman dengan alat ini terpilih otomatis.
 
 ---
 
-### 4.2 Topbar Navigasi Publik & User Dropdown (`layouts/catalog.blade.php`)
+## 7. Formulir Pengajuan Peminjaman (Single-Item Wizard)
 
-* **Konsep**: Menghilangkan tombol dobel yang canggung di header publik dan menggantinya dengan bilah navigasi *glassmorphism* modern serta satu **Avatar Dropdown Interaktif**.
-* **Elemen Menu Dropdown Pengguna**:
-  - Kartu identitas singkat: Nama Pengguna, Email, dan Badge Peran (`Kepala Lab`, `Laboran Lab X`, `Mahasiswa`).
-  - Menu Navigasi:
-    - Jika Admin/Laboran: *Dashboard Manajemen Lab* (dengan ikon dashboard) dan *Katalog Publik*.
-    - Jika Klien: *Ajukan Peminjaman* dan *Riwayat Tiket Saya*.
-    - Semua Role: *Pengaturan Profil Akun*.
-  - Pemisah visual (*Divider*).
-  - Tombol **Keluar (Logout)** yang memicu modal konfirmasi ramah (*"Apakah Anda yakin ingin mengakhiri sesi?"*).
-
----
-
-### 4.3 Direktori Klien Lab & Perbaikan Tabel Admin (`admin/clients/index.blade.php`)
-
-#### A. Perbaikan Header Halaman (Mencegah Judul Terhimpit)
-Gunakan pembungkus `flex flex-col lg:flex-row lg:items-center justify-between gap-4` dengan `flex-1 min-w-0` pada kontainer judul:
-```html
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
-    <div class="flex-1 min-w-0">
-        <h2 class="text-xl font-bold text-slate-900 tracking-tight">Daftar Klien & Peminjam</h2>
-        <p class="text-sm text-slate-500 mt-0.5">Direktori peminjam alat, kontak WhatsApp, dan riwayat transaksi peminjaman.</p>
-    </div>
-    @if (auth()->user()->isKepalaLab())
-        <form method="GET" action="{{ route('admin.clients.index') }}" class="flex items-center gap-2.5 flex-shrink-0">
-            <div class="relative">
-                <select name="laboratory_id"
-                        class="pl-3.5 pr-8 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 
-                               focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs appearance-none cursor-pointer">
-                    <option value="">🏛️ Semua Laboratorium</option>
-                    @foreach ($laboratories as $laboratory)
-                        <option value="{{ $laboratory->id }}" @selected(request('laboratory_id') == $laboratory->id)>
-                            🔬 {{ $laboratory->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-base">expand_more</span>
-            </div>
-            <button type="submit"
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium shadow-xs transition-colors">
-                <span class="material-symbols-outlined text-base">filter_alt</span>
-                <span>Filter</span>
-            </button>
-        </form>
-    @endif
-</div>
-```
-
-#### B. Perbaikan Layout Tabel Responsif (Mencegah Horizontal Scrollbar Berlebih)
-- Tetapkan proporsi lebar kolom secara terencana (`w-1/3`, `w-44`, `w-auto`).
-- Berikan padding seimbang (`px-4 py-3.5`).
-- Seluruh baris memiliki transisi hover yang halus (`hover:bg-slate-50/70 transition-colors`).
+Formulir dirancang fokus meminjam satu jenis alat per pengajuan:
+* **Step 1: Data Mahasiswa**: Nama lengkap, NIM, No. WhatsApp aktif, Program Studi, dan pratinjau dokumen KTM.
+* **Step 2: Konfirmasi Alat & Kuantitas**:
+  * Kartu info alat yang dipilih (foto, nama, kode inventaris, laboratorium pengampu).
+  * Input kuantitas unit yang ingin dipinjam (stepper angka dengan validasi otomatis tidak boleh melebihi sisa stok tersedia).
+* **Step 3: Jadwal, Dokumen & Integritas**:
+  * Tanggal mulai peminjaman (minimal H-2).
+  * Tanggal pengembalian (maksimal 7 hari kerja).
+  * Keperluan peminjaman (textarea).
+  * Unggah surat permohonan/rekomendasi dosen (PDF maks 2MB).
+  * Checkbox persetujuan tata tertib K3 laboratorium.
 
 ---
 
-### 4.4 Sidebar & Topbar Dashboard Admin (`layouts/admin.blade.php`)
+## 8. Riwayat Pengajuan Saya (Student Tickets)
 
-1. **Sidebar Modern**:
-   - Latar belakang: Slate 900 gelap elegan (`#0F172A`).
-   - Indikator Menu Aktif: Garis aksen biru terang di sisi kiri (`border-l-4 border-blue-500 bg-slate-800/80 text-white font-semibold`), bukan blok ungu/biru mencolok.
-   - Menu Tidak Aktif: Teks `text-slate-400 hover:text-white hover:bg-slate-800/50`.
-   - Badge tiket: Kapsul merah lembut dengan angka kontras (`bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded-full text-xs font-semibold`).
-2. **Topbar Admin**:
-   - Bersih dengan tinggi `h-16 border-b border-slate-200 bg-white/95 backdrop-blur-md px-6`.
-   - Widget Tanggal/Waktu: Menggunakan badge lembut abu-abu dengan ikon jam (`schedule`), bukan teks mentah yang terpojok.
-   - Tombol Notifikasi: Ikon lonceng dengan *animated pulse dot* jika ada pesan baru yang belum dibaca.
+* **3 Kartu Ringkasan Putih**: Total Pengajuan, Sedang Dipinjam, Menunggu Verifikasi.
+* **Tabel / Kartu Tiket Interaktif**: Nomor tiket (font-mono), nama alat tunggal yang diajukan beserta jumlahnya, tanggal pinjam, dan badge status resmi.
+* **Aksi Cepat**: Cetak Bukti Tiket (PDF) jika disetujui untuk serah terima fisik alat di laboratorium.
 
 ---
 
-## 5. Checklist Verifikasi Standar Kualitas (Quality Gate)
+## 9. Adaptasi Mobile-First (Anti-Pecah)
 
-Sebelum dinyatakan selesai dan lolos verifikasi, seluruh komponen berikut harus memenuhi standar:
-- [x] **Filter Lab Katalog**: Menggunakan dropdown responsif terpadu; tidak ada pill buttons yang membungkus canggung.
-- [x] **Navigasi Publik**: Tidak ada tombol redundan; avatar dropdown menyatukan seluruh kontrol profil & akses admin.
-- [x] **Tombol "Anti-AI-Slop"**: Menggunakan gradien halus, inner ring highlight, bayangan terukur, dan efek active press `active:scale-[0.98]`.
-- [x] **Admin Klien Page**: Judul halaman tidak mengalami *awkward vertical wrap*; tabel pas dan proporsional di layar desktop standar tanpa scrollbar horizontal sempit.
-- [x] **Image Fallback**: Tidak menampilkan broken image icon jika file foto alat tidak ada di storage; menampilkan SVG technical blueprint.
-- [x] **Uji Bebas Regresi**: Seluruh 103 pengujian otomatis (*Pest test suite*) wajib **100% Lulus (Pass)** tanpa error.
-- [x] **Aset Frontend Terkompilasi**: Eksekusi `npm run build` berhasil tanpa warning atau syntax error.
+1. **Top Bar Mobile (54px)**: Logo ringkas dan tombol pencarian instan melingkar.
+2. **Horizontal Chip Carousel**: Deretan chip filter lab dan kategori yang digeser mendatar.
+3. **Horizontal Media Card**: Kartu alat mendatar (media 88x88px di kiri, teks & tombol "Pinjam" di kanan).
+4. **Sticky Bottom Nav**: 3 menu utama jempol:
+   * **Katalog** (`storefront`)
+   * **Filter** (`tune`)
+   * **Tiket Saya** (`confirmation_number`)

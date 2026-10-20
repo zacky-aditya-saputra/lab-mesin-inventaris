@@ -80,7 +80,7 @@
             </div>
 
             <div>
-                <x-input-label for="laboratory_display" :value="__('Lab Tugas (Terkunci — hanya dapat diubah Kepala Lab)')" />
+                <x-input-label for="laboratory_display" :value="__('Lab Tugas (Terkunci - hanya dapat diubah Kepala Lab)')" />
                 <input id="laboratory_display" type="text" value="{{ $user->laboratory?->name ?? 'Belum Ditugaskan' }}" disabled
                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400" />
             </div>
@@ -111,7 +111,7 @@
                             {{ __('Dokumen aktif') }}: <span class="font-medium">{{ basename($user->identity_card_path) }}</span>
                         </span>
                     </div>
-                    <a href="{{ asset('storage/'.$user->identity_card_path) }}" target="_blank" rel="noopener"
+                    <a href="{{ route('documents.identity', $user) }}" target="_blank" rel="noopener"
                         class="shrink-0 text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
                         {{ __('Lihat Dokumen') }}
                     </a>
@@ -218,7 +218,7 @@
             <x-primary-button>{{ __('Simpan Perubahan') }}</x-primary-button>
 
             <button type="button" @click="isEditing = false"
-                    class="inline-flex items-center gap-1.5 border border-outline-variant text-on-surface font-label-sm text-label-sm px-4 py-2 rounded-lg hover:bg-surface-container transition-colors">
+                    class="inline-flex items-center gap-1.5 border border-outline-variant text-on-surface font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-surface-container transition-colors">
                 <span class="material-symbols-outlined text-base">arrow_back</span>
                 {{ __('Batal / Kembali') }}
             </button>

@@ -91,6 +91,24 @@ class LaboranController extends Controller
     }
 
     /**
+     * Toggle the active status of the specified laboran account (FR-KPL-03).
+     */
+    public function toggleActive(User $laboran): RedirectResponse
+    {
+        $this->authorizeLaboran($laboran);
+
+        if ($laboran->is(auth()->user())) {
+            return back()->with('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
+        }
+
+        $laboran->update(['is_active' => ! $laboran->is_active]);
+
+        $statusText = $laboran->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+        return back()->with('success', "Akun laboran {$laboran->name} berhasil {$statusText}.");
+    }
+
+    /**
      * Ensure the target user is actually a laboran account.
      */
     private function authorizeLaboran(User $laboran): void

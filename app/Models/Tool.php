@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['category_id', 'laboratory_id', 'code', 'name', 'slug', 'specification', 'image_path', 'total_stock', 'available_stock', 'is_active'])]
+#[Fillable(['category_id', 'laboratory_id', 'code', 'name', 'slug', 'specification', 'image_path', 'total_stock', 'available_stock', 'damaged_stock', 'is_active'])]
 class Tool extends Model
 {
     /** @use HasFactory<ToolFactory> */
@@ -27,6 +27,7 @@ class Tool extends Model
             'is_active' => 'boolean',
             'total_stock' => 'integer',
             'available_stock' => 'integer',
+            'damaged_stock' => 'integer',
         ];
     }
 

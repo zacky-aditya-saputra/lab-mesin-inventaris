@@ -30,12 +30,27 @@ class StoreLoanRequest extends FormRequest
             'loan_letter' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
             'phone_number' => ['nullable', 'string', 'max:20'],
             'identity_card_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
-            'start_date' => ['required', 'date', 'after_or_equal:today'],
+            'start_date' => ['required', 'date', 'after_or_equal:'.now()->addDays(2)->toDateString()],
             'end_date' => ['required', 'date', 'after_or_equal:start_date', 'before_or_equal:'.$this->resolveMaximumEndDate()],
             'purpose' => ['required', 'string', 'max:1000'],
+            'integrity_pledge' => ['sometimes', 'accepted'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.tool_id' => ['required', 'distinct', 'exists:tools,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'start_date.after_or_equal' => 'Tanggal mulai peminjaman minimal diajukan 2 hari sebelum pemakaian (H-2) untuk persiapan alat oleh petugas laboratorium.',
+            'items.*.tool_id.distinct' => 'Terdapat alat yang sama dipilih lebih dari satu kali. Harap gabungkan kuantitasnya dalam satu baris.',
+            'integrity_pledge.accepted' => 'Anda wajib menyetujui pernyataan kebenaran data dan kepatuhan tata tertib laboratorium.',
         ];
     }
 

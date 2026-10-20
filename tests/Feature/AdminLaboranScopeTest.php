@@ -213,3 +213,58 @@ test('laboran tool creation is forced to their managed laboratory', function () 
 
     expect($tool->laboratory_id)->toBe($labA->id);
 });
+
+test('cancelled loans are excluded from default admin loan queue but visible in reports and status filter', function () {
+    $lab = Laboratory::factory()->create();
+    $laboran = createLaboranOfLaboratory($lab);
+    $klien = User::factory()->student()->create();
+    $tool = Tool::factory()->for(Category::factory())->for($lab)->create();
+
+    $pending = createTicketForLaboratory($klien, $lab, $tool, 'PENDING');
+    $cancelled = createTicketForLaboratory($klien, $lab, $tool, 'CANCELLED');
+
+    // Default queue excludes CANCELLED
+    $responseDefault = $this->actingAs($laboran)->get(route('admin.loans.index'));
+    $responseDefault->assertOk();
+    $loans = $responseDefault->viewData('loans');
+    expect($loans->pluck('id'))->toContain($pending->id)
+        ->and($loans->pluck('id'))->not->toContain($cancelled->id);
+
+    // Filtering status=CANCELLED displays cancelled tickets
+    $responseCancelled = $this->actingAs($laboran)->get(route('admin.loans.index', ['status' => 'CANCELLED']));
+    $responseCancelled->assertOk();
+    $cancelledLoans = $responseCancelled->viewData('loans');
+    expect($cancelledLoans->pluck('id'))->toContain($cancelled->id)
+        ->and($cancelledLoans->pluck('id'))->not->toContain($pending->id);
+
+    // Reports view displays all tickets including CANCELLED
+    $responseReports = $this->actingAs($laboran)->get(route('admin.loans.index', ['view' => 'reports']));
+    $responseReports->assertOk();
+    $reportsLoans = $responseReports->viewData('loans');
+    expect($reportsLoans->pluck('id'))->toContain($pending->id)
+        ->and($reportsLoans->pluck('id'))->toContain($cancelled->id);
+});
+
+test('admin can filter loans by created_at date range', function () {
+    $this->freezeTime();
+
+    $lab = Laboratory::factory()->create();
+    $laboran = createLaboranOfLaboratory($lab);
+    $klien = User::factory()->student()->create();
+    $tool = Tool::factory()->for(Category::factory())->for($lab)->create();
+
+    $loanToday = createTicketForLaboratory($klien, $lab, $tool, 'PENDING');
+    $loanOld = createTicketForLaboratory($klien, $lab, $tool, 'PENDING');
+    $loanOld->created_at = now()->subDays(10);
+    $loanOld->saveQuietly();
+
+    $response = $this->actingAs($laboran)->get(route('admin.loans.index', [
+        'from_date' => now()->subDays(2)->toDateString(),
+        'to_date' => now()->toDateString(),
+    ]));
+
+    $response->assertOk();
+    $loans = $response->viewData('loans');
+    expect($loans->pluck('id'))->toContain($loanToday->id)
+        ->and($loans->pluck('id'))->not->toContain($loanOld->id);
+});

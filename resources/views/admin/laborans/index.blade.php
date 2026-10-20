@@ -30,7 +30,7 @@
         <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
             <form method="GET" action="{{ route('admin.laborans.index') }}" class="flex items-center gap-2">
                 <select name="laboratory_id" onchange="this.form.submit()"
-                        class="px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm">
+                        class="px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 text-sm cursor-pointer">
                     <option value="">Semua Lab</option>
                     @foreach ($laboratories as $laboratory)
                         <option value="{{ $laboratory->id }}" @selected(request('laboratory_id') == $laboratory->id)>{{ $laboratory->name }}</option>
@@ -43,7 +43,7 @@
                 @endif
             </form>
             <button @click="addForm = { name: '', identity_number: '', email: '', password: '', laboratory_id: '' }; addModalOpen = true"
-                    class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-4 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-on-primary font-label-md text-label-md px-4 py-2.5 rounded-lg shadow-xs hover:shadow-sm ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                 <span class="material-symbols-outlined text-sm">person_add</span>
                 Tambah Laboran
             </button>
@@ -61,7 +61,8 @@
                         <th class="py-3.5 px-6 font-semibold">NIP / No. Pegawai</th>
                         <th class="py-3.5 px-6 font-semibold">Email</th>
                         <th class="py-3.5 px-6 font-semibold">Lab</th>
-                        <th class="py-3.5 px-6 font-semibold text-center w-32">Aksi</th>
+                        <th class="py-3.5 px-6 font-semibold text-center">Status</th>
+                        <th class="py-3.5 px-6 font-semibold text-center w-36">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="font-body-md text-body-md divide-y divide-outline-variant">
@@ -96,17 +97,37 @@
                                     </span>
                                 @endif
                             </td>
+                            <td class="py-3.5 px-6 text-center">
+                                @if ($laboran->is_active)
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Nonaktif
+                                    </span>
+                                @endif
+                            </td>
                             <td class="py-3.5 px-6">
-                                <div class="flex justify-center space-x-1">
+                                <div class="flex justify-center items-center space-x-1">
+                                    <form method="POST" action="{{ route('admin.laborans.toggle-active', $laboran) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin {{ $laboran->is_active ? 'menonaktifkan' : 'mengaktifkan' }} akun laboran ini?');">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                                class="p-1.5 {{ $laboran->is_active ? 'text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30' : 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30' }} rounded-lg transition-colors"
+                                                title="{{ $laboran->is_active ? 'Nonaktifkan Akun' : 'Aktifkan Akun' }}">
+                                            <span class="material-symbols-outlined text-base">{{ $laboran->is_active ? 'person_off' : 'person_check' }}</span>
+                                        </button>
+                                    </form>
                                     <button type="button"
                                             @click="openEditModal({ id: {{ $laboran->id }}, name: '{{ addslashes($laboran->name) }}', identity_number: '{{ addslashes($laboran->identity_number ?? '') }}', email: '{{ addslashes($laboran->email) }}', laboratory_id: '{{ $laboran->laboratory_id ?? '' }}' })"
-                                            class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded transition-colors"
+                                            class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-lg transition-colors"
                                             title="Edit Laboran">
                                         <span class="material-symbols-outlined text-base">edit</span>
                                     </button>
                                     <button type="button"
                                             @click="openDeleteModal({ id: {{ $laboran->id }}, name: '{{ addslashes($laboran->name) }}', laboratory: '{{ addslashes($laboran->laboratory?->name ?? '-') }}' })"
-                                            class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors"
+                                            class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition-colors"
                                             title="Hapus Laboran">
                                         <span class="material-symbols-outlined text-base">delete</span>
                                     </button>
@@ -115,7 +136,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-12 text-center text-on-surface-variant">
+                            <td colspan="7" class="py-12 text-center text-on-surface-variant">
                                 <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mx-auto mb-3">
                                     <span class="material-symbols-outlined text-2xl text-outline">manage_accounts</span>
                                 </div>
@@ -154,7 +175,7 @@
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="create_laboran_name">Nama Lengkap <span class="text-error">*</span></label>
                         <input id="create_laboran_name" name="name" type="text" required x-model="addForm.name"
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                placeholder="Contoh: Budi Santoso"/>
                     </div>
                     <div>
@@ -166,19 +187,19 @@
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="create_laboran_email">Email <span class="text-error">*</span></label>
                         <input id="create_laboran_email" name="email" type="email" required x-model="addForm.email"
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                placeholder="laboran@unwahas.ac.id"/>
                     </div>
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="create_laboran_password">Password <span class="text-error">*</span></label>
                         <input id="create_laboran_password" name="password" type="password" required x-model="addForm.password"
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                placeholder="Minimal 8 karakter"/>
                     </div>
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="create_laboran_lab">Laboratorium Tugas <span class="text-error">*</span></label>
                         <select id="create_laboran_lab" name="laboratory_id" required x-model="addForm.laboratory_id"
-                                class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                                class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
                             <option value="">- Pilih Laboratorium -</option>
                             @foreach ($laboratories as $laboratory)
                                 <option value="{{ $laboratory->id }}">{{ $laboratory->name }}</option>
@@ -189,11 +210,11 @@
                 </div>
                 <div class="px-6 py-4 border-t border-outline-variant bg-surface-container-low flex justify-end space-x-3">
                     <button type="button" @click="addModalOpen = false"
-                            class="px-4 py-2 border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low rounded-md font-label-md text-label-md transition-colors">
+                            class="px-4 py-2 border border-slate-300/90 text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 rounded-lg font-label-md text-label-md shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Batal
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 bg-primary hover:bg-primary-container text-on-primary rounded-md font-label-md text-label-md shadow-sm transition-colors">
+                            class="px-4 py-2 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-on-primary rounded-lg font-label-md text-label-md shadow-xs ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Simpan Laboran
                     </button>
                 </div>
@@ -227,7 +248,7 @@
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="edit_laboran_name">Nama Lengkap <span class="text-error">*</span></label>
                         <input id="edit_laboran_name" name="name" type="text" required x-model="editLaboran.name"
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"/>
                     </div>
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="edit_laboran_nip">NIP / No. Pegawai <span class="text-error">*</span></label>
@@ -237,20 +258,20 @@
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="edit_laboran_email">Email <span class="text-error">*</span></label>
                         <input id="edit_laboran_email" name="email" type="email" required x-model="editLaboran.email"
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"/>
                     </div>
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="edit_laboran_password">
                             Reset Password <span class="text-on-surface-variant font-normal">(Kosongkan jika tidak diubah)</span>
                         </label>
                         <input id="edit_laboran_password" name="password" type="password" x-model="editLaboran.password"
-                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                               class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                placeholder="Isi untuk mereset password (min. 8 karakter)"/>
                     </div>
                     <div>
                         <label class="block font-label-md text-label-md text-on-surface mb-1.5" for="edit_laboran_lab">Ganti Lab Tugas <span class="text-error">*</span></label>
                         <select id="edit_laboran_lab" name="laboratory_id" required x-model="editLaboran.laboratory_id"
-                                class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                                class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
                             <option value="">- Pilih Laboratorium -</option>
                             @foreach ($laboratories as $laboratory)
                                 <option value="{{ $laboratory->id }}">{{ $laboratory->name }}</option>
@@ -260,11 +281,11 @@
                 </div>
                 <div class="px-6 py-4 border-t border-outline-variant bg-surface-container-low flex justify-end space-x-3">
                     <button type="button" @click="editModalOpen = false"
-                            class="px-4 py-2 border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low rounded-md font-label-md text-label-md transition-colors">
+                            class="px-4 py-2 border border-slate-300/90 text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 rounded-lg font-label-md text-label-md shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Batal
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 bg-primary hover:bg-primary-container text-on-primary rounded-md font-label-md text-label-md shadow-sm transition-colors">
+                            class="px-4 py-2 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-on-primary rounded-lg font-label-md text-label-md shadow-xs ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                         Perbarui Laboran
                     </button>
                 </div>
@@ -298,11 +319,11 @@
                     @method('DELETE')
                     <div class="flex space-x-3 justify-center">
                         <button type="button" @click="deleteModalOpen = false"
-                                class="flex-1 px-4 py-2 border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low rounded-md font-label-md text-label-md transition-colors">
+                                class="flex-1 px-4 py-2 border border-slate-300/90 text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 rounded-lg font-label-md text-label-md shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                             Batal
                         </button>
                         <button type="submit"
-                                class="flex-1 px-4 py-2 bg-error hover:bg-[#991b1b] text-on-error rounded-md font-label-md text-label-md shadow-sm transition-colors">
+                                class="flex-1 px-4 py-2 bg-gradient-to-b from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-on-error rounded-lg font-label-md text-label-md shadow-xs ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                             Hapus
                         </button>
                     </div>

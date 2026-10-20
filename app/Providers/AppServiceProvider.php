@@ -13,7 +13,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Laravel Boost (browser logger script + /_boost/browser-logs route)
+        // is a development-only tool. Force-disable it everywhere except the
+        // local environment so it can never be served to the public, even when
+        // APP_DEBUG is accidentally left on in a deployed environment.
+        if (! $this->app->isLocal()) {
+            $this->app['config']->set('boost.enabled', false);
+        }
     }
 
     /**

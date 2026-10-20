@@ -17,7 +17,7 @@ class CatalogController extends Controller
     {
         $laboratories = Laboratory::query()
             ->where('is_active', true)
-            ->orderBy('name')
+            ->orderBy('id')
             ->get();
 
         $categoriesList = Category::query()
@@ -25,15 +25,9 @@ class CatalogController extends Controller
             ->pluck('name')
             ->prepend('Semua Alat');
 
-        $toolsQuery = Tool::query()
+        $toolsList = Tool::query()
             ->with(['category', 'laboratory'])
-            ->where('is_active', true);
-
-        if ($request->filled('lab')) {
-            $toolsQuery->whereHas('laboratory', fn ($query) => $query->where('slug', $request->lab));
-        }
-
-        $toolsList = $toolsQuery
+            ->where('is_active', true)
             ->get()
             ->map(fn (Tool $tool): array => [
                 'id' => $tool->id,
@@ -42,6 +36,7 @@ class CatalogController extends Controller
                 'slug' => $tool->slug,
                 'category' => $tool->category?->name,
                 'laboratory' => $tool->laboratory?->name,
+                'laboratory_code' => $tool->laboratory?->code,
                 'laboratory_slug' => $tool->laboratory?->slug,
                 'specification' => $tool->specification,
                 'total_stock' => $tool->total_stock,
@@ -51,7 +46,7 @@ class CatalogController extends Controller
             ])
             ->all();
 
-        $selectedLabSlug = $request->query('lab');
+        $selectedLabSlug = $request->query('lab', 'all') ?: 'all';
 
         return view('catalog.index', compact('laboratories', 'categoriesList', 'toolsList', 'selectedLabSlug'));
     }

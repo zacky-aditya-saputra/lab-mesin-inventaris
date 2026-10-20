@@ -11,6 +11,7 @@ use App\Services\LoanStatusService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Create a klien account with a complete borrowing profile for notification tests.
@@ -52,7 +53,7 @@ function notifTestLoan(User $client, string $status, Tool $tool, ?Laboratory $la
 
 test('submitting a loan request notifies every laboran of the target laboratory only', function () {
     Notification::fake();
-    Storage::fake('public');
+    Storage::fake('local');
 
     $student = notifTestClient();
     $targetLab = Laboratory::factory()->create();
@@ -68,7 +69,7 @@ test('submitting a loan request notifies every laboran of the target laboratory 
         ->post(route('loans.store'), [
             'laboratory_id' => $targetLab->id,
             'loan_letter' => UploadedFile::fake()->create('surat.pdf', 100, 'application/pdf'),
-            'start_date' => now()->toDateString(),
+            'start_date' => now()->addDays(2)->toDateString(),
             'end_date' => now()->addDays(7)->toDateString(),
             'purpose' => 'Pengujian notifikasi tiket baru',
             'items' => [
@@ -83,7 +84,7 @@ test('submitting a loan request notifies every laboran of the target laboratory 
     Notification::assertSentToTimes($laboranTarget, NewLoanRequestNotification::class, 1);
 });
 
-test('the new loan request notification carries the ticket and review url', function () {
+test('the new loan request notification carries the ticket and a relative review url', function () {
     $student = notifTestClient();
     $laboratory = Laboratory::factory()->create();
     $tool = Tool::factory()->for(Category::factory())->for($laboratory)->create();
@@ -94,7 +95,9 @@ test('the new loan request notification carries the ticket and review url', func
 
     expect($payload['ticket_number'])->toBe($loan->ticket_number)
         ->and($payload['type'])->toBe('new_loan_request')
-        ->and($payload['url'])->toBe(route('admin.loans.review', $loan));
+        ->and($payload['url'])->toBe(route('admin.loans.review', $loan, absolute: false))
+        ->and($payload['url'])->toStartWith('/')
+        ->and($payload['url'])->not->toContain('trycloudflare.com');
 });
 
 test('approving a ticket sends a status notification to the borrower', function () {
@@ -201,4 +204,44 @@ test('users cannot mark a notification that belongs to another user', function (
         ->assertNotFound();
 
     expect($owner->refresh()->unreadNotifications()->count())->toBe(1);
+});
+
+test('notification bell renders legacy absolute notification urls as relative paths', function () {
+    $student = notifTestClient();
+    $laboratory = Laboratory::factory()->create();
+    $tool = Tool::factory()->for(Category::factory())->for($laboratory)->create();
+    $loan = notifTestLoan($student, 'APPROVED', $tool, $laboratory);
+
+    // Simulate a notification row persisted under the old tunnel deployment.
+    $student->notifications()->create([
+        'id' => (string) Str::uuid(),
+        'type' => LoanStatusChangedNotification::class,
+        'data' => [
+            'type' => 'loan_status_changed',
+            'title' => 'Status Peminjaman Diperbarui',
+            'message' => "Tiket {$loan->ticket_number} kini berstatus Disetujui.",
+            'url' => 'https://method-agreement-officer-stripes.trycloudflare.com/peminjaman/riwayat',
+        ],
+    ]);
+
+    $this->actingAs($student)
+        ->get(route('loans.history'))
+        ->assertOk()
+        ->assertSee('href="/peminjaman/riwayat"', false)
+        ->assertDontSee('trycloudflare.com', false);
+});
+
+test('notification bell renders freshly created notifications with a relative url', function () {
+    $student = notifTestClient();
+    $laboratory = Laboratory::factory()->create();
+    $tool = Tool::factory()->for(Category::factory())->for($laboratory)->create();
+    $loan = notifTestLoan($student, 'APPROVED', $tool, $laboratory);
+
+    $student->notify(new LoanStatusChangedNotification($loan));
+
+    // The bell detail link (marked by its Alpine click handler) must stay relative.
+    $this->actingAs($student)
+        ->get(route('loans.history'))
+        ->assertOk()
+        ->assertSee('href="/peminjaman/riwayat" @click="open = false"', false);
 });

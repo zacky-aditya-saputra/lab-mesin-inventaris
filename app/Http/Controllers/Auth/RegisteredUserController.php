@@ -36,7 +36,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'identity_type' => ['required', 'in:mahasiswa,umum'],
             'identity_number' => $request->input('identity_type') === 'umum'
-                ? ['required', 'numeric', 'digits:13']
+                ? ['required', 'numeric', 'digits_between:13,16']
                 : ['required', 'string', 'max:30'],
             'phone_number' => ['required', 'string', 'max:20'],
             'institution' => ['required', 'string', 'max:255'],
@@ -52,7 +52,7 @@ class RegisteredUserController extends Controller
             'identity_number' => $request->identity_number,
             'phone_number' => $request->phone_number,
             'institution' => $request->institution,
-            'identity_card_path' => $request->file('identity_card_file')->store('identity_cards', 'public'),
+            'identity_card_path' => $request->file('identity_card_file')->store('identity_cards', 'local'),
         ]);
 
         event(new Registered($user));

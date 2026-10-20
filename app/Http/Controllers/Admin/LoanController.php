@@ -26,6 +26,9 @@ class LoanController extends Controller
             ->when($user->isLaboran(), fn ($query) => $query->where('laboratory_id', $user->laboratory_id))
             ->when($user->isKepalaLab() && $request->filled('laboratory_id'), fn ($query) => $query->where('laboratory_id', $request->integer('laboratory_id')))
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
+            ->when(blank($request->input('status')) && $request->input('view') !== 'reports', fn ($query) => $query->where('status', '!=', 'CANCELLED'))
+            ->when($request->filled('from_date'), fn ($query) => $query->whereDate('created_at', '>=', $request->input('from_date')))
+            ->when($request->filled('to_date'), fn ($query) => $query->whereDate('created_at', '<=', $request->input('to_date')))
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -75,7 +78,10 @@ class LoanController extends Controller
         $validated = $request->validate([
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'integer', 'distinct', 'exists:loan_items,id'],
-            'items.*.condition' => ['required', 'string', Rule::in(['Baik', 'Rusak', 'Hilang'])],
+            'items.*.condition' => ['nullable', 'string', Rule::in(['Baik', 'Rusak', 'Hilang'])],
+            'items.*.returned_good_qty' => ['nullable', 'integer', 'min:0'],
+            'items.*.returned_damaged_qty' => ['nullable', 'integer', 'min:0'],
+            'items.*.returned_missing_qty' => ['nullable', 'integer', 'min:0'],
         ]);
 
         $service->returnItems($loanRequest, $validated['items'], $request->input('admin_notes'), $request->user());

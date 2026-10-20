@@ -7,7 +7,9 @@ use App\Http\Requests\Admin\StoreToolRequest;
 use App\Http\Requests\Admin\UpdateToolRequest;
 use App\Models\Category;
 use App\Models\Laboratory;
+use App\Models\StockAdjustment;
 use App\Models\Tool;
+use App\Services\LoanStatusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -146,6 +148,21 @@ class ToolController extends Controller
             $tool->image_path = $request->file('image')->store('tools', 'public');
         }
 
+        if ($stockDiff !== 0) {
+            StockAdjustment::query()->create([
+                'tool_id' => $tool->id,
+                'user_id' => auth()->id(),
+                'type' => 'manual_adjustment',
+                'delta' => $stockDiff,
+                'before_available' => $tool->available_stock,
+                'after_available' => $newAvailableStock,
+                'before_damaged' => $tool->damaged_stock,
+                'after_damaged' => $tool->damaged_stock,
+                'reason' => 'Penyesuaian stok master melalui form edit alat',
+                'created_at' => now(),
+            ]);
+        }
+
         $tool->update([
             'category_id' => $request->category_id,
             'laboratory_id' => $request->laboratory_id,
@@ -167,9 +184,31 @@ class ToolController extends Controller
      */
     public function destroy(Tool $tool): RedirectResponse
     {
+        $this->authorizeToolLaboratory($tool);
+
         $tool->delete();
 
         return redirect()->route('admin.tools.index')->with('success', 'Alat berhasil dihapus.');
+    }
+
+    /**
+     * Mark a specified quantity of damaged stock as repaired (FR-LAB-05 / AC-STK-04).
+     */
+    public function repair(Request $request, Tool $tool, LoanStatusService $service): RedirectResponse
+    {
+        $this->authorizeToolLaboratory($tool);
+
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1', 'max:'.$tool->damaged_stock],
+            'notes' => ['required', 'string', 'max:500'],
+        ], [
+            'quantity.max' => 'Jumlah yang diperbaiki tidak boleh melebihi stok rusak saat ini ('.$tool->damaged_stock.' unit).',
+            'notes.required' => 'Catatan perbaikan / tindakan teknis wajib diisi.',
+        ]);
+
+        $service->markAsRepaired($tool, (int) $validated['quantity'], $request->user(), $validated['notes']);
+
+        return back()->with('success', "Berhasil mencatat {$validated['quantity']} unit {$tool->name} telah selesai diperbaiki dan stok tersedia bertambah.");
     }
 
     /**

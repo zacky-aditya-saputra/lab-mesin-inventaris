@@ -39,3 +39,50 @@ test('users can logout', function () {
     $this->assertGuest();
     $response->assertRedirect('/');
 });
+
+test('inactive users cannot authenticate and receive specific message', function () {
+    $inactiveUser = User::factory()->create([
+        'is_active' => false,
+        'password' => bcrypt('password123'),
+    ]);
+
+    $response = $this->post('/login', [
+        'email' => $inactiveUser->email,
+        'password' => 'password123',
+    ]);
+
+    $this->assertGuest();
+    $response->assertSessionHasErrors(['email' => 'Akun Anda telah dinonaktifkan. Silakan hubungi Kepala Laboratorium.']);
+});
+
+test('laboran user is redirected to admin dashboard upon login', function () {
+    $laboran = User::factory()->create([
+        'role' => 'laboran',
+        'is_active' => true,
+        'password' => bcrypt('password123'),
+    ]);
+
+    $response = $this->post('/login', [
+        'email' => $laboran->email,
+        'password' => 'password123',
+    ]);
+
+    $this->assertAuthenticatedAs($laboran);
+    $response->assertRedirect(route('admin.dashboard', absolute: false));
+});
+
+test('kepala lab user is redirected to admin dashboard upon login', function () {
+    $kepalaLab = User::factory()->create([
+        'role' => 'kepala_lab',
+        'is_active' => true,
+        'password' => bcrypt('password123'),
+    ]);
+
+    $response = $this->post('/login', [
+        'email' => $kepalaLab->email,
+        'password' => 'password123',
+    ]);
+
+    $this->assertAuthenticatedAs($kepalaLab);
+    $response->assertRedirect(route('admin.dashboard', absolute: false));
+});

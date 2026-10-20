@@ -71,7 +71,7 @@ class LoanStatusChangedNotification extends Notification
                 $this->statusLabel(),
             ),
             'status' => $this->loanRequest->status,
-            'url' => route('loans.history'),
+            'url' => route('loans.history', absolute: false),
         ];
     }
 

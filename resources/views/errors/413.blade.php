@@ -2,7 +2,7 @@
 
 @section('content')
 <main class="flex-grow flex items-center justify-center px-gutter-md py-16">
-    <div class="w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant p-8 text-center">
+    <div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-8 text-center">
         <div class="w-16 h-16 rounded-full bg-error-container text-error mx-auto flex items-center justify-center mb-6">
             <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">cloud_alert</span>
         </div>

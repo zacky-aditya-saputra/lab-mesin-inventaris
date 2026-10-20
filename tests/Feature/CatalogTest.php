@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\Laboratory;
 use App\Models\Tool;
 use App\Models\User;
 
@@ -79,4 +80,35 @@ test('admin sees dashboard links instead of student loan links in catalog navbar
         ->assertSee(route('admin.dashboard', [], false))
         ->assertDontSee('Riwayat Pengajuan')
         ->assertDontSee(route('loans.history', [], false));
+});
+
+test('catalog page provides all active laboratories and tools with lab metadata', function () {
+    $category = Category::factory()->create(['name' => 'Elektronika']);
+    $lab1 = Laboratory::factory()->create(['name' => 'Laboratorium Perancangan', 'code' => 'LPR', 'slug' => 'laboratorium-perancangan']);
+    $lab2 = Laboratory::factory()->create(['name' => 'Laboratorium Energi', 'code' => 'LEN', 'slug' => 'laboratorium-energi']);
+
+    $tool1 = Tool::factory()->for($category)->for($lab1)->create(['name' => 'Oscilloscope Digital']);
+    $tool2 = Tool::factory()->for($category)->for($lab2)->create(['name' => 'Bomb Calorimeter']);
+
+    $response = $this->get(route('catalog.index'))
+        ->assertOk()
+        ->assertSee('Laboratorium Perancangan')
+        ->assertSee('Laboratorium Energi')
+        ->assertSee('Oscilloscope Digital')
+        ->assertSee('Bomb Calorimeter')
+        ->assertViewHas('laboratories')
+        ->assertViewHas('toolsList')
+        ->assertViewHas('selectedLabSlug', 'all');
+
+    $toolsList = $response->viewData('toolsList');
+    expect(collect($toolsList)->pluck('laboratory_slug'))->toContain('laboratorium-perancangan', 'laboratorium-energi');
+});
+
+test('catalog page accepts lab parameter to preselect laboratory filter', function () {
+    $lab = Laboratory::factory()->create(['name' => 'Laboratorium Material', 'code' => 'LMAT', 'slug' => 'laboratorium-material']);
+
+    $this->get(route('catalog.index', ['lab' => 'laboratorium-material']))
+        ->assertOk()
+        ->assertViewHas('selectedLabSlug', 'laboratorium-material')
+        ->assertSee('laboratorium-material');
 });

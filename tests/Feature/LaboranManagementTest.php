@@ -191,3 +191,66 @@ test('kepala lab cannot manage a non laboran account through the laboran routes'
 
     $this->assertDatabaseHas('users', ['id' => $otherKepala->id]);
 });
+
+test('kepala lab can toggle laboran active status', function () {
+    $kepala = createKepalaLab();
+    $laboratory = Laboratory::factory()->create();
+    $laboran = User::factory()->laboran()->create([
+        'laboratory_id' => $laboratory->id,
+        'is_active' => true,
+    ]);
+
+    // Deactivate
+    $this
+        ->actingAs($kepala)
+        ->patch(route('admin.laborans.toggle-active', $laboran))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect($laboran->refresh()->is_active)->toBeFalse();
+
+    // Re-activate
+    $this
+        ->actingAs($kepala)
+        ->patch(route('admin.laborans.toggle-active', $laboran))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect($laboran->refresh()->is_active)->toBeTrue();
+});
+
+test('inactive user is blocked from logging in with an informative message', function () {
+    $laboratory = Laboratory::factory()->create();
+    $laboran = User::factory()->laboran()->create([
+        'laboratory_id' => $laboratory->id,
+        'email' => 'inactive.laboran@example.com',
+        'password' => Hash::make('password123'),
+        'is_active' => false,
+    ]);
+
+    $response = $this->post('/login', [
+        'email' => 'inactive.laboran@example.com',
+        'password' => 'password123',
+    ]);
+
+    $response->assertSessionHasErrors([
+        'email' => 'Akun Anda telah dinonaktifkan. Silakan hubungi Kepala Laboratorium.',
+    ]);
+    $this->assertGuest();
+});
+
+test('inactive user with active session is logged out by EnsureUserIsActive middleware', function () {
+    $laboratory = Laboratory::factory()->create();
+    $laboran = User::factory()->laboran()->create([
+        'laboratory_id' => $laboratory->id,
+        'is_active' => false,
+    ]);
+
+    $response = $this
+        ->actingAs($laboran)
+        ->get(route('admin.dashboard'));
+
+    $response->assertRedirect(route('login'));
+    $response->assertSessionHasErrors('email');
+    $this->assertGuest();
+});

@@ -38,7 +38,7 @@
                         Laboratorium Tujuan <span class="text-error">*</span>
                     </label>
                     <select id="laboratory_id" name="laboratory_id" required
-                            class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md">
+                            class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-blue-500 focus:ring-2 focus:ring-blue-500 font-body-md text-body-md">
                         @foreach ($laboratories as $lab)
                             <option value="{{ $lab->id }}" {{ old('laboratory_id', $tool->laboratory_id) == $lab->id ? 'selected' : '' }}>
                                 {{ $lab->name }}
@@ -58,7 +58,7 @@
                         Kategori Alat <span class="text-error">*</span>
                     </label>
                     <select id="category_id" name="category_id" required
-                            class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md">
+                            class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-blue-500 focus:ring-2 focus:ring-blue-500 font-body-md text-body-md">
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}" {{ old('category_id', $tool->category_id) == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
@@ -76,7 +76,7 @@
                         Kode Inventaris <span class="text-error">*</span>
                     </label>
                     <input id="code" name="code" type="text" value="{{ old('code', $tool->code) }}" required
-                           class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md uppercase font-mono"/>
+                           class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-blue-500 focus:ring-2 focus:ring-blue-500 font-body-md text-body-md uppercase font-mono"/>
                     @error('code')
                         <p class="mt-1 font-caption-xs text-caption-xs text-error">{{ $message }}</p>
                     @enderror
@@ -88,7 +88,7 @@
                         Nama Alat <span class="text-error">*</span>
                     </label>
                     <input id="name" name="name" type="text" value="{{ old('name', $tool->name) }}" required
-                           class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md"/>
+                           class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-blue-500 focus:ring-2 focus:ring-blue-500 font-body-md text-body-md"/>
                     @error('name')
                         <p class="mt-1 font-caption-xs text-caption-xs text-error">{{ $message }}</p>
                     @enderror
@@ -100,7 +100,7 @@
                         Spesifikasi Teknis & Deskripsi
                     </label>
                     <textarea id="specification" name="specification" rows="4"
-                              class="w-full p-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md">{{ old('specification', $tool->specification) }}</textarea>
+                              class="w-full p-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-blue-500 focus:ring-2 focus:ring-blue-500 font-body-md text-body-md">{{ old('specification', $tool->specification) }}</textarea>
                     @error('specification')
                         <p class="mt-1 font-caption-xs text-caption-xs text-error">{{ $message }}</p>
                     @enderror
@@ -112,7 +112,7 @@
                         Jumlah Total Stok Fisik <span class="text-error">*</span>
                     </label>
                     <input id="total_stock" name="total_stock" type="number" min="0" value="{{ old('total_stock', $tool->total_stock) }}" required
-                           class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md"/>
+                           class="w-full h-11 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-blue-500 focus:ring-2 focus:ring-blue-500 font-body-md text-body-md"/>
                     <p class="mt-1 font-caption-xs text-caption-xs text-on-surface-variant">Stok tersedia saat ini: <strong>{{ $tool->available_stock }}</strong></p>
                     @error('total_stock')
                         <p class="mt-1 font-caption-xs text-caption-xs text-error">{{ $message }}</p>
@@ -303,7 +303,7 @@
                             <p class="font-body-md text-body-md text-on-surface text-center mb-1">
                                 <span class="font-semibold text-primary">Klik untuk memilih gambar baru</span> atau seret ke sini
                             </p>
-                            <p class="font-caption-xs text-caption-xs text-on-surface-variant" x-show="!isCompressing">JPG, PNG, WebP — foto di atas 1 MB dikompres otomatis</p>
+                            <p class="font-caption-xs text-caption-xs text-on-surface-variant" x-show="!isCompressing">JPG, PNG, WebP. Foto di atas 1 MB dikompres otomatis</p>
                             <p class="font-caption-xs text-caption-xs text-primary font-medium flex items-center gap-1" x-show="isCompressing" x-cloak>
                                 <span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
                                 Mengompres foto...
@@ -330,11 +330,11 @@
 
             <div class="pt-6 border-t border-outline-variant flex justify-end gap-3">
                 <a href="{{ route('admin.tools.index') }}" 
-                   class="px-5 py-2.5 rounded-lg border border-outline-variant text-secondary bg-surface-container-lowest hover:bg-surface-container-low font-label-md text-label-md transition-colors">
+                   class="inline-flex items-center justify-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-label-md text-label-md border border-slate-300/90 hover:border-slate-400 shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                     Batal
                 </a>
                 <button type="submit" 
-                        class="px-6 py-2.5 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-label-md text-label-md shadow-sm transition-colors flex items-center gap-2">
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap px-6 py-2.5 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-on-primary rounded-lg font-label-md text-label-md shadow-xs hover:shadow-sm ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                     <span class="material-symbols-outlined text-sm">save</span>
                     Perbarui Data Alat
                 </button>

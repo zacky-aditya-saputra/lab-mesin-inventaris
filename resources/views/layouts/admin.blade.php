@@ -17,7 +17,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="bg-surface text-on-surface font-body-md h-screen flex overflow-hidden antialiased" x-data="{ sidebarOpen: false }">
+<body class="bg-surface text-on-surface font-body-md h-[100dvh] flex overflow-hidden antialiased" x-data="{ sidebarOpen: false }">
     <!-- Mobile Sidebar Backdrop -->
     <div x-show="sidebarOpen" 
          x-transition:enter="transition-opacity ease-linear duration-300"
@@ -78,9 +78,16 @@
 
             <!-- Data Alat -->
             <a href="{{ route('admin.tools.index') }}" 
-               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.tools.*') ? $activeMenuClass : $inactiveMenuClass }}">
-                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.tools.*') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.tools.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>inventory_2</span>
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.tools.index', 'admin.tools.create', 'admin.tools.edit') ? $activeMenuClass : $inactiveMenuClass }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.tools.index', 'admin.tools.create', 'admin.tools.edit') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.tools.index', 'admin.tools.create', 'admin.tools.edit') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>inventory_2</span>
                 <span class="font-label-md text-label-md">Data Alat</span>
+            </a>
+
+            <!-- Mutasi Stok -->
+            <a href="{{ route('admin.tools.adjustments') }}" 
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.tools.adjustments') ? $activeMenuClass : $inactiveMenuClass }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.tools.adjustments') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.tools.adjustments') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>published_with_changes</span>
+                <span class="font-label-md text-label-md">Mutasi Stok</span>
             </a>
 
             <!-- Tiket Masuk -->
@@ -100,6 +107,13 @@
                 <span class="font-label-md text-label-md">Klien Lab</span>
             </a>
 
+            <!-- Logbook Mahasiswa -->
+            <a href="{{ route('admin.activity-logs.index') }}"
+               class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.activity-logs.*') ? $activeMenuClass : $inactiveMenuClass }}">
+                <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.activity-logs.*') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.activity-logs.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>history_edu</span>
+                <span class="font-label-md text-label-md">Logbook Mahasiswa</span>
+            </a>
+
             <!-- Monitoring Overdue -->
             <a href="{{ route('admin.loans.index', ['status' => 'OVERDUE']) }}" 
                class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->fullUrlIs('*status=OVERDUE*') ? $activeMenuClass : $inactiveMenuClass }}">
@@ -115,6 +129,13 @@
             </a>
 
             @if (auth()->user()->isKepalaLab())
+                <!-- Manajemen Laboratorium (khusus kepala lab) -->
+                <a href="{{ route('admin.laboratories.index') }}"
+                   class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.laboratories.*') ? $activeMenuClass : $inactiveMenuClass }}">
+                    <span class="material-symbols-outlined mr-3 text-xl {{ request()->routeIs('admin.laboratories.*') ? 'text-blue-400 opacity-100' : 'opacity-70 group-hover:opacity-100' }}" {{ request()->routeIs('admin.laboratories.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' }}>domain</span>
+                    <span class="font-label-md text-label-md">Manajemen Lab</span>
+                </a>
+
                 <!-- Manajemen Laboran (khusus kepala lab) -->
                 <a href="{{ route('admin.laborans.index') }}"
                    class="flex items-center px-3 py-2.5 rounded-r-lg transition-colors group {{ request()->routeIs('admin.laborans.*') ? $activeMenuClass : $inactiveMenuClass }}">

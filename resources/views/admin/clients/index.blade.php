@@ -10,16 +10,17 @@
         </div>
         @if (auth()->user()->isKepalaLab())
             <form method="GET" action="{{ route('admin.clients.index') }}" class="flex items-center gap-2.5 flex-shrink-0">
-                <div class="relative">
-                    <select name="laboratory_id"
-                            class="pl-3.5 pr-8 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs appearance-none cursor-pointer transition-all">
-                        <option value="">🏛️ Semua Laboratorium</option>
-                        @foreach ($laboratories as $laboratory)
-                            <option value="{{ $laboratory->id }}" @selected(request('laboratory_id') == $laboratory->id)>🔬 {{ $laboratory->name }}</option>
-                        @endforeach
-                    </select>
-                    <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-base">expand_more</span>
-                </div>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-blue-600 pointer-events-none text-base">science</span>
+                        <select name="laboratory_id" aria-label="Filter Laboratorium"
+                                class="pl-9 pr-8 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs appearance-none cursor-pointer transition-all">
+                            <option value="">Semua Laboratorium</option>
+                            @foreach ($laboratories as $laboratory)
+                                <option value="{{ $laboratory->id }}" @selected(request('laboratory_id') == $laboratory->id)>{{ $laboratory->name }}</option>
+                            @endforeach
+                        </select>
+                        <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-base">expand_more</span>
+                    </div>
                 <button type="submit"
                         class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-medium tracking-tight shadow-sm hover:shadow ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                     <span class="material-symbols-outlined text-base">filter_alt</span>
@@ -35,11 +36,11 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-surface-container text-on-surface font-label-md text-label-md border-b border-outline-variant">
-                        <th class="py-3.5 px-4 font-semibold w-1/3">Nama Peminjam</th>
-                        <th class="py-3.5 px-4 font-semibold w-44">No. WhatsApp</th>
+                        <th class="py-3.5 px-4 font-semibold whitespace-nowrap w-1/3">Nama Peminjam</th>
+                        <th class="py-3.5 px-4 font-semibold whitespace-nowrap w-44">No. WhatsApp</th>
                         <th class="py-3.5 px-4 font-semibold whitespace-nowrap">Asal Prodi / Instansi</th>
-                        <th class="py-3.5 px-4 font-semibold w-36">Dokumen KTM/KTP</th>
-                        <th class="py-3.5 px-4 font-semibold text-center w-28">Total Riwayat Pinjam</th>
+                        <th class="py-3.5 px-4 font-semibold whitespace-nowrap w-36">Dokumen KTM/KTP</th>
+                        <th class="py-3.5 px-4 font-semibold whitespace-nowrap text-center w-28">Total Riwayat Pinjam</th>
                     </tr>
                 </thead>
                 <tbody class="font-body-md text-body-md divide-y divide-outline-variant">
@@ -77,8 +78,8 @@
                             <td class="py-3.5 px-4 text-on-surface-variant">{{ $client->institution ?? '-' }}</td>
                             <td class="py-3.5 px-4">
                                 @if ($client->identity_card_path)
-                                    <a href="{{ asset('storage/'.$client->identity_card_path) }}" target="_blank" rel="noopener"
-                                       class="inline-flex items-center gap-1.5 text-primary hover:underline font-label-sm text-label-sm">
+                                     <a href="{{ route('documents.identity', $client) }}" target="_blank" rel="noopener"
+                                        class="inline-flex items-center gap-1.5 text-primary hover:underline font-label-md text-label-md">
                                         <span class="material-symbols-outlined text-base">visibility</span>
                                         Lihat Dokumen
                                     </a>

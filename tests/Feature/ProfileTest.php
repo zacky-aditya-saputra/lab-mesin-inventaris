@@ -50,6 +50,43 @@ test('email verification status is unchanged when the email address is unchanged
     $this->assertNotNull($user->refresh()->email_verified_at);
 });
 
+test('user cannot update their email to an email already used by another account', function () {
+    $userA = User::factory()->create();
+    $userB = User::factory()->create();
+    $originalEmailA = $userA->email;
+    $originalEmailB = $userB->email;
+
+    $response = $this
+        ->actingAs($userB)
+        ->from('/profile')
+        ->patch('/profile', [
+            'name' => $userB->name,
+            'email' => $userA->email,
+        ]);
+
+    $response
+        ->assertSessionHasErrors('email')
+        ->assertRedirect('/profile');
+
+    expect($userB->refresh()->email)->toBe($originalEmailB)
+        ->and($userA->refresh()->email)->toBe($originalEmailA);
+});
+
+test('user can keep their own email when updating the profile', function () {
+    $user = User::factory()->create();
+
+    $response = $this
+        ->actingAs($user)
+        ->patch('/profile', [
+            'name' => 'Nama Baru',
+            'email' => $user->email,
+        ]);
+
+    $response->assertSessionHasNoErrors();
+
+    expect($user->refresh()->name)->toBe('Nama Baru');
+});
+
 test('user can delete their account', function () {
     $user = User::factory()->create();
 

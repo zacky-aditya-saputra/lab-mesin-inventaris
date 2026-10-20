@@ -50,6 +50,16 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+        if ($user && ! $user->is_active) {
+            Auth::logout();
+            RateLimiter::clear($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda telah dinonaktifkan. Silakan hubungi Kepala Laboratorium.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
@@ -78,6 +88,11 @@ class LoginRequest extends FormRequest
 
     /**
      * Get the rate limiting throttle key for the request.
+     *
+     * Layered throttling: this key limits attempts per email + IP pair, while
+     * the `throttle:5,1` middleware on the login route limits all attempts per
+     * IP address alone, so credential stuffing that rotates email addresses
+     * from a single IP is blocked as well.
      */
     public function throttleKey(): string
     {

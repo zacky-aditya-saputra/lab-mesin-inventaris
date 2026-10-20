@@ -37,10 +37,11 @@ class ProfileController extends Controller
 
         if ($request->hasFile('identity_card_file')) {
             if ($request->user()->identity_card_path) {
+                Storage::disk('local')->delete($request->user()->identity_card_path);
                 Storage::disk('public')->delete($request->user()->identity_card_path);
             }
 
-            $data['identity_card_path'] = $request->file('identity_card_file')->store('identity_cards', 'public');
+            $data['identity_card_path'] = $request->file('identity_card_file')->store('identity_cards', 'local');
         }
 
         $request->user()->fill($data);

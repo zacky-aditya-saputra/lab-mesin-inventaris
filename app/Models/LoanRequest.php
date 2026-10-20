@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'laboratory_id', 'ticket_number', 'start_date', 'end_date', 'purpose', 'identity_card_path', 'loan_letter_path', 'status', 'admin_notes'])]
+#[Fillable(['user_id', 'laboratory_id', 'ticket_number', 'start_date', 'end_date', 'purpose', 'identity_card_path', 'loan_letter_path', 'status', 'admin_notes', 'approved_by', 'approved_at', 'handed_over_at', 'returned_at', 'cancelled_at', 'borrower_name', 'borrower_identity_number', 'borrower_identity_type', 'borrower_institution', 'borrower_phone'])]
 class LoanRequest extends Model
 {
     /**
@@ -20,7 +20,16 @@ class LoanRequest extends Model
         return [
             'start_date' => 'date',
             'end_date' => 'date',
+            'approved_at' => 'datetime',
+            'handed_over_at' => 'datetime',
+            'returned_at' => 'datetime',
+            'cancelled_at' => 'datetime',
         ];
+    }
+
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 
     public function user(): BelongsTo

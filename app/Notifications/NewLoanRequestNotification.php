@@ -59,7 +59,7 @@ class NewLoanRequestNotification extends Notification
                 $this->loanRequest->laboratory?->name ?? 'laboratorium',
             ),
             'status' => $this->loanRequest->status,
-            'url' => route('admin.loans.review', $this->loanRequest),
+            'url' => route('admin.loans.review', $this->loanRequest, absolute: false),
         ];
     }
 }

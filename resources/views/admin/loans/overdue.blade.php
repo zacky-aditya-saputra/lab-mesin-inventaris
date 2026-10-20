@@ -10,7 +10,7 @@
         </div>
         <div class="flex gap-3">
             <a href="{{ route('admin.loans.index') }}" 
-               class="bg-surface-container-lowest border border-outline-variant text-on-surface px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors flex items-center gap-2">
+               class="inline-flex items-center justify-center gap-2 whitespace-nowrap bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg font-label-md text-label-md border border-slate-300/90 hover:border-slate-400 shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                 <span class="material-symbols-outlined text-base">arrow_back</span>
                 Kembali ke Antrean
             </a>
@@ -53,10 +53,10 @@
         <div class="p-4 border-b border-outline-variant bg-surface-container-low flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div class="relative w-full sm:w-80">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-                <input x-model="searchQuery" 
-                       class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:ring-1 focus:ring-primary focus:border-primary" 
-                       placeholder="Cari nama mahasiswa, no tiket..." 
-                       type="text"/>
+                 <input x-model="searchQuery" 
+                        class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                        placeholder="Cari nama mahasiswa, no tiket..." 
+                        type="text"/>
             </div>
             <div class="font-caption-xs text-caption-xs text-on-surface-variant">
                 Menampilkan {{ $overdueLoans->count() }} data keterlambatan
@@ -99,17 +99,17 @@
                                     <div>{{ $item->approved_quantity ?? $item->requested_quantity }}x {{ $item->tool->name ?? 'Alat' }}</div>
                                 @endforeach
                             </td>
-                            <td class="py-4 px-6 text-error font-semibold whitespace-nowrap">
+                            <td class="py-4 px-6 text-error font-semibold whitespace-nowrap font-mono">
                                 {{ $loan->end_date?->format('d M Y') }}
                             </td>
                             <td class="py-4 px-6 text-center">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs bg-status-overdue-bg text-status-overdue-text border border-status-overdue-text/20">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-badge-xs text-badge-xs font-semibold bg-status-overdue-bg text-status-overdue-text shadow-xs">
                                     TERLAMBAT
                                 </span>
                             </td>
                             <td class="py-4 px-6 text-right">
                                 <a href="{{ route('admin.loans.review', $loan) }}" 
-                                   class="inline-flex items-center gap-1 px-3.5 py-1.5 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-label-md text-label-md transition-colors shadow-sm">
+                                   class="inline-flex items-center justify-center gap-1 whitespace-nowrap px-3.5 py-1.5 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-on-primary rounded-lg font-label-md text-label-md shadow-xs ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
                                     Proses Pengembalian
                                 </a>
                             </td>

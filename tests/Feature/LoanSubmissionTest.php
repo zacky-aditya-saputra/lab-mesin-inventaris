@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 function createKlienWithCompleteProfile(array $attributes = []): User
 {
-    $identityCardPath = UploadedFile::fake()->create('ktm.pdf', 200, 'application/pdf')->store('identity_cards', 'public');
+    $identityCardPath = UploadedFile::fake()->create('ktm.pdf', 200, 'application/pdf')->store('identity_cards', 'local');
 
     return User::factory()->student()->create(array_merge([
         'identity_number' => '32602100001',
@@ -55,7 +55,7 @@ test('student can open the loan request form and see the list of available tools
 
 test('student can submit a multi-item loan request stored with pending status and a unique ticket number', function () {
     $this->freezeTime();
-    Storage::fake('public');
+    Storage::fake('local');
 
     $student = createKlienWithCompleteProfile();
     $category = Category::factory()->create();
@@ -66,7 +66,7 @@ test('student can submit a multi-item loan request stored with pending status an
     $payload = fn (): array => [
         'laboratory_id' => $lab->id,
         'loan_letter' => loanLetterFile(),
-        'start_date' => now()->toDateString(),
+        'start_date' => now()->addDays(2)->toDateString(),
         'end_date' => now()->addDays(7)->toDateString(),
         'purpose' => 'Praktikum pengukuran presisi',
         'items' => [
@@ -91,10 +91,10 @@ test('student can submit a multi-item loan request stored with pending status an
     $loanRequest = LoanRequest::query()->where('user_id', $student->id)->orderByDesc('id')->firstOrFail();
 
     expect($loanRequest->ticket_number)->not->toBe($firstTicket)
-        ->and($loanRequest->ticket_number)->toMatch('/^LOAN-'.now()->format('Ymd').'-[A-Z0-9]{4}$/')
+        ->and($loanRequest->ticket_number)->toMatch('/^LOAN-'.$lab->code.'-[A-Z0-9]{6}$/')
         ->and($loanRequest->status)->toBe('PENDING')
         ->and($loanRequest->laboratory_id)->toBe($lab->id)
-        ->and($loanRequest->start_date->toDateString())->toBe(now()->toDateString())
+        ->and($loanRequest->start_date->toDateString())->toBe(now()->addDays(2)->toDateString())
         ->and($loanRequest->end_date->toDateString())->toBe(now()->addDays(7)->toDateString())
         ->and($loanRequest->purpose)->toBe('Praktikum pengukuran presisi')
         ->and($loanRequest->identity_card_path)->toBe($student->identity_card_path)
@@ -111,8 +111,9 @@ test('student can submit a multi-item loan request stored with pending status an
         ->and($items[$secondTool->id]->requested_quantity)->toBe(2)
         ->and($items[$secondTool->id]->approved_quantity)->toBeNull();
 
-    Storage::disk('public')->assertExists($loanRequest->identity_card_path);
-    Storage::disk('public')->assertExists($loanRequest->loan_letter_path);
+    Storage::disk('local')->assertExists($loanRequest->identity_card_path);
+    Storage::disk('local')->assertExists($loanRequest->loan_letter_path);
+    Storage::disk('public')->assertMissing($loanRequest->loan_letter_path);
 });
 
 test('student loan submission is rejected when the return date precedes the start date', function () {
@@ -151,7 +152,7 @@ test('student loan submission is rejected when the quantity exceeds the availabl
         ->post(route('loans.store'), [
             'laboratory_id' => $lab->id,
             'loan_letter' => loanLetterFile(),
-            'start_date' => now()->toDateString(),
+            'start_date' => now()->addDays(2)->toDateString(),
             'end_date' => now()->addDays(7)->toDateString(),
             'purpose' => 'Praktikum pengukuran presisi',
             'items' => [
@@ -178,7 +179,7 @@ test('student loan submission is rejected when a selected tool belongs to anothe
         ->post(route('loans.store'), [
             'laboratory_id' => $targetLab->id,
             'loan_letter' => loanLetterFile(),
-            'start_date' => now()->toDateString(),
+            'start_date' => now()->addDays(2)->toDateString(),
             'end_date' => now()->addDays(7)->toDateString(),
             'purpose' => 'Praktikum pengukuran presisi',
             'items' => [
@@ -194,7 +195,7 @@ test('student loan submission is rejected when a selected tool belongs to anothe
 
 test('student loan submission is rejected when the profile has no identity card document', function () {
     $this->freezeTime();
-    Storage::fake('public');
+    Storage::fake('local');
 
     $student = createKlienWithCompleteProfile(['identity_card_path' => null]);
     $lab = Laboratory::factory()->create();
@@ -205,7 +206,7 @@ test('student loan submission is rejected when the profile has no identity card 
         ->post(route('loans.store'), [
             'laboratory_id' => $lab->id,
             'loan_letter' => loanLetterFile(),
-            'start_date' => now()->toDateString(),
+            'start_date' => now()->addDays(2)->toDateString(),
             'end_date' => now()->addDays(7)->toDateString(),
             'purpose' => 'Praktikum pengukuran presisi',
             'items' => [
@@ -219,7 +220,7 @@ test('student loan submission is rejected when the profile has no identity card 
 
 test('general public client can submit a loan request using the identity document stored on the profile', function () {
     $this->freezeTime();
-    Storage::fake('public');
+    Storage::fake('local');
 
     $client = createKlienWithCompleteProfile([
         'identity_type' => 'umum',
@@ -235,8 +236,8 @@ test('general public client can submit a loan request using the identity documen
         ->post(route('loans.store'), [
             'laboratory_id' => $lab->id,
             'loan_letter' => loanLetterFile(),
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->addDays(3)->toDateString(),
+            'start_date' => now()->addDays(2)->toDateString(),
+            'end_date' => now()->addDays(5)->toDateString(),
             'purpose' => 'Pengujian material proyek pribadi',
             'items' => [
                 ['tool_id' => $tool->id, 'quantity' => 1],
@@ -253,7 +254,62 @@ test('general public client can submit a loan request using the identity documen
         ->and($loanRequest->identity_card_path)->toBe($client->identity_card_path)
         ->and($loanRequest->loan_letter_path)->toStartWith('loan_letters/');
 
-    Storage::disk('public')->assertExists($loanRequest->loan_letter_path);
+    Storage::disk('local')->assertExists($loanRequest->loan_letter_path);
+    Storage::disk('public')->assertMissing($loanRequest->loan_letter_path);
+});
+
+test('student loan submission fails when start_date is earlier than H-2', function () {
+    $this->freezeTime();
+
+    $student = createKlienWithCompleteProfile();
+    $lab = Laboratory::factory()->create();
+    $tool = Tool::factory()->for(Category::factory())->for($lab)->create(['available_stock' => 5]);
+
+    $this
+        ->actingAs($student)
+        ->post(route('loans.store'), [
+            'laboratory_id' => $lab->id,
+            'loan_letter' => loanLetterFile(),
+            'start_date' => now()->addDay()->toDateString(),
+            'end_date' => now()->addDays(5)->toDateString(),
+            'purpose' => 'Praktikum dadakan',
+            'items' => [
+                ['tool_id' => $tool->id, 'quantity' => 1],
+            ],
+        ])
+        ->assertSessionHasErrors([
+            'start_date' => 'Tanggal mulai peminjaman minimal diajukan 2 hari sebelum pemakaian (H-2) untuk persiapan alat oleh petugas laboratorium.',
+        ]);
+
+    $this->assertDatabaseCount('loan_requests', 0);
+});
+
+test('student loan submission fails when duplicate tools are selected across repeater rows', function () {
+    $this->freezeTime();
+
+    $student = createKlienWithCompleteProfile();
+    $lab = Laboratory::factory()->create();
+    $tool = Tool::factory()->for(Category::factory())->for($lab)->create(['available_stock' => 5]);
+
+    $this
+        ->actingAs($student)
+        ->post(route('loans.store'), [
+            'laboratory_id' => $lab->id,
+            'loan_letter' => loanLetterFile(),
+            'start_date' => now()->addDays(2)->toDateString(),
+            'end_date' => now()->addDays(5)->toDateString(),
+            'purpose' => 'Praktikum alat ganda',
+            'items' => [
+                ['tool_id' => $tool->id, 'quantity' => 1],
+                ['tool_id' => $tool->id, 'quantity' => 2],
+            ],
+        ])
+        ->assertSessionHasErrors([
+            'items.0.tool_id' => 'Terdapat alat yang sama dipilih lebih dari satu kali. Harap gabungkan kuantitasnya dalam satu baris.',
+            'items.1.tool_id' => 'Terdapat alat yang sama dipilih lebih dari satu kali. Harap gabungkan kuantitasnya dalam satu baris.',
+        ]);
+
+    $this->assertDatabaseCount('loan_requests', 0);
 });
 
 test('guests are redirected to login when accessing the student loan routes', function () {

@@ -11,6 +11,8 @@ test('registration screen can be rendered', function () {
 });
 
 test('new users can register', function () {
+    Storage::fake('local');
+
     $response = $this->post('/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
@@ -35,7 +37,8 @@ test('new users can register', function () {
         ->and($user->institution)->toBe('Teknik Mesin S1')
         ->and($user->identity_card_path)->toStartWith('identity_cards/');
 
-    Storage::disk('public')->assertExists($user->identity_card_path);
+    Storage::disk('local')->assertExists($user->identity_card_path);
+    Storage::disk('public')->assertMissing($user->identity_card_path);
 });
 
 test('registration is rejected without an identity card file', function () {
@@ -51,5 +54,69 @@ test('registration is rejected without an identity card file', function () {
     ]);
 
     $response->assertSessionHasErrors('identity_card_file');
+    $this->assertGuest();
+});
+
+test('general users (umum) can register with NIK and valid image', function () {
+    Storage::fake('local');
+
+    $response = $this->post('/register', [
+        'name' => 'Mitra Industri',
+        'email' => 'mitra@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+        'identity_type' => 'umum',
+        'identity_number' => '3374012345670001',
+        'phone_number' => '085712345678',
+        'institution' => 'PT Manufaktur Presisi Semarang',
+        'identity_card_file' => UploadedFile::fake()->image('ktp.jpg', 800, 600),
+    ]);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('catalog.index', absolute: false));
+
+    $user = User::query()->where('email', 'mitra@example.com')->sole();
+
+    expect($user->role)->toBe('klien')
+        ->and($user->identity_type)->toBe('umum')
+        ->and($user->identity_number)->toBe('3374012345670001')
+        ->and($user->institution)->toBe('PT Manufaktur Presisi Semarang');
+
+    Storage::disk('local')->assertExists($user->identity_card_path);
+});
+
+test('registration rejects duplicate email', function () {
+    User::factory()->create(['email' => 'existing@example.com']);
+
+    $response = $this->post('/register', [
+        'name' => 'Duplicate User',
+        'email' => 'existing@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'identity_type' => 'mahasiswa',
+        'identity_number' => '32602100055',
+        'phone_number' => '081234567855',
+        'institution' => 'Teknik Mesin S1',
+        'identity_card_file' => UploadedFile::fake()->create('ktm.pdf', 100),
+    ]);
+
+    $response->assertSessionHasErrors('email');
+    $this->assertGuest();
+});
+
+test('registration rejects password confirmation mismatch', function () {
+    $response = $this->post('/register', [
+        'name' => 'Mismatch User',
+        'email' => 'mismatch@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'different_password',
+        'identity_type' => 'mahasiswa',
+        'identity_number' => '32602100056',
+        'phone_number' => '081234567856',
+        'institution' => 'Teknik Mesin S1',
+        'identity_card_file' => UploadedFile::fake()->create('ktm.pdf', 100),
+    ]);
+
+    $response->assertSessionHasErrors('password');
     $this->assertGuest();
 });
