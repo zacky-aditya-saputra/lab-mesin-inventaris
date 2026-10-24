@@ -23,12 +23,27 @@ test('users can authenticate using the login screen', function () {
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post('/login', [
+    $response = $this->post('/login', [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
 
     $this->assertGuest();
+    $response->assertSessionHasErrors([
+        'email' => 'Alamat email atau kata sandi yang Anda masukkan salah.',
+    ]);
+});
+
+test('login validation returns indonesian error messages for missing fields', function () {
+    $response = $this->post('/login', [
+        'email' => '',
+        'password' => '',
+    ]);
+
+    $response->assertSessionHasErrors([
+        'email' => 'Alamat email wajib diisi.',
+        'password' => 'Kata sandi wajib diisi.',
+    ]);
 });
 
 test('users can logout', function () {

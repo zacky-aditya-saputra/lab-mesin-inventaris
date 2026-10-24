@@ -87,6 +87,44 @@ test('user can keep their own email when updating the profile', function () {
     expect($user->refresh()->name)->toBe('Nama Baru');
 });
 
+test('user cannot update their identity_number to an identity_number already used by another account', function () {
+    $userA = User::factory()->create(['identity_number' => '24103041001']);
+    $userB = User::factory()->create(['identity_number' => '24103041002']);
+
+    $response = $this
+        ->actingAs($userB)
+        ->from('/profile')
+        ->patch('/profile', [
+            'name' => $userB->name,
+            'email' => $userB->email,
+            'identity_number' => '24103041001',
+        ]);
+
+    $response
+        ->assertSessionHasErrors([
+            'identity_number' => 'Nomor identitas (NIM/NIK) ini sudah digunakan oleh akun lain.',
+        ])
+        ->assertRedirect('/profile');
+
+    expect($userB->refresh()->identity_number)->toBe('24103041002');
+});
+
+test('user can keep their own identity_number when updating the profile', function () {
+    $user = User::factory()->create(['identity_number' => '24103041001']);
+
+    $response = $this
+        ->actingAs($user)
+        ->patch('/profile', [
+            'name' => 'Nama Update',
+            'email' => $user->email,
+            'identity_number' => '24103041001',
+        ]);
+
+    $response->assertSessionHasNoErrors();
+
+    expect($user->refresh()->identity_number)->toBe('24103041001');
+});
+
 test('user can delete their account', function () {
     $user = User::factory()->create();
 
@@ -115,7 +153,9 @@ test('correct password must be provided to delete account', function () {
         ]);
 
     $response
-        ->assertSessionHasErrorsIn('userDeletion', 'password')
+        ->assertSessionHasErrorsIn('userDeletion', [
+            'password' => 'Kata sandi yang Anda masukkan salah.',
+        ])
         ->assertRedirect('/profile');
 
     $this->assertNotNull($user->fresh());

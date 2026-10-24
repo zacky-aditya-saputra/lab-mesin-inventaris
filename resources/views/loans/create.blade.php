@@ -45,8 +45,8 @@
                     </template>
                 </div>
                 <div class="min-w-0">
-                    <span class="font-mono text-xs font-bold block" :class="currentStep === 1 ? 'text-blue-700' : 'text-slate-800'">01 Data Mahasiswa</span>
-                    <p class="text-[11px] text-slate-400 font-medium">Terverifikasi SIAKAD</p>
+                    <span class="font-mono text-xs font-bold block" :class="currentStep === 1 ? 'text-blue-700' : 'text-slate-800'">01 Data Peminjam</span>
+                    <p class="text-[11px] text-slate-400 font-medium">Identitas Akun Terverifikasi</p>
                 </div>
             </button>
 
@@ -81,7 +81,7 @@
                     <span>03</span>
                 </div>
                 <div class="min-w-0">
-                    <span class="font-mono text-xs font-bold block" :class="currentStep === 3 ? 'text-blue-700' : 'text-slate-800'">03 Jadwal &amp; Dokumen K3</span>
+                    <span class="font-mono text-xs font-bold block" :class="currentStep === 3 ? 'text-blue-700' : 'text-slate-800'">03 Jadwal &amp; Surat Peminjaman</span>
                     <p class="text-[11px] text-slate-400 font-medium">Validasi &amp; Kirim</p>
                 </div>
             </div>
@@ -93,7 +93,7 @@
           class="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-7 md:p-8">
         @csrf
 
-        <!-- STEP 1: Data Diri Mahasiswa -->
+        <!-- STEP 1: Data Diri Peminjam -->
         <div x-show="currentStep === 1" x-transition>
             <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-5 mb-6 border-b border-slate-100 gap-3">
                 <div class="flex items-center gap-3">
@@ -101,13 +101,13 @@
                         <span class="material-symbols-outlined text-2xl">badge</span>
                     </div>
                     <div>
-                        <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Data Diri Mahasiswa</h2>
-                        <p class="text-xs text-slate-500">Identitas peminjam resmi FT-TM UNWAHAS</p>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Data Diri Peminjam</h2>
+                        <p class="text-xs text-slate-500">Identitas peminjam terdaftar Laboratorium Teknik Mesin</p>
                     </div>
                 </div>
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-mono font-bold w-fit border border-blue-200">
-                    <span class="material-symbols-outlined text-sm text-blue-600">sync_saved_locally</span>
-                    SIAKAD Unwahas Terhubung
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-mono font-semibold w-fit border border-slate-200">
+                    <span class="material-symbols-outlined text-sm text-blue-600">verified</span>
+                    Kategori: {{ $user->roleLabel() }}
                 </div>
             </div>
 
@@ -144,21 +144,21 @@
                 <!-- NIM / NIK -->
                 <div class="space-y-1">
                     <label class="text-xs font-mono text-slate-500 font-bold flex items-center justify-between">
-                        <span>NOMOR INDUK MAHASISWA (NIM)</span>
+                        <span>{{ $user->identity_type === 'umum' ? 'NOMOR INDUK KEPENDUDUKAN (NIK)' : 'NOMOR INDUK MAHASISWA (NIM)' }}</span>
                         <span class="material-symbols-outlined text-xs text-slate-400">lock</span>
                     </label>
                     <input class="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono font-bold text-xs sm:text-sm text-slate-800 cursor-not-allowed outline-none"
                            readonly type="text" value="{{ $user->identity_number ?? '-' }}"/>
                 </div>
 
-                <!-- Program Studi -->
+                <!-- Program Studi / Instansi -->
                 <div class="space-y-1">
                     <label class="text-xs font-mono text-slate-500 font-bold flex items-center justify-between">
-                        <span>PROGRAM STUDI &amp; FAKULTAS</span>
+                        <span>{{ $user->identity_type === 'umum' ? 'INSTANSI / DOMISILI' : 'PROGRAM STUDI & FAKULTAS' }}</span>
                         <span class="material-symbols-outlined text-xs text-slate-400">lock</span>
                     </label>
                     <input class="w-full bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 font-medium text-xs sm:text-sm text-slate-800 cursor-not-allowed outline-none"
-                           readonly type="text" value="{{ $user->institution ?? 'S1 Teknik Mesin (Fakultas Teknik)' }}"/>
+                           readonly type="text" value="{{ $user->institution ?? ($user->identity_type === 'umum' ? 'Umum' : 'S1 Teknik Mesin (Fakultas Teknik)') }}"/>
                 </div>
 
                 <!-- No WhatsApp Aktif (Editable) -->
@@ -182,11 +182,11 @@
                 </div>
             </div>
 
-            <!-- KTM Digital Section -->
+            <!-- KTM / KTP Digital Section -->
             <div class="mb-6 space-y-2">
-                <span class="text-xs font-mono text-slate-500 font-bold block">KARTU TANDA MAHASISWA (KTM DIGITAL)</span>
+                <span class="text-xs font-mono text-slate-500 font-bold block">{{ $user->identity_type === 'umum' ? 'KARTU IDENTITAS (KTP DIGITAL)' : 'KARTU TANDA MAHASISWA (KTM DIGITAL)' }}</span>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Preview KTM Aktif -->
+                    <!-- Preview KTM / KTP Aktif -->
                     @if ($user->identity_card_path)
                         <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3 min-w-0">
@@ -194,9 +194,9 @@
                                     <span class="material-symbols-outlined text-xl">badge</span>
                                 </div>
                                 <div class="min-w-0">
-                                    <p class="text-xs font-mono font-bold text-slate-800 truncate">KTM_{{ Str::slug($user->name) }}.pdf</p>
+                                    <p class="text-xs font-mono font-bold text-slate-800 truncate">{{ ($user->identity_type === 'umum' ? 'KTP_' : 'KTM_') . Str::slug($user->name) }}.pdf</p>
                                     <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold font-mono border border-emerald-200">
-                                        KTM Valid Tersimpan
+                                        {{ $user->identity_type === 'umum' ? 'KTP Valid Tersimpan' : 'KTM Valid Tersimpan' }}
                                     </span>
                                 </div>
                             </div>
@@ -409,21 +409,21 @@
                 </button>
                 <button type="button" @click="goToStep3()"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition-all cursor-pointer">
-                    Lanjut ke Jadwal &amp; Dokumen K3
+                    Lanjut ke Jadwal &amp; Surat Peminjaman
                     <span class="material-symbols-outlined text-base">arrow_forward</span>
                 </button>
             </div>
         </div>
 
-        <!-- STEP 3: Jadwal Praktikum, Dokumen Pendukung & Pakta K3 -->
+        <!-- STEP 3: Jadwal Penggunaan, Surat Peminjaman & Pakta K3 -->
         <div x-show="currentStep === 3" x-transition style="display: none;">
             <div class="flex items-center gap-3 pb-5 mb-6 border-b border-slate-100">
                 <div class="p-2 rounded-xl bg-blue-50 text-blue-600">
                     <span class="material-symbols-outlined text-2xl">event_available</span>
                 </div>
                 <div>
-                    <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Jadwal Penggunaan &amp; Dokumen Keselamatan</h2>
-                    <p class="text-xs text-slate-500">Penetapan rentang waktu, modul dan kepatuhan K3</p>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Jadwal Penggunaan &amp; Surat Peminjaman</h2>
+                    <p class="text-xs text-slate-500">Penetapan rentang waktu dan berkas surat peminjaman resmi</p>
                 </div>
             </div>
 
@@ -492,10 +492,10 @@
                 </div>
             </div>
 
-            <!-- Upload Surat Rekomendasi Resmi (Dropzone) -->
+            <!-- Upload Surat Peminjaman Resmi (Dropzone) -->
             <div class="mb-6 space-y-1.5">
                 <label class="block text-xs font-mono font-bold text-slate-600 uppercase tracking-wider">
-                    SURAT REKOMENDASI DOSEN / MODUL PRAKTIKUM (PDF/JPG, MAKS 5MB) <span class="text-rose-500">*</span>
+                    SURAT PEMINJAMAN (PDF/JPG, MAKS 5MB) <span class="text-rose-500">*</span>
                 </label>
                 <div class="border-2 border-dashed rounded-2xl p-6 sm:p-7 flex flex-col items-center justify-center relative group transition-all cursor-pointer shadow-2xs"
                      :class="dragActive ? 'border-blue-600 bg-blue-50/60 ring-4 ring-blue-100' : 'border-slate-300 bg-slate-50 hover:bg-blue-50/30 hover:border-blue-400'"
@@ -506,7 +506,7 @@
                         <span class="material-symbols-outlined text-2xl">description</span>
                     </div>
                     <p class="text-xs sm:text-sm font-semibold text-slate-800 text-center">
-                        <span class="text-blue-600 hover:underline">Pilih berkas dokumen</span> atau seret &amp; letakkan di sini
+                        <span class="text-blue-600 hover:underline">Pilih berkas surat peminjaman</span> atau seret &amp; letakkan di sini
                     </p>
                     <p class="text-[11px] text-slate-400 mt-0.5">Format PDF, JPG, atau PNG (Maks 5MB)</p>
                     <input id="loan_letter" name="loan_letter" accept=".jpg,.jpeg,.png,.pdf" class="absolute inset-0 opacity-0 cursor-pointer" type="file" @change="handleLetterChange($event)" required/>
@@ -921,7 +921,7 @@
                 const letterInput = document.getElementById('loan_letter');
                 const hasFile = (letterInput && letterInput.files && letterInput.files.length > 0) || this.selectedFileName;
                 if (!hasFile) {
-                    this.step3Error = 'Surat permohonan resmi wajib diunggah.';
+                    this.step3Error = 'Surat peminjaman wajib diunggah.';
                     return;
                 }
 

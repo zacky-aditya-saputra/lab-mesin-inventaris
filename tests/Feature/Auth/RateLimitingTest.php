@@ -22,6 +22,31 @@ test('login attempts are rate limited after five consecutive failures', function
     $this->assertGuest();
 });
 
+test('fifth consecutive failed login flashes lockout_seconds and displays security throttle alert on login view', function () {
+    $user = User::factory()->create();
+
+    for ($attempt = 1; $attempt <= 4; $attempt++) {
+        $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ])->assertSessionHasErrors(['email' => 'Alamat email atau kata sandi yang Anda masukkan salah.']);
+    }
+
+    $fifth = $this->from('/login')->post('/login', [
+        'email' => $user->email,
+        'password' => 'wrong-password',
+    ]);
+
+    $fifth->assertRedirect('/login');
+    $fifth->assertSessionHas('lockout_seconds');
+    expect(session('lockout_seconds'))->toBeGreaterThan(0);
+
+    $loginPage = $this->get('/login');
+    $loginPage->assertOk();
+    $loginPage->assertSee('Akses Masuk Dibatasi');
+    $loginPage->assertSee('Coba lagi dalam');
+});
+
 test('login brute force with rotating email addresses from one IP is rate limited', function () {
     for ($attempt = 1; $attempt <= 5; $attempt++) {
         $this->post('/login', [

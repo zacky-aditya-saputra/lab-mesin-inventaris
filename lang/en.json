@@ -1,0 +1,23 @@
+{
+    "Dashboard": "Dashboard",
+    "Profile": "Profil",
+    "Log Out": "Keluar",
+    "Delete Account": "Hapus Akun",
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Setelah akun Anda dihapus, seluruh data dan informasi yang terkait akan dihapus secara permanen. Sebelum menghapus akun, silakan unduh data atau informasi yang ingin Anda simpan.",
+    "Are you sure you want to delete your account?": "Apakah Anda yakin ingin menghapus akun Anda?",
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "Setelah akun Anda dihapus, semua data akan dihapus secara permanen. Silakan masukkan kata sandi Anda untuk mengonfirmasi bahwa Anda ingin menghapus akun secara permanen.",
+    "Password": "Kata Sandi",
+    "Cancel": "Batal",
+    "Update Password": "Perbarui Kata Sandi",
+    "Ensure your account is using a long, random password to stay secure.": "Pastikan akun Anda menggunakan kata sandi yang aman dan tidak mudah ditebak.",
+    "Current Password": "Kata Sandi Saat Ini",
+    "New Password": "Kata Sandi Baru",
+    "Confirm Password": "Konfirmasi Kata Sandi",
+    "Save": "Simpan",
+    "Saved.": "Tersimpan.",
+    "Name": "Nama Lengkap",
+    "Email": "Alamat Email",
+    "Your email address is unverified.": "Alamat email Anda belum terverifikasi.",
+    "Click here to re-send the verification email.": "Klik di sini untuk mengirim ulang email verifikasi.",
+    "A new verification link has been sent to your email address.": "Tautan verifikasi baru telah dikirim ke alamat email Anda."
+}

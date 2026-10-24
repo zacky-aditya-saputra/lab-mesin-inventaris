@@ -50,11 +50,12 @@
     </button>
 
     <!-- Main Content: Desktop 2-Kolom (Sidebar Sticky w-64 + Kolom Grid Peralatan) -->
-    <div class="flex flex-col gap-6 lg:flex-row lg:gap-8 items-start">
+    <div id="katalog" class="flex flex-col gap-6 lg:flex-row lg:gap-8 items-start scroll-mt-28">
 
         <!-- Sidebar Filter (Desktop Sticky w-64, Digital Atelier Inspired) -->
-        <aside class="hidden lg:block w-64 shrink-0 sticky top-24 lg:top-28 space-y-5">
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-5">
+        <aside class="hidden lg:block w-64 shrink-0 sticky top-24 self-start animate-fade-in-up">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-5 catalog-sidebar-scroll custom-scrollbar"
+                 style="max-height: calc(100vh - 8rem); overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900 tracking-tight">Filters</h2>
                     <p class="text-xs text-slate-400 mt-0.5">Refine your selection</p>
@@ -146,7 +147,7 @@
         <!-- Tool Grid Section (Main Column) -->
         <section class="min-w-0 flex-1 w-full">
             <!-- Header Section (Clean & Authoritative, Digital Atelier Style) -->
-            <div class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in-up-delay-1">
                 <div>
                     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">Koleksi Peralatan Laboratorium</h1>
                     <p class="text-xs sm:text-sm text-slate-500 max-w-2xl mt-1.5 leading-relaxed">
@@ -169,7 +170,7 @@
 
             <!-- Mobile Search Bar (Phone Only) -->
             <div class="sm:hidden mb-4 relative">
-                <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
+                <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
                 <input type="text" x-model="$store.ui.search" placeholder="Cari nama alat / kode..."
                        class="w-full bg-white border border-slate-200 pl-9 pr-8 py-2 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 shadow-xs transition-all">
                 <button type="button" x-show="$store.ui.search" x-cloak @click="$store.ui.search = ''"
@@ -180,7 +181,7 @@
             </div>
 
             <!-- Hero Quick Guide Cyan Banner (Digital Atelier Pattern with Authentic Campus Architecture Overlay) -->
-            <div class="rounded-3xl bg-[#26D0ED] p-6 sm:p-7 lg:p-8 mb-6 flex flex-col md:flex-row items-stretch justify-between gap-6 relative overflow-hidden shadow-sm">
+            <div class="rounded-3xl bg-[#26D0ED] p-6 sm:p-7 lg:p-8 mb-6 flex flex-col md:flex-row items-stretch justify-between gap-6 relative overflow-hidden shadow-sm animate-fade-in-up-delay-2">
                 <!-- Foto Gedung Teknik Unwahas (Authentic Building Overlay - Anti AI-Slop) -->
                 @if ($buildingPhoto)
                     <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden">
@@ -285,6 +286,8 @@
                         <div class="relative flex h-[88px] w-[88px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-100">
                             <template x-if="tool.image">
                                 <img :src="tool.image" :alt="tool.name"
+                                     loading="lazy"
+                                     decoding="async"
                                      @@error="$el.style.display='none'; $el.nextElementSibling.classList.remove('hidden')"
                                      class="h-full w-full object-cover"/>
                             </template>
@@ -333,12 +336,14 @@
             <div class="hidden grid-cols-1 gap-5 sm:grid-cols-2 md:grid lg:grid-cols-3 xl:grid-cols-4" x-show="filteredTools.length > 0">
                 <template :key="'d-' + tool.id" x-for="tool in filteredTools">
                     <article @click="openDetail(tool)"
-                             class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-500/5">
+                             class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition-all duration-200 tool-card-hover hover:border-blue-300">
                         
                         <!-- Media Container (Aspect 4:3) -->
                         <div class="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden border-b border-slate-100 bg-slate-100">
                             <template x-if="tool.image">
                                 <img :src="tool.image" :alt="tool.name"
+                                     loading="lazy"
+                                     decoding="async"
                                      @@error="$el.style.display='none'; $el.nextElementSibling.classList.remove('hidden')"
                                      class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"/>
                             </template>
@@ -426,7 +431,7 @@
     <!-- ========================================================================= -->
     <!-- SECTION: PANDUAN STANDAR OPERASIONAL PROSEDUR (Anchor: #panduan)         -->
     <!-- ========================================================================= -->
-    <section id="panduan" class="mt-16 scroll-mt-24 space-y-10 border-t border-slate-200 pt-12">
+    <section id="panduan" class="mt-16 scroll-mt-24 space-y-10 border-t border-slate-200 pt-12 reveal-on-scroll">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
                 <span class="font-mono text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">01 / Prosedur Baku</span>
@@ -440,7 +445,7 @@
         <!-- 4 Sequential Step Columns -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             <!-- Stage 01 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between reveal-on-scroll stagger-1">
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-mono text-xs font-bold">01</span>
@@ -460,7 +465,7 @@
             </div>
 
             <!-- Stage 02 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between reveal-on-scroll stagger-2">
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-mono text-xs font-bold">02</span>
@@ -469,7 +474,7 @@
                     <div>
                         <h3 class="font-bold text-slate-900 text-sm mb-1">Pengajuan Daring H-2</h3>
                         <p class="text-xs text-slate-500 leading-relaxed">
-                            Submit formulir peminjaman sekurang-kurangnya dua hari kerja sebelum tanggal pelaksanaan dengan melampirkan modul/proposal.
+                            Submit formulir peminjaman sekurang-kurangnya dua hari kerja sebelum tanggal pelaksanaan dengan melampirkan surat peminjaman resmi.
                         </p>
                     </div>
                 </div>
@@ -480,7 +485,7 @@
             </div>
 
             <!-- Stage 03 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between reveal-on-scroll stagger-3">
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-mono text-xs font-bold">03</span>
@@ -500,7 +505,7 @@
             </div>
 
             <!-- Stage 04 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between reveal-on-scroll stagger-4">
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-mono text-xs font-bold">04</span>
@@ -520,22 +525,24 @@
             </div>
         </div>
 
-        <!-- Special Banner: Dispensasi Skripsi & Tugas Akhir -->
-        <div class="rounded-2xl border border-blue-200 bg-blue-50/70 p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xs">
+        <!-- Ketentuan Berkas: Surat Peminjaman Alat -->
+        <div class="rounded-2xl border border-blue-200 bg-blue-50/70 p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xs reveal-on-scroll">
             <div class="flex items-start gap-4">
                 <div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
-                    <span class="material-symbols-outlined text-2xl">assignment_turned_in</span>
+                    <span class="material-symbols-outlined text-2xl">description</span>
                 </div>
                 <div class="space-y-1">
-                    <span class="font-mono text-[11px] uppercase font-bold text-blue-700 tracking-wider">Dispensasi Riset Akademik</span>
-                    <h3 class="font-bold text-base text-slate-900">Skema Khusus Skripsi &amp; Proyek Tugas Akhir</h3>
+                    <span class="font-mono text-[11px] uppercase font-bold text-blue-700 tracking-wider">Ketentuan Berkas Peminjaman</span>
+                    <h3 class="font-bold text-base text-slate-900">Surat Peminjaman Alat Resmi Laboratorium</h3>
                     <p class="text-xs text-slate-600 leading-relaxed max-w-3xl">
-                        Mahasiswa tingkat akhir berhak atas masa pinjam hingga <strong>7 (tujuh) hari kerja berturut-turut</strong> dengan melampirkan Surat Rekomendasi bermeterai dari Dosen Pembimbing Skripsi serta rincian metodologi pengujian laboratorium.
+                        Setiap peminjaman wajib mengunggah <strong>Surat Peminjaman resmi</strong> (format PDF/JPG, maks. 5MB) dan diajukan sekurang-kurangnya <strong>H-2 sebelum pemakaian</strong> guna verifikasi kelaikan alat dan penyiapan unit oleh petugas laboratorium.
                     </p>
                 </div>
             </div>
             <div class="shrink-0">
-                <a href="#katalog" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 text-white font-semibold text-xs shadow-xs hover:bg-blue-700 transition-colors">
+                <a href="#katalog"
+                   @click.prevent="document.getElementById('katalog')?.scrollIntoView({ behavior: 'smooth' }); $store.ui.setActiveSection('#katalog')"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 text-white font-semibold text-xs shadow-xs hover:bg-blue-700 transition-colors">
                     <span>Mulai Pilih Alat</span>
                     <span class="material-symbols-outlined text-sm">arrow_upward</span>
                 </a>
@@ -543,7 +550,7 @@
         </div>
 
         <!-- Standar Operasional K3 Ruang Mesin -->
-        <div class="space-y-6 pt-4">
+        <div class="space-y-6 pt-4 reveal-on-scroll">
             <div>
                 <span class="font-mono text-xs font-bold uppercase tracking-wider text-rose-600 block mb-1">02 / Keselamatan Kerja</span>
                 <h3 class="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">Standar Operasional K3 Ruang Mesin</h3>
@@ -554,7 +561,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <!-- Panel 1: APD Wajib -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs reveal-on-scroll stagger-1">
                     <div class="flex items-center gap-2.5 mb-3.5 pb-2.5 border-b border-slate-100">
                         <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
                             <span class="material-symbols-outlined text-lg">shield</span>
@@ -578,7 +585,7 @@
                 </div>
 
                 <!-- Panel 2: Pantangan Kerja -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs reveal-on-scroll stagger-2">
                     <div class="flex items-center gap-2.5 mb-3.5 pb-2.5 border-b border-slate-100">
                         <span class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
                             <span class="material-symbols-outlined text-lg">warning</span>
@@ -602,7 +609,7 @@
                 </div>
 
                 <!-- Panel 3: Tanggap Darurat -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs reveal-on-scroll stagger-3">
                     <div class="flex items-center gap-2.5 mb-3.5 pb-2.5 border-b border-slate-100">
                         <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
                             <span class="material-symbols-outlined text-lg">emergency</span>
@@ -631,7 +638,7 @@
     <!-- ========================================================================= -->
     <!-- SECTION: DIREKTORI KONTAK & LOKASI LAB (Anchor: #kontak)                 -->
     <!-- ========================================================================= -->
-    <section id="kontak" class="mt-16 scroll-mt-24 space-y-10 border-t border-slate-200 pt-12 mb-12">
+    <section id="kontak" class="mt-16 scroll-mt-24 space-y-10 border-t border-slate-200 pt-12 mb-12 reveal-on-scroll">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
                 <span class="font-mono text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">03 / Informasi Kontak</span>
@@ -644,7 +651,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Lab 1: LPP -->
-            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4 reveal-on-scroll stagger-1">
                 <div class="space-y-3">
                     <div class="flex items-start justify-between gap-4">
                         <div>
@@ -674,7 +681,7 @@
             </article>
 
             <!-- Lab 2: LMAT -->
-            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4 reveal-on-scroll stagger-2">
                 <div class="space-y-3">
                     <div class="flex items-start justify-between gap-4">
                         <div>
@@ -704,7 +711,7 @@
             </article>
 
             <!-- Lab 3: LPR -->
-            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4 reveal-on-scroll stagger-3">
                 <div class="space-y-3">
                     <div class="flex items-start justify-between gap-4">
                         <div>
@@ -734,7 +741,7 @@
             </article>
 
             <!-- Lab 4: LEN -->
-            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4 reveal-on-scroll stagger-4">
                 <div class="space-y-3">
                     <div class="flex items-start justify-between gap-4">
                         <div>
@@ -1046,7 +1053,7 @@
                     </li>
                     <li class="flex gap-3">
                         <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 font-mono text-[11px] font-bold text-white">2</span>
-                        <span>Lengkapi formulir peminjaman: keperluan, jumlah unit, serta surat rekomendasi modul.</span>
+                        <span>Lengkapi formulir peminjaman: keperluan, jumlah unit, serta surat peminjaman.</span>
                     </li>
                     <li class="flex gap-3">
                         <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 font-mono text-[11px] font-bold text-white">3</span>

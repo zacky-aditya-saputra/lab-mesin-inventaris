@@ -120,3 +120,68 @@ test('registration rejects password confirmation mismatch', function () {
     $response->assertSessionHasErrors('password');
     $this->assertGuest();
 });
+
+test('registration rejects duplicate identity_number for mahasiswa with clear error message', function () {
+    User::factory()->create(['identity_number' => '24103041027']);
+
+    $response = $this->post('/register', [
+        'name' => 'Duplicate NIM User',
+        'email' => 'newstudent@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+        'identity_type' => 'mahasiswa',
+        'identity_number' => '24103041027',
+        'phone_number' => '081234567800',
+        'institution' => 'Teknik Mesin S1',
+        'identity_card_file' => UploadedFile::fake()->create('ktm.pdf', 100),
+    ]);
+
+    $response->assertSessionHasErrors([
+        'identity_number' => 'NIM atau NIK ini sudah terdaftar di sistem. Silakan periksa kembali atau masuk ke akun Anda.',
+    ]);
+    $this->assertGuest();
+});
+
+test('registration rejects duplicate identity_number for umum category', function () {
+    User::factory()->create(['identity_number' => '3374012345670001']);
+
+    $response = $this->post('/register', [
+        'name' => 'Duplicate NIK User',
+        'email' => 'newclient@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+        'identity_type' => 'umum',
+        'identity_number' => '3374012345670001',
+        'phone_number' => '081234567801',
+        'institution' => 'Mitra Industri',
+        'identity_card_file' => UploadedFile::fake()->create('ktp.jpg', 100),
+    ]);
+
+    $response->assertSessionHasErrors('identity_number');
+    $this->assertGuest();
+});
+
+test('user roleLabel returns correct label and is rendered in top right profile', function () {
+    $umumUser = User::factory()->create([
+        'name' => 'Budi Santoso Umum',
+        'role' => 'klien',
+        'identity_type' => 'umum',
+    ]);
+    expect($umumUser->roleLabel())->toBe('Umum');
+
+    $mhsUser = User::factory()->create([
+        'name' => 'Zacky Mahasiswa',
+        'role' => 'klien',
+        'identity_type' => 'mahasiswa',
+    ]);
+    expect($mhsUser->roleLabel())->toBe('Mahasiswa');
+
+    $responseUmum = $this->actingAs($umumUser)->get(route('catalog.index'));
+    $responseUmum->assertOk();
+    $responseUmum->assertSee('Umum');
+    $responseUmum->assertDontSee('text-blue-600">Mahasiswa</p>', false);
+
+    $responseMhs = $this->actingAs($mhsUser)->get(route('catalog.index'));
+    $responseMhs->assertOk();
+    $responseMhs->assertSee('Mahasiswa');
+});

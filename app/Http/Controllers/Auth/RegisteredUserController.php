@@ -36,11 +36,32 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'identity_type' => ['required', 'in:mahasiswa,umum'],
             'identity_number' => $request->input('identity_type') === 'umum'
-                ? ['required', 'numeric', 'digits_between:13,16']
-                : ['required', 'string', 'max:30'],
+                ? ['required', 'numeric', 'digits_between:13,16', 'unique:'.User::class]
+                : ['required', 'string', 'max:30', 'unique:'.User::class],
             'phone_number' => ['required', 'string', 'max:20'],
             'institution' => ['required', 'string', 'max:255'],
             'identity_card_file' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap tidak boleh lebih dari 255 karakter.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'email.unique' => 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda.',
+            'password.required' => 'Kata sandi wajib diisi.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok. Harap ulangi kata sandi dengan benar.',
+            'identity_type.required' => 'Kategori peminjam wajib dipilih.',
+            'identity_type.in' => 'Kategori peminjam harus Mahasiswa Unwahas atau Umum.',
+            'identity_number.required' => 'Nomor identitas (NIM/NIK) wajib diisi.',
+            'identity_number.numeric' => 'NIK untuk kategori umum harus berupa angka.',
+            'identity_number.digits_between' => 'NIK untuk kategori umum harus terdiri dari 13 hingga 16 digit angka.',
+            'identity_number.max' => 'Nomor identitas maksimal 30 karakter.',
+            'identity_number.unique' => 'NIM atau NIK ini sudah terdaftar di sistem. Silakan periksa kembali atau masuk ke akun Anda.',
+            'phone_number.required' => 'Nomor WhatsApp wajib diisi.',
+            'phone_number.max' => 'Nomor WhatsApp maksimal 20 digit.',
+            'institution.required' => 'Program studi atau nama instansi wajib diisi.',
+            'identity_card_file.required' => 'Berkas kartu identitas (KTM/KTP) wajib diunggah.',
+            'identity_card_file.mimes' => 'Format kartu identitas harus JPG, JPEG, PNG, WEBP, atau PDF.',
+            'identity_card_file.max' => 'Ukuran berkas kartu identitas tidak boleh melebihi 5MB.',
         ]);
 
         $user = User::create([

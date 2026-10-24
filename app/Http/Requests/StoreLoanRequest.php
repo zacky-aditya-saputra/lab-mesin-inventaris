@@ -48,9 +48,22 @@ class StoreLoanRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'loan_letter.required' => 'Surat peminjaman wajib diunggah.',
             'start_date.after_or_equal' => 'Tanggal mulai peminjaman minimal diajukan 2 hari sebelum pemakaian (H-2) untuk persiapan alat oleh petugas laboratorium.',
             'items.*.tool_id.distinct' => 'Terdapat alat yang sama dipilih lebih dari satu kali. Harap gabungkan kuantitasnya dalam satu baris.',
             'integrity_pledge.accepted' => 'Anda wajib menyetujui pernyataan kebenaran data dan kepatuhan tata tertib laboratorium.',
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'loan_letter' => 'surat peminjaman',
         ];
     }
 

@@ -107,4 +107,26 @@ class User extends Authenticatable
     {
         return in_array($this->role, ['kepala_lab', 'admin'], true);
     }
+
+    public function roleLabel(): string
+    {
+        if ($this->isKepalaLab()) {
+            return 'Kepala Lab';
+        }
+
+        if ($this->isLaboran()) {
+            $labName = $this->laboratory?->name;
+
+            return $labName
+                ? 'Laboran '.str_replace('Laboratorium', 'Lab', $labName)
+                : 'Laboran';
+        }
+
+        return match ($this->identity_type) {
+            'umum' => 'Umum',
+            'dosen' => 'Dosen',
+            'pegawai' => 'Staf/Pegawai',
+            default => 'Mahasiswa',
+        };
+    }
 }

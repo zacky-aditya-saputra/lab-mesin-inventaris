@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Models\LoanRequest;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,6 +30,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RateLimiter::for('login', function (Request $request): Limit {
+            $limit = $this->app->isLocal() ? 30 : 5;
+
+            return Limit::perMinute($limit)->by($request->ip());
+        });
+
+        RateLimiter::for('register', function (Request $request): Limit {
+            if ($this->app->isLocal()) {
+                return Limit::perMinute(30)->by($request->ip());
+            }
+
+            return Limit::perMinutes(10, 5)->by($request->ip());
+        });
+
         View::creator('layouts.admin', function ($view): void {
             $user = auth()->user();
 

@@ -19,6 +19,7 @@
         <div class="relative w-full aspect-[16/10] bg-slate-100 overflow-hidden flex items-center justify-center border-b border-slate-100">
             @if ($tool->image_path)
                 <img src="{{ asset('storage/'.$tool->image_path) }}" alt="{{ $tool->name }}"
+                     decoding="async"
                      class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"/>
             @else
                 <div class="flex flex-col items-center justify-center p-6 text-slate-400 select-none">

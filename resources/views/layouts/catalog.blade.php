@@ -16,9 +16,86 @@
     <!-- Vite Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         [x-cloak] { display: none !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.995);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .animate-fade-in-up-delay-1 {
+            animation: fadeInUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+        }
+        .animate-fade-in-up-delay-2 {
+            animation: fadeInUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+        }
+
+        /* Scroll reveal utility - buttery smooth Apple-style easing */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-on-scroll.is-revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered delay helpers for grid items */
+        .stagger-1 { transition-delay: 0.06s !important; }
+        .stagger-2 { transition-delay: 0.13s !important; }
+        .stagger-3 { transition-delay: 0.20s !important; }
+        .stagger-4 { transition-delay: 0.27s !important; }
+
+        /* Tool card hover elevation */
+        .tool-card-hover {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+        }
+        .tool-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.08), 0 8px 12px -6px rgba(15, 23, 42, 0.04);
+        }
+
+        /* Custom subtle scrollbar for sidebar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+            transition: background 0.3s ease;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Sticky sidebar independent scroll */
+        .catalog-sidebar-scroll {
+            max-height: calc(100vh - 8rem) !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            overscroll-behavior: contain;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
     <script>
         document.addEventListener('alpine:init', () => {
@@ -27,7 +104,84 @@
                 filterSheetOpen: false,
                 sopModalOpen: false,
                 contactModalOpen: false,
+                activeSection: window.location.hash || '#katalog',
+                setActiveSection(hash) {
+                    this.activeSection = hash;
+                    const targetId = hash.replace('#', '');
+                    const targetEl = document.getElementById(targetId);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll reveal observer with smooth threshold and rootMargin
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-revealed');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+                revealElements.forEach(el => observer.observe(el));
+            } else {
+                revealElements.forEach(el => el.classList.add('is-revealed'));
+            }
+
+            // Scrollspy observer for header nav active states (throttled with rAF for 60/120fps smoothness)
+            const updateScrollspy = () => {
+                if (!window.location.pathname.endsWith('/catalog') && window.location.pathname !== '/') {
+                    return;
+                }
+                const sections = [
+                    { id: 'kontak', hash: '#kontak' },
+                    { id: 'panduan', hash: '#panduan' },
+                    { id: 'katalog', hash: '#katalog' }
+                ];
+                const scrollPos = window.scrollY + 200;
+                for (const sec of sections) {
+                    const el = document.getElementById(sec.id);
+                    if (el) {
+                        const top = el.offsetTop;
+                        const height = el.offsetHeight;
+                        if (scrollPos >= top && scrollPos < top + height) {
+                            if (window.Alpine && Alpine.store('ui')) {
+                                Alpine.store('ui').activeSection = sec.hash;
+                            }
+                            return;
+                        }
+                    }
+                }
+                if (window.scrollY < 300) {
+                    if (window.Alpine && Alpine.store('ui')) {
+                        Alpine.store('ui').activeSection = '#katalog';
+                    }
+                }
+            };
+
+            let scrollTicking = false;
+            window.addEventListener('scroll', () => {
+                if (!scrollTicking) {
+                    window.requestAnimationFrame(() => {
+                        updateScrollspy();
+                        scrollTicking = false;
+                    });
+                    scrollTicking = true;
+                }
+            }, { passive: true });
+
+            window.addEventListener('hashchange', () => {
+                if (window.Alpine && Alpine.store('ui')) {
+                    Alpine.store('ui').activeSection = window.location.hash || '#katalog';
+                }
+            });
+            setTimeout(updateScrollspy, 200);
         });
     </script>
     @stack('styles')
@@ -35,14 +189,7 @@
 <body class="bg-[#FAFAFA] text-slate-800 font-sans antialiased min-h-[100dvh] flex flex-col pb-16 md:pb-0" x-data="{ mobileMenuOpen: false, userMenuOpen: false, logoutOpen: false }">
     @php
         $authUser = auth()->user();
-        $roleLabel = 'Mahasiswa';
-        if ($authUser) {
-            if ($authUser->isKepalaLab()) {
-                $roleLabel = 'Kepala Lab';
-            } elseif ($authUser->isLaboran()) {
-                $roleLabel = 'Laboran '.str_replace('Laboratorium', 'Lab', $authUser->laboratory?->name ?? '');
-            }
-        }
+        $roleLabel = $authUser?->roleLabel() ?? 'Pengunjung';
         $onCatalogIndex = request()->routeIs('catalog.index');
     @endphp
 
@@ -66,66 +213,80 @@
 
                 <!-- SISI TENGAH: Menu Navigasi Centered (Kontainer Persegi Panjang Biru Terang Flush / Bottom-Aligned) -->
                 <div class="flex-1 flex justify-center self-end">
-                    <nav class="self-end -mb-px relative z-10 flex items-center gap-2.5 lg:gap-5 bg-blue-600 rounded-t-2xl rounded-b-none px-5 lg:px-7 py-3 text-white shadow-xs">
-                        <a href="{{ route('catalog.index') }}"
-                           class="text-xs lg:text-sm font-semibold transition-all {{ request()->routeIs('catalog.*') ? 'text-white font-bold bg-white/20 px-3 lg:px-3.5 py-1 rounded-lg shadow-2xs' : 'text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg' }}">
+                    <nav class="self-end -mb-px relative z-10 flex items-center gap-2 lg:gap-3 bg-blue-600 rounded-t-2xl rounded-b-none px-4 lg:px-6 py-2.5 text-white shadow-xs">
+                        <a href="{{ route('catalog.index') }}#katalog"
+                           @click="$store.ui.setActiveSection('#katalog')"
+                           :class="($store.ui.activeSection === '#katalog' || !$store.ui.activeSection) && {{ $onCatalogIndex ? 'true' : 'false' }}
+                               ? 'text-white font-bold bg-white/20 shadow-2xs'
+                               : 'text-white/80 hover:text-white hover:bg-white/10'"
+                           class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200">
                             Katalog
                         </a>
 
                         @auth
                             @if ($authUser->isKlien())
                                 <a href="{{ route('loans.history') }}"
-                                   class="text-xs lg:text-sm font-semibold transition-all {{ request()->routeIs('loans.history*') ? 'text-white font-bold bg-white/20 px-3 lg:px-3.5 py-1 rounded-lg shadow-2xs' : 'text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg' }}">
+                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('loans.history*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                                     Riwayat
                                 </a>
 
                                 <a href="{{ route('loans.create') }}"
-                                   class="text-xs lg:text-sm font-semibold transition-all {{ request()->routeIs('loans.create*') ? 'text-white font-bold bg-white/20 px-3 lg:px-3.5 py-1 rounded-lg shadow-2xs' : 'text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg' }}">
+                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('loans.create*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                                     Pengajuan
                                 </a>
 
                                 <a href="{{ route('activity-logs.index') }}"
-                                   class="text-xs lg:text-sm font-semibold transition-all {{ request()->routeIs('activity-logs.*') ? 'text-white font-bold bg-white/20 px-3 lg:px-3.5 py-1 rounded-lg shadow-2xs' : 'text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg' }}">
+                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('activity-logs.*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                                     Logbook Kegiatan
                                 </a>
                             @else
                                 <a href="{{ route('admin.loans.index') }}"
-                                   class="text-xs lg:text-sm font-semibold transition-all {{ request()->routeIs('admin.loans.*') ? 'text-white font-bold bg-white/20 px-3 lg:px-3.5 py-1 rounded-lg shadow-2xs' : 'text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg' }}">
+                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.loans.*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                                     Riwayat
                                 </a>
 
                                 <a href="{{ route('admin.loans.index') }}"
-                                   class="text-xs lg:text-sm font-semibold transition-all {{ request()->routeIs('admin.loans.review*') ? 'text-white font-bold bg-white/20 px-3 lg:px-3.5 py-1 rounded-lg shadow-2xs' : 'text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg' }}">
+                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.loans.review*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                                     Pengajuan
                                 </a>
 
                                 <a href="{{ route('admin.activity-logs.index') }}"
-                                   class="text-xs lg:text-sm font-semibold transition-all {{ request()->routeIs('admin.activity-logs.*') ? 'text-white font-bold bg-white/20 px-3 lg:px-3.5 py-1 rounded-lg shadow-2xs' : 'text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg' }}">
+                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.activity-logs.*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                                     Logbook Kegiatan
                                 </a>
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="text-xs lg:text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg transition-all">
+                            <a href="{{ route('login') }}" class="text-xs lg:text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200">
                                 Riwayat
                             </a>
-                            <a href="{{ route('login') }}" class="text-xs lg:text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg transition-all">
+                            <a href="{{ route('login') }}" class="text-xs lg:text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200">
                                 Pengajuan
                             </a>
-                            <a href="{{ route('login') }}" class="text-xs lg:text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg transition-all">
+                            <a href="{{ route('login') }}" class="text-xs lg:text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200">
                                 Logbook Kegiatan
                             </a>
                         @endauth
 
-                        <a href="{{ route('catalog.index') }}#panduan" class="text-xs lg:text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg transition-all">
+                        <a href="{{ route('catalog.index') }}#panduan"
+                           @click="$store.ui.setActiveSection('#panduan')"
+                           :class="$store.ui.activeSection === '#panduan' && {{ $onCatalogIndex ? 'true' : 'false' }}
+                               ? 'text-white font-bold bg-white/20 shadow-2xs'
+                               : 'text-white/80 hover:text-white hover:bg-white/10'"
+                           class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200">
                             Panduan
                         </a>
-                        <a href="{{ route('catalog.index') }}#kontak" class="text-xs lg:text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 px-2.5 lg:px-3 py-1 rounded-lg transition-all">
+                        <a href="{{ route('catalog.index') }}#kontak"
+                           @click="$store.ui.setActiveSection('#kontak')"
+                           :class="$store.ui.activeSection === '#kontak' && {{ $onCatalogIndex ? 'true' : 'false' }}
+                               ? 'text-white font-bold bg-white/20 shadow-2xs'
+                               : 'text-white/80 hover:text-white hover:bg-white/10'"
+                           class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200">
                             Info Kontak
                         </a>
                     </nav>
                 </div>
 
-                <!-- SISI KANAN: Utilitas, Notifikasi & Akun Pengguna (Tanpa Keranjang Belanja) -->
+                <!-- SISI KANAN: Notifikasi & Akun Pengguna -->
                 <div class="flex items-center gap-3 shrink-0 my-auto">
                     @auth
                         <x-notification-bell />
@@ -240,10 +401,31 @@
 
             <!-- Mobile Drawer Dropdown -->
             <div x-show="mobileMenuOpen" x-cloak x-transition
-                 class="border-b border-slate-200 bg-white px-4 py-4 space-y-2">
-                <a href="{{ route('catalog.index') }}" class="block py-2 text-sm font-semibold text-slate-800 hover:text-blue-600">Katalog Alat</a>
-                <a href="{{ route('catalog.index') }}#panduan" class="block py-2 text-sm font-medium text-slate-600 hover:text-slate-900" @click="mobileMenuOpen = false">Panduan SOP</a>
-                <a href="{{ route('catalog.index') }}#kontak" class="block py-2 text-sm font-medium text-slate-600 hover:text-slate-900" @click="mobileMenuOpen = false">Info Kontak &amp; Lab</a>
+                 class="border-b border-slate-200 bg-white px-4 py-4 space-y-1.5">
+                <a href="{{ route('catalog.index') }}#katalog"
+                   @click="$store.ui.setActiveSection('#katalog'); mobileMenuOpen = false"
+                   :class="($store.ui.activeSection === '#katalog' || !$store.ui.activeSection) && {{ $onCatalogIndex ? 'true' : 'false' }}
+                       ? 'bg-blue-50 text-blue-700 font-bold'
+                       : 'text-slate-800 hover:text-blue-600'"
+                   class="block py-2 px-3 rounded-xl text-sm transition-all">
+                    Katalog Alat
+                </a>
+                <a href="{{ route('catalog.index') }}#panduan"
+                   @click="$store.ui.setActiveSection('#panduan'); mobileMenuOpen = false"
+                   :class="$store.ui.activeSection === '#panduan' && {{ $onCatalogIndex ? 'true' : 'false' }}
+                       ? 'bg-blue-50 text-blue-700 font-bold'
+                       : 'text-slate-600 hover:text-slate-900'"
+                   class="block py-2 px-3 rounded-xl text-sm transition-all">
+                    Panduan SOP
+                </a>
+                <a href="{{ route('catalog.index') }}#kontak"
+                   @click="$store.ui.setActiveSection('#kontak'); mobileMenuOpen = false"
+                   :class="$store.ui.activeSection === '#kontak' && {{ $onCatalogIndex ? 'true' : 'false' }}
+                       ? 'bg-blue-50 text-blue-700 font-bold'
+                       : 'text-slate-600 hover:text-slate-900'"
+                   class="block py-2 px-3 rounded-xl text-sm transition-all">
+                    Info Kontak &amp; Lab
+                </a>
 
                 @auth
                     <div class="pt-2 border-t border-slate-100 space-y-1">

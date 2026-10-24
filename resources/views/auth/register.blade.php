@@ -140,7 +140,7 @@
                     Nama Lengkap <span class="text-rose-500">*</span>
                 </label>
                 <div class="relative">
-                    <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">person</span>
+                    <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 {{ $errors->has('name') ? 'text-rose-500' : 'text-slate-400' }} text-lg">person</span>
                     <input type="text"
                            id="name"
                            name="name"
@@ -148,7 +148,7 @@
                            required
                            autofocus
                            placeholder="Contoh: Budi Santoso"
-                           class="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 shadow-xs transition-all" />
+                           class="w-full rounded-xl border {{ $errors->has('name') ? 'border-rose-300 bg-rose-50/40 text-rose-900 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-200 bg-slate-50/50 text-slate-800 focus:border-blue-600 focus:ring-blue-600' }} pl-10 pr-3.5 py-2.5 text-xs sm:text-sm placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 shadow-xs transition-all" />
                 </div>
                 @error('name')
                     <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
@@ -200,14 +200,14 @@
                         <span x-text="borrowerType === 'mahasiswa' ? 'NIM (Nomor Induk Mahasiswa)' : 'NIK (Nomor Induk KTP)'"></span> <span class="text-rose-500">*</span>
                     </label>
                     <div class="relative">
-                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">badge</span>
+                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 {{ $errors->has('identity_number') ? 'text-rose-500' : 'text-slate-400' }} text-lg">badge</span>
                         <input type="text"
                                id="identity_number"
                                name="identity_number"
                                value="{{ old('identity_number') }}"
                                required
                                :placeholder="borrowerType === 'mahasiswa' ? 'Contoh: 21102001' : 'Contoh: 3374012345670001'"
-                               class="w-full font-mono rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 shadow-xs transition-all" />
+                               class="w-full font-mono rounded-xl border {{ $errors->has('identity_number') ? 'border-rose-300 bg-rose-50/40 text-rose-900 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-200 bg-slate-50/50 text-slate-800 focus:border-blue-600 focus:ring-blue-600' }} pl-10 pr-3.5 py-2.5 text-xs sm:text-sm placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 shadow-xs transition-all" />
                     </div>
                     @error('identity_number')
                         <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
@@ -220,14 +220,14 @@
                         <span x-text="borrowerType === 'mahasiswa' ? 'Program Studi / Fakultas' : 'Nama Instansi / Domisili'"></span> <span class="text-rose-500">*</span>
                     </label>
                     <div class="relative">
-                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">school</span>
+                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 {{ $errors->has('institution') ? 'text-rose-500' : 'text-slate-400' }} text-lg">school</span>
                         <input type="text"
                                id="institution"
                                name="institution"
                                value="{{ old('institution') }}"
                                required
                                :placeholder="borrowerType === 'mahasiswa' ? 'Contoh: Teknik Mesin S1' : 'Contoh: CV Karya Teknik - Semarang'"
-                               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 shadow-xs transition-all" />
+                               class="w-full rounded-xl border {{ $errors->has('institution') ? 'border-rose-300 bg-rose-50/40 text-rose-900 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-200 bg-slate-50/50 text-slate-800 focus:border-blue-600 focus:ring-blue-600' }} pl-10 pr-3.5 py-2.5 text-xs sm:text-sm placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 shadow-xs transition-all" />
                     </div>
                     @error('institution')
                         <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
@@ -244,14 +244,14 @@
                         <span class="text-[11px] font-normal text-slate-400">(Untuk Notifikasi Peminjaman)</span>
                     </label>
                     <div class="relative">
-                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">call</span>
+                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 {{ $errors->has('phone_number') ? 'text-rose-500' : 'text-slate-400' }} text-lg">call</span>
                         <input type="tel"
                                id="phone_number"
                                name="phone_number"
                                value="{{ old('phone_number') }}"
                                required
                                placeholder="Contoh: 081234567890"
-                               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 shadow-xs transition-all" />
+                               class="w-full rounded-xl border {{ $errors->has('phone_number') ? 'border-rose-300 bg-rose-50/40 text-rose-900 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-200 bg-slate-50/50 text-slate-800 focus:border-blue-600 focus:ring-blue-600' }} pl-10 pr-3.5 py-2.5 text-xs sm:text-sm placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 shadow-xs transition-all" />
                     </div>
                     @error('phone_number')
                         <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
@@ -264,14 +264,14 @@
                         Alamat Email <span class="text-rose-500">*</span>
                     </label>
                     <div class="relative">
-                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">mail</span>
+                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 {{ $errors->has('email') ? 'text-rose-500' : 'text-slate-400' }} text-lg">mail</span>
                         <input type="email"
                                id="email"
                                name="email"
                                value="{{ old('email') }}"
                                required
                                placeholder="mahasiswa@unwahas.ac.id"
-                               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 shadow-xs transition-all" />
+                               class="w-full rounded-xl border {{ $errors->has('email') ? 'border-rose-300 bg-rose-50/40 text-rose-900 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-200 bg-slate-50/50 text-slate-800 focus:border-blue-600 focus:ring-blue-600' }} pl-10 pr-3.5 py-2.5 text-xs sm:text-sm placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 shadow-xs transition-all" />
                     </div>
                     @error('email')
                         <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
@@ -286,13 +286,13 @@
                         Kata Sandi <span class="text-rose-500">*</span>
                     </label>
                     <div class="relative">
-                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">lock</span>
+                        <span class="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 {{ $errors->has('password') ? 'text-rose-500' : 'text-slate-400' }} text-lg">lock</span>
                         <input type="password"
                                id="password"
                                name="password"
                                required
                                placeholder="Minimal 8 karakter"
-                               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 shadow-xs transition-all" />
+                               class="w-full rounded-xl border {{ $errors->has('password') ? 'border-rose-300 bg-rose-50/40 text-rose-900 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-200 bg-slate-50/50 text-slate-800 focus:border-blue-600 focus:ring-blue-600' }} pl-10 pr-3.5 py-2.5 text-xs sm:text-sm placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 shadow-xs transition-all" />
                     </div>
                     @error('password')
                         <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
