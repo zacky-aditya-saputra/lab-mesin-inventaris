@@ -240,20 +240,20 @@
                                     Logbook Kegiatan
                                 </a>
                             @else
-                                <a href="{{ route('admin.loans.index') }}"
-                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.loans.*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                                <span class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg text-white/40 cursor-not-allowed select-none"
+                                      title="Khusus akun mahasiswa / peminjam (Admin tidak melakukan peminjaman)">
                                     Riwayat
-                                </a>
+                                </span>
 
-                                <a href="{{ route('admin.loans.index') }}"
-                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.loans.review*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                                <span class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg text-white/40 cursor-not-allowed select-none"
+                                      title="Khusus akun mahasiswa / peminjam (Admin tidak melakukan peminjaman)">
                                     Pengajuan
-                                </a>
+                                </span>
 
-                                <a href="{{ route('admin.activity-logs.index') }}"
-                                   class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.activity-logs.*') ? 'text-white font-bold bg-white/20 shadow-2xs' : 'text-white/80 hover:text-white hover:bg-white/10' }}">
+                                <span class="text-xs lg:text-sm font-semibold px-3 lg:px-3.5 py-1.5 rounded-lg text-white/40 cursor-not-allowed select-none"
+                                      title="Khusus akun mahasiswa / peminjam">
                                     Logbook Kegiatan
-                                </a>
+                                </span>
                             @endif
                         @else
                             <a href="{{ route('login') }}" class="text-xs lg:text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 px-3 lg:px-3.5 py-1.5 rounded-lg transition-all duration-200">
@@ -289,6 +289,15 @@
                 <!-- SISI KANAN: Notifikasi & Akun Pengguna -->
                 <div class="flex items-center gap-3 shrink-0 my-auto">
                     @auth
+                        @if ($authUser->isLaboran() || $authUser->isKepalaLab())
+                            <a href="{{ route('admin.dashboard') }}"
+                               class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 text-xs font-semibold transition-colors"
+                               title="Kembali ke Dashboard Admin">
+                                <span class="material-symbols-outlined text-sm text-blue-600">dashboard</span>
+                                <span>Dashboard</span>
+                            </a>
+                        @endif
+
                         <x-notification-bell />
 
                         <!-- User Profile Pill Container (Sesuai Gambar) -->

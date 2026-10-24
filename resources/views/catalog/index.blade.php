@@ -24,6 +24,7 @@
             break;
         }
     }
+    $isAdmin = auth()->check() && (auth()->user()->isLaboran() || auth()->user()->isKepalaLab());
 @endphp
 
 @section('content')
@@ -315,11 +316,19 @@
                                 </div>
 
                                 <template x-if="tool.available_stock > 0">
-                                    <a :href="loanUrl(tool)" @click.stop
-                                       class="inline-flex h-8 shrink-0 items-center gap-1 rounded-full bg-blue-600 px-3 text-xs font-semibold text-white shadow-xs active:bg-blue-700 transition-colors">
-                                        <span class="material-symbols-outlined text-sm">add</span>
-                                        <span>Pinjam</span>
-                                    </a>
+                                    @if ($isAdmin)
+                                        <span class="inline-flex h-8 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2.5 text-[11px] font-semibold text-slate-400 cursor-not-allowed select-none"
+                                              title="Akun pengelola lab tidak dapat meminjam alat">
+                                            <span class="material-symbols-outlined text-xs">lock</span>
+                                            <span>Khusus Mhs</span>
+                                        </span>
+                                    @else
+                                        <a :href="loanUrl(tool)" @click.stop
+                                           class="inline-flex h-8 shrink-0 items-center gap-1 rounded-full bg-blue-600 px-3 text-xs font-semibold text-white shadow-xs active:bg-blue-700 transition-colors">
+                                            <span class="material-symbols-outlined text-sm">add</span>
+                                            <span>Pinjam</span>
+                                        </a>
+                                    @endif
                                 </template>
                                 <template x-if="tool.available_stock < 1">
                                     <span class="inline-flex h-8 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2.5 text-[11px] font-semibold text-slate-400">
@@ -392,11 +401,19 @@
                                 </div>
 
                                 <template x-if="tool.available_stock > 0">
-                                    <a :href="loanUrl(tool)" @click.stop
-                                       class="flex h-9 w-full items-center justify-center gap-1 rounded-full bg-blue-600 text-xs font-semibold text-white shadow-xs hover:bg-blue-700 active:scale-98 transition-all">
-                                        <span class="material-symbols-outlined text-base">add</span>
-                                        + Pinjam Alat
-                                    </a>
+                                    @if ($isAdmin)
+                                        <span class="flex h-9 w-full cursor-not-allowed items-center justify-center gap-1 rounded-full border border-slate-200 bg-slate-100 text-xs font-semibold text-slate-400 select-none"
+                                              title="Akun pengelola lab tidak dapat mengajukan peminjaman">
+                                            <span class="material-symbols-outlined text-sm">lock</span>
+                                            Khusus Mahasiswa
+                                        </span>
+                                    @else
+                                        <a :href="loanUrl(tool)" @click.stop
+                                           class="flex h-9 w-full items-center justify-center gap-1 rounded-full bg-blue-600 text-xs font-semibold text-white shadow-xs hover:bg-blue-700 active:scale-98 transition-all">
+                                            <span class="material-symbols-outlined text-base">add</span>
+                                            + Pinjam Alat
+                                        </a>
+                                    @endif
                                 </template>
                                 <template x-if="tool.available_stock < 1">
                                     <span class="flex h-9 w-full cursor-not-allowed items-center justify-center gap-1 rounded-full border border-slate-200 bg-slate-100 text-xs font-semibold text-slate-400">
@@ -899,11 +916,19 @@
 
                 <!-- Primary Action CTA -->
                 <template x-if="(selectedTool?.available_stock || 0) > 0">
-                    <a :href="selectedTool ? loanUrl(selectedTool) : '#'"
-                       class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-md shadow-blue-600/20 transition-all cursor-pointer flex items-center gap-2">
-                        <span>Ajukan Peminjaman</span>
-                        <span class="material-symbols-outlined text-base">arrow_forward</span>
-                    </a>
+                    @if ($isAdmin)
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-6 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 cursor-not-allowed select-none"
+                              title="Akun pengelola lab tidak dapat mengajukan peminjaman">
+                            <span class="material-symbols-outlined text-base">lock</span>
+                            Khusus Mahasiswa
+                        </span>
+                    @else
+                        <a :href="selectedTool ? loanUrl(selectedTool) : '#'"
+                           class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-md shadow-blue-600/20 transition-all cursor-pointer flex items-center gap-2">
+                            <span>Ajukan Peminjaman</span>
+                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                        </a>
+                    @endif
                 </template>
                 <template x-if="(selectedTool?.available_stock || 0) < 1">
                     <button type="button" disabled

@@ -124,11 +124,19 @@
 
             <!-- Primary Action Pill CTA (Direct Single-Item Loan) -->
             @if ($tool->available_stock > 0)
-                <a href="{{ route('loans.create', ['tool_id' => $tool->id]) }}"
-                   class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-md shadow-blue-600/20 transition-all cursor-pointer flex items-center gap-2">
-                    <span>Ajukan Peminjaman</span>
-                    <span class="material-symbols-outlined text-base">arrow_forward</span>
-                </a>
+                @if (auth()->check() && (auth()->user()->isLaboran() || auth()->user()->isKepalaLab()))
+                    <span class="bg-slate-100 text-slate-400 border border-slate-200 font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-full cursor-not-allowed flex items-center gap-2 select-none"
+                          title="Akun pengelola lab tidak dapat mengajukan peminjaman">
+                        <span class="material-symbols-outlined text-base">lock</span>
+                        <span>Khusus Mahasiswa</span>
+                    </span>
+                @else
+                    <a href="{{ route('loans.create', ['tool_id' => $tool->id]) }}"
+                       class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-md shadow-blue-600/20 transition-all cursor-pointer flex items-center gap-2">
+                        <span>Ajukan Peminjaman</span>
+                        <span class="material-symbols-outlined text-base">arrow_forward</span>
+                    </a>
+                @endif
             @else
                 <button type="button" disabled
                         class="bg-slate-200 text-slate-400 font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-full cursor-not-allowed flex items-center gap-1.5">

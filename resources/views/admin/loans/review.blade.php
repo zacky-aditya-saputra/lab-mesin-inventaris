@@ -33,10 +33,8 @@
     </div>
 
     <!-- Borrower Info -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Borrower Details Card -->
-        <div class="md:col-span-3 bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm space-y-4">
-            <div class="flex flex-wrap items-center justify-between border-b border-outline-variant pb-3 gap-2">
+    <div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between border-b border-outline-variant pb-3 gap-2">
                 <h3 class="font-title-sm text-title-sm text-on-surface font-bold flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">badge</span>
                     Informasi Peminjam
@@ -162,10 +160,10 @@
                     Berkas Identitas (KTM / KTP)
                 </h3>
                 @if ($loan->identity_card_path && $isImageDocument($loan->identity_card_path))
-                    <div class="aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant bg-surface-container flex items-center justify-center relative group">
+                    <div class="h-56 w-full rounded-lg overflow-hidden border border-outline-variant bg-slate-900/5 flex items-center justify-center relative group p-2">
                         <img src="{{ route('documents.identity', $loan->user) }}" alt="Dokumen Identitas Peminjam"
                              onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden')"
-                             class="w-full h-full object-cover">
+                             class="w-full h-full object-contain">
                         <div class="hidden w-full h-full flex-col items-center justify-center text-slate-400 select-none">
                             <span class="material-symbols-outlined text-4xl text-blue-600/70">badge</span>
                             <span class="text-[11px] font-mono font-medium uppercase tracking-wider mt-2">Dokumen tidak tersedia</span>
@@ -178,13 +176,13 @@
                     </div>
                 @elseif ($loan->identity_card_path)
                     <a href="{{ route('documents.identity', $loan->user) }}" target="_blank" rel="noopener"
-                       class="aspect-[4/3] rounded-lg border border-outline-variant bg-surface-container flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors group">
+                       class="h-56 w-full rounded-lg border border-outline-variant bg-surface-container flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors group p-4">
                         <span class="material-symbols-outlined text-5xl text-error" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
-                        <span class="font-label-md text-label-md text-on-surface font-semibold truncate max-w-[200px]">{{ basename($loan->identity_card_path) }}</span>
-                        <span class="font-caption-xs text-caption-xs text-primary flex items-center gap-1">Buka Dokumen PDF <span class="material-symbols-outlined text-sm">open_in_new</span></span>
+                        <span class="font-label-md text-label-md text-on-surface font-semibold truncate max-w-xs text-center px-2">{{ basename($loan->identity_card_path) }}</span>
+                        <span class="font-caption-xs text-caption-xs text-primary flex items-center gap-1 font-semibold">Buka Dokumen PDF <span class="material-symbols-outlined text-sm">open_in_new</span></span>
                     </a>
                 @else
-                    <div class="p-8 text-center text-on-surface-variant border-2 border-dashed border-outline-variant rounded-lg aspect-[4/3] flex flex-col items-center justify-center">
+                    <div class="h-56 w-full text-center text-on-surface-variant border-2 border-dashed border-outline-variant rounded-lg flex flex-col items-center justify-center p-6">
                         <span class="material-symbols-outlined text-4xl text-outline mb-2">image_not_supported</span>
                         <p class="font-caption-xs text-caption-xs">Tidak ada berkas identitas terlampir.</p>
                     </div>
@@ -192,8 +190,9 @@
             </div>
             @if ($loan->identity_card_path)
                 <a href="{{ route('documents.identity', $loan->user) }}" target="_blank"
-                   class="mt-4 w-full py-2 bg-surface-container-high hover:bg-surface-dim text-on-surface font-label-md text-label-md rounded-lg text-center border border-outline-variant transition-colors block">
-                    Buka Berkas Penuh
+                   class="mt-4 w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-label-md text-label-md rounded-lg text-center border border-slate-200 transition-colors inline-flex items-center justify-center gap-1.5 font-semibold">
+                    <span class="material-symbols-outlined text-base">visibility</span>
+                    <span>Buka Berkas Penuh</span>
                 </a>
             @endif
         </div>
@@ -206,10 +205,10 @@
                     Surat Peminjaman Resmi
                 </h3>
                 @if ($loan->loan_letter_path && $isImageDocument($loan->loan_letter_path))
-                    <div class="aspect-[4/3] rounded-lg overflow-hidden border border-outline-variant bg-surface-container flex items-center justify-center relative group">
+                    <div class="h-56 w-full rounded-lg overflow-hidden border border-outline-variant bg-slate-900/5 flex items-center justify-center relative group p-2">
                         <img src="{{ route('documents.loan-letter', $loan) }}" alt="Surat Peminjaman Resmi"
                              onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden')"
-                             class="w-full h-full object-cover">
+                             class="w-full h-full object-contain">
                         <div class="hidden w-full h-full flex-col items-center justify-center text-slate-400 select-none">
                             <span class="material-symbols-outlined text-4xl text-blue-600/70">draft</span>
                             <span class="text-[11px] font-mono font-medium uppercase tracking-wider mt-2">Surat tidak tersedia</span>
@@ -222,13 +221,13 @@
                     </div>
                 @elseif ($loan->loan_letter_path)
                     <a href="{{ route('documents.loan-letter', $loan) }}" target="_blank" rel="noopener"
-                       class="aspect-[4/3] rounded-lg border border-outline-variant bg-surface-container flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors group">
+                       class="h-56 w-full rounded-lg border border-outline-variant bg-surface-container flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors group p-4">
                         <span class="material-symbols-outlined text-5xl text-primary" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
-                        <span class="font-label-md text-label-md text-on-surface font-semibold truncate max-w-[200px]">{{ basename($loan->loan_letter_path) }}</span>
-                        <span class="font-caption-xs text-caption-xs text-primary flex items-center gap-1">Buka Dokumen PDF <span class="material-symbols-outlined text-sm">open_in_new</span></span>
+                        <span class="font-label-md text-label-md text-on-surface font-semibold truncate max-w-xs text-center px-2">{{ basename($loan->loan_letter_path) }}</span>
+                        <span class="font-caption-xs text-caption-xs text-primary flex items-center gap-1 font-semibold">Buka Dokumen PDF <span class="material-symbols-outlined text-sm">open_in_new</span></span>
                     </a>
                 @else
-                    <div class="p-8 text-center text-on-surface-variant border-2 border-dashed border-outline-variant rounded-lg aspect-[4/3] flex flex-col items-center justify-center">
+                    <div class="h-56 w-full text-center text-on-surface-variant border-2 border-dashed border-outline-variant rounded-lg flex flex-col items-center justify-center p-6">
                         <span class="material-symbols-outlined text-4xl text-outline mb-2">draft</span>
                         <p class="font-caption-xs text-caption-xs">Tidak ada surat peminjaman terlampir.</p>
                     </div>
@@ -236,8 +235,9 @@
             </div>
             @if ($loan->loan_letter_path)
                 <a href="{{ route('documents.loan-letter', $loan) }}" target="_blank"
-                   class="mt-4 w-full py-2 bg-surface-container-high hover:bg-surface-dim text-on-surface font-label-md text-label-md rounded-lg text-center border border-outline-variant transition-colors block">
-                    Buka Surat Penuh
+                   class="mt-4 w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-label-md text-label-md rounded-lg text-center border border-slate-200 transition-colors inline-flex items-center justify-center gap-1.5 font-semibold">
+                    <span class="material-symbols-outlined text-base">visibility</span>
+                    <span>Buka Surat Penuh</span>
                 </a>
             @endif
         </div>
