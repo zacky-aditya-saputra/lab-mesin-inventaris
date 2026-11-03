@@ -655,137 +655,164 @@
     <!-- ========================================================================= -->
     <!-- SECTION: DIREKTORI KONTAK & LOKASI LAB (Anchor: #kontak)                 -->
     <!-- ========================================================================= -->
-    <section id="kontak" class="mt-16 scroll-mt-24 space-y-10 border-t border-slate-200 pt-12 mb-12 reveal-on-scroll">
+    <section id="kontak" class="mt-16 scroll-mt-24 space-y-8 border-t border-slate-200 pt-12 mb-12 reveal-on-scroll">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-                <span class="font-mono text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">03 / Informasi Kontak</span>
-                <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Sentra Laboratorium Teknik Mesin</h2>
+                <span class="font-mono text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">03 / Informasi Kontak &amp; Layanan</span>
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Pusat Layanan &amp; Koordinasi Laboratorium</h2>
             </div>
             <p class="text-xs text-slate-500 max-w-md">
-                Setiap laboratorium memiliki penanggung jawab khusus (laboran) dengan jalur komunikasi langsung via WhatsApp Hotline dan telepon ekstensi kampus.
+                Seluruh koordinasi permohonan peminjaman alat, verifikasi berkas surat, dan perizinan praktikum terintegrasi melalui Kepala Laboratorium Teknik Mesin FT-Unwahas.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Lab 1: LPP -->
-            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4 reveal-on-scroll stagger-1">
-                <div class="space-y-3">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <span class="font-mono text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded uppercase">LPP-01</span>
-                            <h3 class="text-base font-bold text-slate-900 mt-1.5">Lab Proses Produksi &amp; Fabrikasi</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Kartu 1: PIC Utama & Kontak WhatsApp Kepala Lab -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7 shadow-xs flex flex-col justify-between space-y-6">
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                                <span class="material-symbols-outlined text-2xl font-bold">account_circle</span>
+                            </div>
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-mono font-bold uppercase tracking-wider border border-blue-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Penanggung Jawab Utama
+                                </span>
+                                <h3 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-1">M. Abdul Wahid, S.T., M.T.</h3>
+                                <p class="text-xs text-slate-500 font-medium">Kepala Laboratorium Teknik Mesin FT-Unwahas</p>
+                            </div>
                         </div>
-                        <span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] font-semibold text-slate-600 shrink-0">Gedung D Lt. 1</span>
                     </div>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Mesin bubut konvensional, mesin frais, mesin bor, stasiun las SMAW/GTAW, gerinda potong &amp; pedestal.
-                    </p>
-                    <div class="bg-slate-50 rounded-xl p-3 flex items-center justify-between text-xs">
-                        <div>
-                            <p class="font-bold text-slate-900">Bpk. Tri Widodo</p>
-                            <p class="text-[11px] text-slate-500">Teknisi Fabrikasi &amp; Permesinan</p>
-                        </div>
-                        <span class="font-mono text-xs font-bold text-blue-600">Ekst. 101</span>
-                    </div>
-                </div>
-                <div class="pt-2 flex items-center gap-3">
-                    <a href="https://wa.me/6281234567891?text=Halo%20Bpk%20Tri%20Widodo,%20saya%20ingin%20konsultasi%20alat%20Lab%20LPP" target="_blank" rel="noopener noreferrer"
-                       class="flex-1 py-2 px-3 rounded-full bg-blue-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-blue-700 transition-colors shadow-xs">
-                        <span class="material-symbols-outlined text-sm">chat</span>
-                        WhatsApp Hotline
-                    </a>
-                </div>
-            </article>
 
-            <!-- Lab 2: LMAT -->
-            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4 reveal-on-scroll stagger-2">
-                <div class="space-y-3">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <span class="font-mono text-[10px] font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded uppercase">LMAT-02</span>
-                            <h3 class="text-base font-bold text-slate-900 mt-1.5">Lab Metalurgi &amp; Pengujian Material</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+                            <span class="text-[10px] text-slate-400 font-mono font-bold uppercase block mb-1">WhatsApp Hotline Resmi</span>
+                            <span class="font-mono font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-emerald-600 text-base">chat</span>
+                                +62 856-4011-6080
+                            </span>
                         </div>
-                        <span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] font-semibold text-slate-600 shrink-0">Gedung D Lt. 2</span>
-                    </div>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Universal Testing Machine (UTM 50 kN) tarik/tekan, uji kekerasan Rockwell &amp; Brinell, uji impak Charpy 300J, muffle furnace 1200°C.
-                    </p>
-                    <div class="bg-slate-50 rounded-xl p-3 flex items-center justify-between text-xs">
-                        <div>
-                            <p class="font-bold text-slate-900">Bpk. Kurnia Sandi</p>
-                            <p class="text-[11px] text-slate-500">Teknisi Pengujian Bahan &amp; Metalografi</p>
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+                            <span class="text-[10px] text-slate-400 font-mono font-bold uppercase block mb-1">Email Pelayanan Lab</span>
+                            <span class="font-mono font-semibold text-slate-800 text-xs truncate flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-blue-600 text-base">mail</span>
+                                lab.mesin@unwahas.ac.id
+                            </span>
                         </div>
-                        <span class="font-mono text-xs font-bold text-cyan-600">Ekst. 102</span>
                     </div>
                 </div>
-                <div class="pt-2 flex items-center gap-3">
-                    <a href="https://wa.me/6281234567892?text=Halo%20Bpk%20Kurnia%20Sandi,%20saya%20ingin%20konsultasi%20uji%20bahan%20Lab%20LMAT" target="_blank" rel="noopener noreferrer"
-                       class="flex-1 py-2 px-3 rounded-full bg-cyan-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-cyan-700 transition-colors shadow-xs">
-                        <span class="material-symbols-outlined text-sm">chat</span>
-                        WhatsApp Hotline
-                    </a>
-                </div>
-            </article>
 
-            <!-- Lab 3: LPR -->
-            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4 reveal-on-scroll stagger-3">
-                <div class="space-y-3">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <span class="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded uppercase">LPR-03</span>
-                            <h3 class="text-base font-bold text-slate-900 mt-1.5">Lab Perancangan CAD/CAM &amp; Metrologi</h3>
-                        </div>
-                        <span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] font-semibold text-slate-600 shrink-0">Gedung D Lt. 2</span>
-                    </div>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Workstation CAD/FEA, Surface Roughness Tester Mitutoyo, mikrometer digital 0.001 mm, 3D Printer FDM.
-                    </p>
-                    <div class="bg-slate-50 rounded-xl p-3 flex items-center justify-between text-xs">
-                        <div>
-                            <p class="font-bold text-slate-900">Sdr. Rizki Pratama</p>
-                            <p class="text-[11px] text-slate-500">Instruktur CAD &amp; Instrumen Metrologi</p>
-                        </div>
-                        <span class="font-mono text-xs font-bold text-indigo-600">Ekst. 103</span>
-                    </div>
-                </div>
-                <div class="pt-2 flex items-center gap-3">
-                    <a href="https://wa.me/6281234567893?text=Halo%20Sdr%20Rizki%20Pratama,%20saya%20ingin%20konsultasi%20alat%20Lab%20LPR" target="_blank" rel="noopener noreferrer"
-                       class="flex-1 py-2 px-3 rounded-full bg-indigo-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-indigo-700 transition-colors shadow-xs">
-                        <span class="material-symbols-outlined text-sm">chat</span>
-                        WhatsApp Hotline
+                <div class="pt-2 border-t border-slate-100">
+                    <a href="https://wa.me/6285640116080?text={{ urlencode('Assalamualaikum Wr. Wb. Selamat Pagi/Siang Bapak M. Abdul Wahid, S.T., M.T., mohon maaf mengganggu waktu Bapak. Perkenalkan saya mahasiswa Fakultas Teknik Mesin Unwahas, izin berkonsultasi perihal permohonan peminjaman alat di Laboratorium Teknik Mesin. Terima kasih banyak atas waktu dan arahan Bapak. Wassalamualaikum Wr. Wb.') }}"
+                       target="_blank" rel="noopener noreferrer"
+                       class="w-full py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all">
+                        <span class="material-symbols-outlined text-lg">chat</span>
+                        <span>Hubungi WhatsApp Kepala Lab</span>
                     </a>
                 </div>
-            </article>
+            </div>
 
-            <!-- Lab 4: LEN -->
-            <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4 reveal-on-scroll stagger-4">
-                <div class="space-y-3">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <span class="font-mono text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded uppercase">LEN-04</span>
-                            <h3 class="text-base font-bold text-slate-900 mt-1.5">Lab Konversi Energi &amp; Termofluida</h3>
+            <!-- Kartu 2: Jam Layanan & Lokasi Kampus -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7 shadow-xs flex flex-col justify-between space-y-6">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                            <span class="material-symbols-outlined text-xl">schedule</span>
                         </div>
-                        <span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] font-semibold text-slate-600 shrink-0">Gedung D Lt. 1</span>
+                        <div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-mono font-bold uppercase tracking-wider">
+                                Layanan Akademik
+                            </span>
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base tracking-tight mt-0.5">Jam Operasional &amp; Lokasi Kampus</h4>
+                            <p class="text-[11px] text-slate-500">Layanan pengajuan tiket, validasi surat, dan serah terima unit</p>
+                        </div>
                     </div>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Turbin air Pelton/Francis, bomb calorimeter, alat uji konduktivitas termal, blower fluida dinamik, motor bakar uji 4-langkah.
-                    </p>
-                    <div class="bg-slate-50 rounded-xl p-3 flex items-center justify-between text-xs">
-                        <div>
-                            <p class="font-bold text-slate-900">Bpk. Agus Supriyanto</p>
-                            <p class="text-[11px] text-slate-500">Teknisi Mesin Termal &amp; Aliran Fluida</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col justify-between">
+                            <div>
+                                <span class="font-mono text-[10px] font-bold text-slate-400 block uppercase mb-1">Jadwal Piket Layanan</span>
+                                <p class="font-semibold text-slate-800">Senin &ndash; Kamis: <span class="font-mono text-blue-600 font-bold">08.00 &ndash; 16.00 WIB</span></p>
+                                <p class="font-semibold text-slate-800 mt-1">Jumat: <span class="font-mono text-blue-600 font-bold">08.00 &ndash; 15.00 WIB</span></p>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-amber-700 font-medium">
+                                <span class="material-symbols-outlined text-sm text-amber-600 shrink-0">info</span>
+                                <span>Pengajuan daring wajib H-2 sebelum pemakaian</span>
+                            </div>
                         </div>
-                        <span class="font-mono text-xs font-bold text-emerald-600">Ekst. 104</span>
+
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col justify-between">
+                            <div>
+                                <span class="font-mono text-[10px] font-bold text-slate-400 block uppercase mb-1">Lokasi Sentra Laboratorium</span>
+                                <p class="font-bold text-slate-900">Gedung D (Lantai 1 &amp; Lantai 2)</p>
+                                <p class="text-slate-600 mt-1 leading-relaxed text-[11px]">
+                                    Kampus 1 Universitas Wahid Hasyim<br>
+                                    Jl. Menoreh Tengah X No. 22, Sampangan, Kota Semarang
+                                </p>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-slate-500">
+                                <span class="material-symbols-outlined text-sm text-blue-600 shrink-0">location_on</span>
+                                <span>Fakultas Teknik Mesin</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="pt-2 flex items-center gap-3">
-                    <a href="https://wa.me/6281234567894?text=Halo%20Bpk%20Agus%20Supriyanto,%20saya%20ingin%20konsultasi%20alat%20Lab%20LEN" target="_blank" rel="noopener noreferrer"
-                       class="flex-1 py-2 px-3 rounded-full bg-emerald-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-emerald-700 transition-colors shadow-xs">
-                        <span class="material-symbols-outlined text-sm">chat</span>
-                        WhatsApp Hotline
-                    </a>
+
+                <div class="p-3 rounded-xl bg-blue-50/60 border border-blue-100/80 flex items-center gap-2.5 text-xs text-blue-800">
+                    <span class="material-symbols-outlined text-base text-blue-600 shrink-0">verified_user</span>
+                    <span>Peminjaman untuk praktikum &amp; tugas akhir wajib membawa surat rekomendasi pembimbing / dosen pengampu.</span>
                 </div>
-            </article>
+            </div>
+        </div>
+
+        <!-- Kartu Baris Bawah: 4 Bidang Laboratorium Terpadu -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                <div>
+                    <span class="font-mono text-[10px] font-bold text-blue-600 uppercase tracking-wider block">Direktori Fasilitas</span>
+                    <h4 class="font-bold text-slate-900 text-sm sm:text-base tracking-tight">4 Bidang Laboratorium Terpadu Teknik Mesin Unwahas</h4>
+                </div>
+                <span class="text-xs text-slate-400">Terbuka untuk praktikum reguler &amp; riset tugas akhir</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div class="p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-blue-200 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="font-mono text-[10px] font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">LPP-01</span>
+                        <span class="text-[11px] text-slate-400 font-medium">Gedung D Lt. 1</span>
+                    </div>
+                    <p class="font-bold text-slate-900 leading-snug">Lab Proses Produksi &amp; Fabrikasi</p>
+                    <p class="text-[11px] text-slate-500 mt-1">Mesin Bubut, Frais, Bor Radial, Pengelasan SMAW/GTAW</p>
+                </div>
+
+                <div class="p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-cyan-200 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="font-mono text-[10px] font-bold text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded">LMAT-02</span>
+                        <span class="text-[11px] text-slate-400 font-medium">Gedung D Lt. 2</span>
+                    </div>
+                    <p class="font-bold text-slate-900 leading-snug">Lab Metalurgi &amp; Uji Material</p>
+                    <p class="text-[11px] text-slate-500 mt-1">UTM 50kN, Hardness Tester, Impak Charpy</p>
+                </div>
+
+                <div class="p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-indigo-200 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">LPR-03</span>
+                        <span class="text-[11px] text-slate-400 font-medium">Gedung D Lt. 2</span>
+                    </div>
+                    <p class="font-bold text-slate-900 leading-snug">Lab CAD/CAM &amp; Metrologi</p>
+                    <p class="text-[11px] text-slate-500 mt-1">Workstation CAD/FEA, Alat Ukur Presisi</p>
+                </div>
+
+                <div class="p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-emerald-200 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="font-mono text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">LEN-04</span>
+                        <span class="text-[11px] text-slate-400 font-medium">Gedung D Lt. 1</span>
+                    </div>
+                    <p class="font-bold text-slate-900 leading-snug">Lab Konversi Energi &amp; Termofluida</p>
+                    <p class="text-[11px] text-slate-500 mt-1">Turbin Pelton, Bomb Calorimeter, Motor Bakar</p>
+                </div>
+            </div>
         </div>
     </section>
 

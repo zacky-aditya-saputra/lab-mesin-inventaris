@@ -615,15 +615,16 @@
                 <div class="space-y-2.5">
                     <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-slate-900">Kontak Resmi</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">
-                        Laboratorium Teknik Mesin Unwahas<br>
+                        <strong class="text-slate-800 font-semibold block">M. Abdul Wahid, S.T., M.T.</strong>
+                        Kepala Laboratorium Teknik Mesin<br>
                         Email: <a href="mailto:lab.mesin@unwahas.ac.id" class="text-blue-600 hover:underline">lab.mesin@unwahas.ac.id</a><br>
-                        Telp: (024) 8505680 / 8505681
+                        Telp: (024) 8505680
                     </p>
                     <div class="pt-1">
-                        <a href="https://wa.me/6281234567891" target="_blank" rel="noopener"
+                        <a href="https://wa.me/6285640116080?text={{ urlencode('Assalamualaikum Wr. Wb. Selamat Pagi/Siang Bapak M. Abdul Wahid, S.T., M.T., mohon maaf mengganggu waktu Bapak. Perkenalkan saya mahasiswa Fakultas Teknik Mesin Unwahas, izin berkonsultasi perihal permohonan peminjaman alat di Laboratorium Teknik Mesin. Terima kasih banyak atas waktu dan arahan Bapak. Wassalamualaikum Wr. Wb.') }}" target="_blank" rel="noopener"
                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition-colors">
                             <span class="material-symbols-outlined text-sm">chat</span>
-                            WhatsApp Hotline Lab
+                            <span>WhatsApp Hotline Lab</span>
                         </a>
                     </div>
                 </div>

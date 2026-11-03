@@ -125,7 +125,7 @@ test('user can keep their own identity_number when updating the profile', functi
     expect($user->refresh()->identity_number)->toBe('24103041001');
 });
 
-test('user can delete their account', function () {
+test('user account self-deletion is disabled for institutional data integrity', function () {
     $user = User::factory()->create();
 
     $response = $this
@@ -134,29 +134,7 @@ test('user can delete their account', function () {
             'password' => 'password',
         ]);
 
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/');
+    $response->assertForbidden();
 
-    $this->assertGuest();
-    $this->assertNull($user->fresh());
-});
-
-test('correct password must be provided to delete account', function () {
-    $user = User::factory()->create();
-
-    $response = $this
-        ->actingAs($user)
-        ->from('/profile')
-        ->delete('/profile', [
-            'password' => 'wrong-password',
-        ]);
-
-    $response
-        ->assertSessionHasErrorsIn('userDeletion', [
-            'password' => 'Kata sandi yang Anda masukkan salah.',
-        ])
-        ->assertRedirect('/profile');
-
-    $this->assertNotNull($user->fresh());
+    expect($user->fresh())->not->toBeNull();
 });

@@ -117,12 +117,5 @@
             @include('profile.partials.update-password-form')
         </div>
     </div>
-
-    <!-- Hapus Akun -->
-    <div x-show="!isEditing" class="p-6 sm:p-8 bg-surface-container-lowest border border-outline-variant shadow-sm rounded-xl">
-        <div class="max-w-2xl">
-            @include('profile.partials.delete-user-form')
-        </div>
-    </div>
 </div>
 @endsection

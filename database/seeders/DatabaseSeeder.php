@@ -71,11 +71,11 @@ class DatabaseSeeder extends Seeder
 
         // Kepala Laboratorium (Super Admin)
         User::create([
-            'name' => 'Dr. Ahmad Surya, M.T.',
+            'name' => 'M. Abdul Wahid, S.T., M.T.',
             'identity_number' => '197505102003121002',
             'email' => 'kepalalab@unwahas.ac.id',
             'password' => bcrypt('password'),
-            'phone_number' => '081234567801',
+            'phone_number' => '085640116080',
             'role' => 'kepala_lab',
             'identity_type' => 'pegawai',
             'institution' => 'Fakultas Teknik Unwahas',

@@ -56,11 +56,8 @@ test('deleting a user account removes the identity card file from storage', func
 
     Storage::disk('local')->assertExists($path);
 
-    $this->actingAs($user)
-        ->delete('/profile', ['password' => 'password'])
-        ->assertRedirect('/');
+    $user->delete();
 
-    $this->assertGuest();
     $this->assertDatabaseMissing('users', ['id' => $user->id]);
     Storage::disk('local')->assertMissing($path);
 });
@@ -89,9 +86,7 @@ test('deleting a user account also removes their loan letter files from storage'
 
     Storage::disk('local')->assertExists($letterPath);
 
-    $this->actingAs($student)
-        ->delete('/profile', ['password' => 'password'])
-        ->assertRedirect('/');
+    $student->delete();
 
     $this->assertDatabaseMissing('loan_requests', ['user_id' => $student->id]);
     Storage::disk('local')->assertMissing($identityPath);

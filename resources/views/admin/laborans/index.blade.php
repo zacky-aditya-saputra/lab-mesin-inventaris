@@ -4,21 +4,13 @@
 <div x-data="{
     addModalOpen: false,
     editModalOpen: false,
-    deleteModalOpen: false,
     editFormAction: '',
-    deleteFormAction: '',
     addForm: { name: '', identity_number: '', email: '', password: '', laboratory_id: '' },
     editLaboran: { id: '', name: '', identity_number: '', email: '', password: '', laboratory_id: '' },
-    deleteLaboran: { id: '', name: '', laboratory: '' },
     openEditModal(laboran) {
         this.editLaboran = { ...laboran, password: '' };
         this.editFormAction = '{{ url('admin/laborans') }}/' + laboran.id;
         this.editModalOpen = true;
-    },
-    openDeleteModal(laboran) {
-        this.deleteLaboran = { ...laboran };
-        this.deleteFormAction = '{{ url('admin/laborans') }}/' + laboran.id;
-        this.deleteModalOpen = true;
     }
 }">
     <!-- Action Topbar -->
@@ -124,12 +116,6 @@
                                             class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-lg transition-colors"
                                             title="Edit Laboran">
                                         <span class="material-symbols-outlined text-base">edit</span>
-                                    </button>
-                                    <button type="button"
-                                            @click="openDeleteModal({ id: {{ $laboran->id }}, name: '{{ addslashes($laboran->name) }}', laboratory: '{{ addslashes($laboran->laboratory?->name ?? '-') }}' })"
-                                            class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition-colors"
-                                            title="Hapus Laboran">
-                                        <span class="material-symbols-outlined text-base">delete</span>
                                     </button>
                                 </div>
                             </td>
@@ -290,45 +276,6 @@
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Modal: Delete Confirmation -->
-    <div x-show="deleteModalOpen"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-surface/50 backdrop-blur-sm"
-         style="display: none;">
-        <div @click.away="deleteModalOpen = false"
-             class="w-full max-w-sm bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant overflow-hidden">
-            <div class="p-6 text-center">
-                <div class="w-12 h-12 rounded-full bg-error-container text-error flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-2xl">warning</span>
-                </div>
-                <h3 class="font-title-sm text-title-sm text-on-surface mb-2">Hapus Akun Laboran?</h3>
-                <p class="font-body-md text-body-md text-on-surface-variant mb-6">
-                    Akun <span class="font-semibold text-on-surface" x-text="deleteLaboran.name"></span>
-                    (Lab <span class="font-semibold" x-text="deleteLaboran.laboratory"></span>) akan dihapus permanen dari sistem.
-                </p>
-                <form :action="deleteFormAction" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <div class="flex space-x-3 justify-center">
-                        <button type="button" @click="deleteModalOpen = false"
-                                class="flex-1 px-4 py-2 border border-slate-300/90 text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 rounded-lg font-label-md text-label-md shadow-xs active:bg-slate-100 active:scale-[0.98] transition-all duration-150 cursor-pointer">
-                            Batal
-                        </button>
-                        <button type="submit"
-                                class="flex-1 px-4 py-2 bg-gradient-to-b from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-on-error rounded-lg font-label-md text-label-md shadow-xs ring-1 ring-inset ring-white/20 active:scale-[0.98] transition-all duration-150 cursor-pointer">
-                            Hapus
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>
